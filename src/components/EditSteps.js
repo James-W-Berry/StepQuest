@@ -6,7 +6,7 @@ import Calendar from "react-calendar";
 function onEditSteps(date, steps) {
   const userId = firebase.auth().currentUser.uid;
 
-  var docRef = firebase
+  const docRef = firebase
     .firestore()
     .collection("users")
     .doc(userId)
@@ -19,6 +19,31 @@ function onEditSteps(date, steps) {
     })
     .then(function() {
       console.log("successfully added steps document");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
+function calculateTotal(docs) {
+  let totalSteps = 0;
+  docs.map(doc => {
+    totalSteps += doc.steps;
+  });
+
+  const userId = firebase.auth().currentUser.uid;
+
+  const docRef = firebase
+    .firestore()
+    .collection("users")
+    .doc(userId);
+
+  return docRef
+    .update({
+      totalSteps: totalSteps
+    })
+    .then(function() {
+      console.log("successfully updated total steps");
     })
     .catch(function(error) {
       console.log(error);
@@ -48,6 +73,7 @@ function useSteps(sortBy = "STEPS_DESC") {
         }));
 
         setSteps(docs);
+        calculateTotal(docs);
       });
 
     return () => unsubscribe();

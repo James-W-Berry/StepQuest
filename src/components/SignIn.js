@@ -3,6 +3,40 @@ import firebase from "../firebase";
 import "firebase/auth";
 import SignUp from "./SignUp";
 import { NavLink } from "react-router-dom";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import { Typography } from "@material-ui/core";
+import HelpIcon from "@material-ui/icons/Help";
+import "typeface-roboto";
+
+const useStyles = makeStyles({
+  textInput: {
+    width: "20vw",
+    "& label.Mui-focused": {
+      color: "#E7E5DF"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "#E7E5DF"
+    }
+  },
+  root: {
+    background: "#E3B5A4",
+    border: 0,
+    borderRadius: 3,
+    color: "white",
+    height: 48,
+    padding: "0 30px"
+  },
+  root: {
+    background: "#E3B5A4",
+    border: 0,
+    borderRadius: 3,
+    color: "white",
+    height: 48,
+    padding: "0 30px"
+  }
+});
 
 function onSignIn(email, password) {
   firebase
@@ -34,7 +68,7 @@ function SignIn() {
   const [user, setUser] = useState({ isNew: false });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const classes = useStyles();
   if (user.isNew) {
     return <SignUp />;
   }
@@ -45,8 +79,7 @@ function SignIn() {
         flex: 1,
         width: "100vw",
         height: "100vh",
-
-        backgroundColor: "#2C239A"
+        backgroundColor: "#393E41"
       }}
     >
       <div
@@ -58,7 +91,23 @@ function SignIn() {
           alignItems: "center"
         }}
       >
-        <h1>Sign In</h1>
+        <Typography variant="h1" component="h2" style={{ color: "#E7E5DF" }}>
+          StepTracker
+        </Typography>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flex: "1",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "50px"
+        }}
+      >
+        <Typography variant="h3" component="h2" style={{ color: "#E7E5DF" }}>
+          Sign In
+        </Typography>
       </div>
 
       <div
@@ -67,61 +116,85 @@ function SignIn() {
           flex: "1",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          marginTop: "10px"
         }}
       >
-        <input
+        <TextField
+          className={classes.textInput}
+          id="standard-email-input"
+          label="Email"
+          type="email"
+          autoComplete="email"
           onChange={event => {
             setEmail(event.target.value);
           }}
         />
-        <input
+        <TextField
+          className={classes.textInput}
+          id="standard-password-input"
+          label="Password"
           type="password"
+          autoComplete="current-password"
           onChange={event => {
             setPassword(event.target.value);
           }}
         />
-        <button
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flex: "1",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "30px"
+        }}
+      >
+        <Button
           onClick={() => {
             onSignIn(email, password);
           }}
+          className={classes.root}
         >
-          Login
-        </button>
+          Sign In
+        </Button>
       </div>
 
       <div
         style={{
           display: "flex",
           flex: "1",
-          flexDirection: "column",
+          flexDirection: "row",
+          alignItems: "center",
           justifyContent: "center",
-          alignItems: "center"
+          marginTop: "120px"
         }}
       >
-        <button
+        <Typography
+          variant="subtitle1"
+          component="h2"
+          style={{ cursor: "pointer", color: "#E7E5DF" }}
           onClick={() => {
             onResetPassword(email, password);
           }}
         >
           Forgot Password?
-        </button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
+        </Typography>
         <NavLink
-          style={{ textDecoration: "none", color: "#EFEFEF" }}
+          style={{
+            textDecoration: "none",
+            color: "#E7E5DF",
+            marginLeft: "40px"
+          }}
           to="/signUp"
         >
-          <button>Sign Up</button>
+          <Typography
+            variant="subtitle1"
+            component="h2"
+            style={{ cursor: "pointer" }}
+          >
+            Sign Up
+          </Typography>
         </NavLink>
       </div>
     </div>
