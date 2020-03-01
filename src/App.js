@@ -21,6 +21,7 @@ import firebase from "./firebase";
 import "firebase/auth";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import EditSteps from "./components/EditSteps";
 
 const useStyles = makeStyles({
   drawer: {
@@ -56,7 +57,7 @@ const EditPage = () => (
       color: "#efefef"
     }}
   >
-    Edit Page
+    <EditSteps />
   </div>
 );
 
@@ -182,7 +183,7 @@ function App() {
                   <ListItemIcon>
                     <EditIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Edit" />
+                  <ListItemText primary="Edit your steps" />
                 </ListItem>
               </NavLink>
               <ListItem button onClick={requestLogout}>
@@ -194,7 +195,7 @@ function App() {
             style={{
               height: "100vh",
               display: "flex",
-              marginLeft: 175,
+              marginLeft: 200,
               flex: 1,
               backgroundColor: "#191919"
             }}
