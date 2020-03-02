@@ -30,7 +30,22 @@ const useStyles = makeStyles({
     flexShrink: 0
   },
   drawerPaper: {
-    backgroundColor: "#fdc029"
+    backgroundColor: "#393E41",
+    color: "#fdc029"
+  },
+  paperAnchorDockedLeft: {
+    borderRight: "1px",
+    borderLeft: "0px",
+    borderTop: "0px",
+    borderBottom: "0px",
+    borderRightColor: "#fdc029",
+    borderStyle: "solid"
+  },
+  divider: {
+    backgroundColor: "#E7E5DF40",
+    width: "90%",
+    display: "flex",
+    alignSelf: "center"
   }
 });
 
@@ -153,43 +168,48 @@ function App() {
             variant="permanent"
             className={classes.drawer}
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
+              paperAnchorDockedLeft: classes.paperAnchorDockedLeft
             }}
           >
             <Divider />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#171820" }}
+                style={{ textDecoration: "none", color: "#E7E5DF" }}
                 to="/dashboard"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <DashboardIcon />
+                    <DashboardIcon style={{ color: "#fdc029" }} />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
               </NavLink>
               <NavLink
-                style={{ textDecoration: "none", color: "#171820" }}
+                style={{ textDecoration: "none", color: "#E7E5DF" }}
                 to="/steppers"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <DirectionsWalkIcon />
+                    <DirectionsWalkIcon style={{ color: "#fdc029" }} />
                   </ListItemIcon>
                   <ListItemText primary="Steppers" />
                 </ListItem>
               </NavLink>
             </List>
-            <Divider />
+            <Divider
+              classes={{
+                root: classes.divider
+              }}
+            />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#171820" }}
+                style={{ textDecoration: "none", color: "#E7E5DF" }}
                 to="/edit"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <EditIcon />
+                    <EditIcon style={{ color: "#fdc029" }} />
                   </ListItemIcon>
                   <ListItemText primary="Edit your steps" />
                 </ListItem>
@@ -206,7 +226,9 @@ function App() {
                 width: "100%"
               }}
             >
-              <Typography style={{ marginRight: "10px" }}>Logout </Typography>
+              <Typography style={{ marginRight: "10px", color: "#E7E5DF" }}>
+                Logout{" "}
+              </Typography>
               <LogoutIcon />
             </div>
           </Drawer>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -8,8 +8,9 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
 import Chart from "./Chart";
-import Deposits from "./Deposits";
 import Orders from "./Orders";
+import firebase from "../firebase";
+import TotalSteps from "./TotalSteps";
 
 const drawerWidth = 240;
 
@@ -92,10 +93,36 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+function useUsers() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("users")
+      .onSnapshot(snapshot => {
+        const newUsers = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        setUsers(newUsers);
+      });
+
+    return () => unsubscribe();
+  }, []);
+
+  let totalGroupSteps = 0;
+  users.map(user => {
+    totalGroupSteps += user.totalSteps;
+  });
+  return totalGroupSteps;
+}
+
 export default function Dashboard() {
   const classes = useStyles();
-
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const totalGroupSteps = useUsers();
 
   return (
     <div>
@@ -112,7 +139,7 @@ export default function Dashboard() {
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                <TotalSteps totalGroupSteps={totalGroupSteps} />
               </Paper>
             </Grid>
             {/* Recent Orders */}

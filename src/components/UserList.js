@@ -5,6 +5,7 @@ const SORT_OPTIONS = {
   STEPS_ASC: { column: "totalSteps", direction: "asc" },
   STEPS_DESC: { column: "totalSteps", direction: "desc" }
 };
+
 function useUsers(sortBy = "STEPS_DESC") {
   const [users, setUsers] = useState([]);
 
@@ -28,6 +29,10 @@ function useUsers(sortBy = "STEPS_DESC") {
   return users;
 }
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const UserList = () => {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const users = useUsers(sortBy);
@@ -46,7 +51,9 @@ const UserList = () => {
       <ol>
         {users.map(user => (
           <li key={user.id}>
-            <div>{`${user.displayName} - ${user.totalSteps} steps`}</div>
+            <div>{`${user.displayName} - ${numberWithCommas(
+              user.totalSteps
+            )} steps`}</div>
           </li>
         ))}
       </ol>

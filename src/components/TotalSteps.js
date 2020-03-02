@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
@@ -14,22 +13,31 @@ const useStyles = makeStyles({
   }
 });
 
-export default function Deposits() {
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const TotalSteps = props => {
   const classes = useStyles();
+
+  let today = new Date();
+  var dd = String(today.getDate()).padStart(2, "0");
+  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = mm + "/" + dd + "/" + yyyy;
+
   return (
     <React.Fragment>
-      <Title>Recent Deposits</Title>
+      <Title>Total Group Steps</Title>
       <Typography component="p" variant="h4">
-        $3,024.00
+        {numberWithCommas(props.totalGroupSteps)}
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
-        on 15 March, 2019
+        as of {today}
       </Typography>
-      <div>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          View balance
-        </Link>
-      </div>
     </React.Fragment>
   );
-}
+};
+
+export default TotalSteps;
