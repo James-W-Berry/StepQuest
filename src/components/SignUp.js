@@ -76,7 +76,7 @@ function SignUp() {
         }}
       >
         <Typography variant="h1" component="h2" style={{ color: "#fdc029" }}>
-          StepTracker
+          Step It Up
         </Typography>
       </div>
 
