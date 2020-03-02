@@ -7,29 +7,20 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Typography } from "@material-ui/core";
-import HelpIcon from "@material-ui/icons/Help";
 import "typeface-roboto";
 
 const useStyles = makeStyles({
   textInput: {
     width: "20vw",
     "& label.Mui-focused": {
-      color: "#E7E5DF"
+      color: "#171820"
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#E7E5DF"
+      borderBottomColor: "#171820"
     }
   },
   root: {
-    background: "#E3B5A4",
-    border: 0,
-    borderRadius: 3,
-    color: "white",
-    height: 48,
-    padding: "0 30px"
-  },
-  root: {
-    background: "#E3B5A4",
+    background: "#171820",
     border: 0,
     borderRadius: 3,
     color: "white",
@@ -91,22 +82,8 @@ function SignIn() {
           alignItems: "center"
         }}
       >
-        <Typography variant="h1" component="h2" style={{ color: "#E7E5DF" }}>
+        <Typography variant="h1" component="h2" style={{ color: "#fdc029" }}>
           StepTracker
-        </Typography>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "50px"
-        }}
-      >
-        <Typography variant="h3" component="h2" style={{ color: "#E7E5DF" }}>
-          Sign In
         </Typography>
       </div>
 
@@ -117,7 +94,7 @@ function SignIn() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "10px"
+          marginTop: "30px"
         }}
       >
         <TextField

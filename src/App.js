@@ -10,12 +10,14 @@ import {
   makeStyles,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Typography
 } from "@material-ui/core";
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EditIcon from "@material-ui/icons/Edit";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
 import firebase from "./firebase";
 import "firebase/auth";
@@ -28,7 +30,7 @@ const useStyles = makeStyles({
     flexShrink: 0
   },
   drawerPaper: {
-    backgroundColor: "#1999"
+    backgroundColor: "#fdc029"
   }
 });
 
@@ -38,9 +40,8 @@ const SteppersPage = () => (
     style={{
       display: "flex",
       flex: 1,
-
-      backgroundColor: "#191919",
-      color: "#efefef"
+      backgroundColor: "#393E41",
+      color: "#E7E5DF"
     }}
   >
     <UserList />
@@ -53,8 +54,8 @@ const EditPage = () => (
       flex: 1,
       width: "50%",
       height: "50%",
-      backgroundColor: "#191919",
-      color: "#efefef"
+      backgroundColor: "#393E41",
+      color: "#E7E5DF"
     }}
   >
     <EditSteps />
@@ -129,7 +130,7 @@ function App() {
 
   if (!user.loggedIn) {
     return (
-      <div style={{ backgroundColor: "#191919" }}>
+      <div style={{ backgroundColor: "#393E41" }}>
         <BrowserRouter>{AuthRoutes()}</BrowserRouter>
       </div>
     );
@@ -137,7 +138,15 @@ function App() {
 
   return (
     <UserProvider value={user}>
-      <div style={{ backgroundColor: "#191919" }}>
+      <div
+        style={{
+          backgroundColor: "#393E41",
+          display: "flex",
+          flexDirection: "column",
+          width: "100vw",
+          height: "100vh"
+        }}
+      >
         <BrowserRouter>
           <CssBaseline />
           <Drawer
@@ -150,7 +159,7 @@ function App() {
             <Divider />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#EFEFEF" }}
+                style={{ textDecoration: "none", color: "#171820" }}
                 to="/dashboard"
               >
                 <ListItem button>
@@ -161,7 +170,7 @@ function App() {
                 </ListItem>
               </NavLink>
               <NavLink
-                style={{ textDecoration: "none", color: "#EFEFEF" }}
+                style={{ textDecoration: "none", color: "#171820" }}
                 to="/steppers"
               >
                 <ListItem button>
@@ -175,7 +184,7 @@ function App() {
             <Divider />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#EFEFEF" }}
+                style={{ textDecoration: "none", color: "#171820" }}
                 to="/edit"
               >
                 <ListItem button>
@@ -185,10 +194,21 @@ function App() {
                   <ListItemText primary="Edit your steps" />
                 </ListItem>
               </NavLink>
-              <ListItem button onClick={requestLogout}>
-                <ListItemText primary="Logout" />
-              </ListItem>
             </List>
+            <div
+              onClick={requestLogout}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "absolute",
+                bottom: "40px",
+                cursor: "pointer",
+                width: "100%"
+              }}
+            >
+              <Typography style={{ marginRight: "10px" }}>Logout </Typography>
+              <LogoutIcon />
+            </div>
           </Drawer>
           <div
             style={{
@@ -196,7 +216,7 @@ function App() {
               display: "flex",
               marginLeft: 200,
               flex: 1,
-              backgroundColor: "#191919"
+              backgroundColor: "#393E41"
             }}
           >
             {FeatureRoutes()}

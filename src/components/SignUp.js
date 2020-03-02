@@ -16,15 +16,7 @@ const useStyles = makeStyles({
     }
   },
   root: {
-    background: "#E3B5A4",
-    border: 0,
-    borderRadius: 3,
-    color: "white",
-    height: 48,
-    padding: "0 30px"
-  },
-  root: {
-    background: "#E3B5A4",
+    background: "#171820",
     border: 0,
     borderRadius: 3,
     color: "white",
@@ -83,22 +75,8 @@ function SignUp() {
           alignItems: "center"
         }}
       >
-        <Typography variant="h1" component="h2" style={{ color: "#E7E5DF" }}>
+        <Typography variant="h1" component="h2" style={{ color: "#fdc029" }}>
           StepTracker
-        </Typography>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "50px"
-        }}
-      >
-        <Typography variant="h3" component="h2" style={{ color: "#E7E5DF" }}>
-          Sign Up
         </Typography>
       </div>
 
@@ -109,7 +87,7 @@ function SignUp() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "10px"
+          marginTop: "30px"
         }}
       >
         <TextField
