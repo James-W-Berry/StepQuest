@@ -80,7 +80,6 @@ function logout() {
 
 function App() {
   const [user, setUser] = useState({ loggedIn: false, isLoading: true });
-  const [error, setError] = useState("");
 
   const classes = useStyles();
 

@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "firebase": "^7.9.3",
+    "firebase-tools": "^7.14.0",
     "firebaseui": "^4.4.0",
     "react": "^16.13.0",
     "react-calendar": "^2.19.2",
