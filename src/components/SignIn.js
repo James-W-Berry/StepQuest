@@ -8,12 +8,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Typography } from "@material-ui/core";
 import "typeface-roboto";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   textInput: {
     width: "20vw",
+    "& label ": {
+      color: "#E7E5DF80"
+    },
     "& label.Mui-focused": {
-      color: "#171820"
+      color: "#fdc029"
     },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#171820"
@@ -23,9 +28,12 @@ const useStyles = makeStyles({
     background: "#171820",
     border: 0,
     borderRadius: 3,
-    color: "white",
+    color: "#E7E5DF",
     height: 48,
     padding: "0 30px"
+  },
+  input: {
+    color: "white"
   }
 });
 
@@ -55,7 +63,7 @@ function onResetPassword(email) {
     });
 }
 
-function SignIn() {
+function SignIn(props) {
   const [user, setUser] = useState({ isNew: false });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,7 +90,11 @@ function SignIn() {
           alignItems: "center"
         }}
       >
-        <Typography variant="h1" component="h2" style={{ color: "#fdc029" }}>
+        <Typography
+          variant="h1"
+          component="h2"
+          style={{ color: "#fdc029", marginTop: "20px" }}
+        >
           Step It Up
         </Typography>
       </div>
@@ -102,6 +114,9 @@ function SignIn() {
           id="standard-email-input"
           label="Email"
           type="email"
+          InputProps={{
+            className: classes.input
+          }}
           autoComplete="email"
           onChange={event => {
             setEmail(event.target.value);
@@ -113,6 +128,9 @@ function SignIn() {
           label="Password"
           type="password"
           autoComplete="current-password"
+          InputProps={{
+            className: classes.input
+          }}
           onChange={event => {
             setPassword(event.target.value);
           }}
@@ -178,4 +196,8 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+SignIn.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(useStyles)(SignIn);

@@ -90,9 +90,13 @@ function applyRangeFilter(dailyTotals, startDate, endDate) {
     let docDate = new Date(doc.id).getTime();
 
     if (docDate >= startEpoch && docDate <= endEpoch) {
+      doc.epoch = docDate;
       filteredDocs.push(doc);
     }
   });
+
+  filteredDocs.sort((a, b) => (a.epoch > b.epoch ? 1 : -1));
+
   return filteredDocs;
 }
 

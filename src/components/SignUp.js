@@ -4,24 +4,32 @@ import "firebase/auth";
 import { NavLink } from "react-router-dom";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   textInput: {
     width: "20vw",
+    "& label ": {
+      color: "#E7E5DF80"
+    },
     "& label.Mui-focused": {
-      color: "#E7E5DF"
+      color: "#fdc029"
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#E7E5DF"
+      borderBottomColor: "#171820"
     }
   },
   root: {
     background: "#171820",
     border: 0,
     borderRadius: 3,
-    color: "white",
+    color: "#E7E5DF",
     height: 48,
     padding: "0 30px"
+  },
+  input: {
+    color: "white"
   }
 });
 function onSignUp(username, email, password) {
@@ -95,6 +103,9 @@ function SignUp() {
           id="standard-username-input"
           label="Username"
           type="username"
+          InputProps={{
+            className: classes.input
+          }}
           onChange={event => {
             setUsername(event.target.value);
           }}
@@ -105,6 +116,9 @@ function SignUp() {
           label="Email"
           type="email"
           autoComplete="email"
+          InputProps={{
+            className: classes.input
+          }}
           onChange={event => {
             setEmail(event.target.value);
           }}
@@ -115,6 +129,9 @@ function SignUp() {
           label="Password"
           type="password"
           autoComplete="current-password"
+          InputProps={{
+            className: classes.input
+          }}
           onChange={event => {
             setPassword(event.target.value);
           }}
@@ -167,4 +184,8 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+SignUp.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(useStyles)(SignUp);
