@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -23,11 +21,7 @@ const useStyles = makeStyles(theme => ({
     padding: "0 30px"
   },
   appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto"
-  },
+
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4)
@@ -35,14 +29,12 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(2),
     display: "flex",
-    overflow: "auto",
     alignItems: "center",
+    justifyContent: "flexEnd",
     flexDirection: "column",
     backgroundColor: "#E7E5DF"
   },
-  fixedHeight: {
-    height: 300
-  },
+
   textInput: {
     width: "20vw",
     marginBottom: "20px",
@@ -201,74 +193,105 @@ const EditSteps = () => {
   });
 
   return (
-    <div>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg">
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center"
-                  }}
-                >
-                  <Calendar
-                    className={classes.calendar}
-                    onChange={newDate => setDate(newDate)}
-                    value={date}
-                    onClickDay={selectedDate => {
-                      showStepCount(selectedDate);
-                      setSelectedDate(selectedDate);
-                    }}
-                  />
-                  {selectedDate && (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        margin: "10px"
-                      }}
-                    >
-                      <TextField
-                        className={classes.textInput}
-                        label="enter # of steps"
-                        type="number"
-                        min="0"
-                        onChange={event => {
-                          setSteps(parseInt(event.target.value));
-                        }}
-                      />
-                      <Button
-                        onClick={e => {
-                          onEditSteps(date, steps);
-                          onEditDailyTotals(date, steps, dayStepCount);
-                        }}
-                        className={classes.button}
-                      >
-                        Update Steps
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <DaySteps
-                  totalDaySteps={dayStepCount}
-                  selectedDate={selectedDate}
-                />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "40px"
+        }}
+      >
+        <Paper className={classes.paper}>
+          <Calendar
+            className={classes.calendar}
+            onChange={newDate => setDate(newDate)}
+            value={date}
+            onClickDay={selectedDate => {
+              showStepCount(selectedDate);
+              setSelectedDate(selectedDate);
+            }}
+          />
+        </Paper>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            flex: 2,
+            display: "flex"
+          }}
+        />
+        {selectedDate && (
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              marginTop: "40px",
+              justifyContent: "center"
+            }}
+          >
+            <Paper className={classes.paper}>
+              <TextField
+                className={classes.textInput}
+                label="enter # of steps"
+                type="number"
+                min="0"
+                onChange={event => {
+                  setSteps(parseInt(event.target.value));
+                }}
+              />
+              <Button
+                onClick={e => {
+                  onEditSteps(date, steps);
+                  onEditDailyTotals(date, steps, dayStepCount);
+                }}
+                className={classes.button}
+              >
+                Update Steps
+              </Button>
+            </Paper>
+          </div>
+        )}
+
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            marginTop: "40px",
+            justifyContent: "center"
+          }}
+        >
+          <Paper className={classes.paper}>
+            <DaySteps
+              totalDaySteps={dayStepCount}
+              selectedDate={selectedDate}
+            />
+          </Paper>
+        </div>
+
+        <div
+          style={{
+            flex: 2,
+            display: "flex"
+          }}
+        />
+      </div>
     </div>
   );
 };

@@ -18,15 +18,18 @@ const DaySteps = props => {
   const classes = useStyles();
 
   let formattedDate;
+  let totalDaySteps;
 
   if (props.selectedDate !== "") {
     try {
       formattedDate = moment(props.selectedDate).format("MMMM Do, YYYY");
+      totalDaySteps = props.totalDaySteps;
     } catch {
       console.log("invalid date");
     }
   } else {
     formattedDate = "Pick a day to record your steps";
+    totalDaySteps = "";
   }
 
   return (
@@ -37,7 +40,7 @@ const DaySteps = props => {
         component="p"
         variant="h3"
       >
-        {numberWithCommas(props.totalDaySteps)}
+        {numberWithCommas(totalDaySteps)}
       </Typography>
       <Typography
         style={{ marginTop: "10px", color: "#171820" }}
