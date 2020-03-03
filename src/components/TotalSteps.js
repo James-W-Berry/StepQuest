@@ -4,10 +4,6 @@ import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
 import moment from "moment";
 
-function preventDefault(event) {
-  event.preventDefault();
-}
-
 const useStyles = makeStyles({
   depositContext: {
     flex: 1
@@ -26,10 +22,15 @@ const TotalSteps = props => {
   return (
     <React.Fragment>
       <Title>Total Group Steps</Title>
-      <Typography component="p" variant="h4">
+      <Typography style={{ marginTop: "20px" }} component="p" variant="h3">
         {numberWithCommas(props.totalGroupSteps)}
       </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
+      <Typography
+        style={{ marginTop: "10px" }}
+        variant="subtitle1"
+        color="textSecondary"
+        className={classes.stepContext}
+      >
         as of {today}
       </Typography>
     </React.Fragment>

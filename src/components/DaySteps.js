@@ -36,11 +36,12 @@ const DaySteps = props => {
   return (
     <React.Fragment>
       <Title>Step Count</Title>
-      <Typography style={{ marginTop: "50px" }} component="p" variant="h4">
+      <Typography style={{ marginTop: "50px" }} component="p" variant="h1">
         {numberWithCommas(props.totalDaySteps)}
       </Typography>
       <Typography
         style={{ marginTop: "50px" }}
+        variant="subtitle1"
         color="textSecondary"
         className={classes.stepContext}
       >

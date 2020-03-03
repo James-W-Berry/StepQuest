@@ -84,6 +84,46 @@ function onEditSteps(date, steps) {
   }
 }
 
+function onEditDailyTotals(date, steps, dayStepCount) {
+  if (date !== "") {
+    const userId = firebase.auth().currentUser.uid;
+    const decrement = -1 * dayStepCount;
+
+    const docRef = firebase
+      .firestore()
+      .collection("dailyTotals")
+      .doc(date.toString());
+
+    docRef
+      .set(
+        {
+          totalSteps: firebase.firestore.FieldValue.increment(decrement)
+        },
+        { merge: true }
+      )
+      .then(function() {
+        console.log("successfully incremented daily total steps document");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    return docRef
+      .set(
+        {
+          totalSteps: firebase.firestore.FieldValue.increment(steps)
+        },
+        { merge: true }
+      )
+      .then(function() {
+        console.log("successfully incremented daily total steps document");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+}
+
 function calculateTotal(docs) {
   let totalSteps = 0;
   docs.map(doc => {
@@ -209,6 +249,7 @@ const EditSteps = () => {
                       <Button
                         onClick={e => {
                           onEditSteps(date, steps);
+                          onEditDailyTotals(date, steps, dayStepCount);
                         }}
                         className={classes.button}
                       >
