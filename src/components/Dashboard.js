@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
 import Chart from "./Chart";
-import Orders from "./Orders";
+import Orders from "./TopSteppers";
 import firebase from "../firebase";
 import TotalSteps from "./TotalSteps";
+import TopSteppers from "./TopSteppers";
 
 const drawerWidth = 240;
 
@@ -86,7 +85,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     display: "flex",
     overflow: "auto",
-    flexDirection: "column"
+    flexDirection: "column",
+    backgroundColor: "#E7E5DF"
   },
   fixedHeight: {
     height: 240
@@ -136,16 +136,16 @@ export default function Dashboard() {
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
+            {/* Total Group Steps */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
                 <TotalSteps totalGroupSteps={totalGroupSteps} />
               </Paper>
             </Grid>
-            {/* Recent Orders */}
+            {/* Top Steppers */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <TopSteppers />
               </Paper>
             </Grid>
           </Grid>

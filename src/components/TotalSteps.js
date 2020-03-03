@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
+import moment from "moment";
 
 function preventDefault(event) {
   event.preventDefault();
@@ -20,12 +21,7 @@ function numberWithCommas(x) {
 const TotalSteps = props => {
   const classes = useStyles();
 
-  let today = new Date();
-  var dd = String(today.getDate()).padStart(2, "0");
-  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  var yyyy = today.getFullYear();
-
-  today = mm + "/" + dd + "/" + yyyy;
+  const today = moment().format("MMMM Do, YYYY");
 
   return (
     <React.Fragment>

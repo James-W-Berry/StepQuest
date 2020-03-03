@@ -24,21 +24,20 @@ import "firebase/auth";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import EditSteps from "./components/EditSteps";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const useStyles = makeStyles({
-  drawer: {
-    flexShrink: 0
-  },
   drawerPaper: {
-    backgroundColor: "#393E41",
-    color: "#fdc029"
+    backgroundColor: "#191919",
+    color: "#fdc029",
+    width: "220px"
   },
   paperAnchorDockedLeft: {
     borderRight: "1px",
     borderLeft: "0px",
     borderTop: "0px",
     borderBottom: "0px",
-    borderRightColor: "#fdc029",
+    borderRightColor: "#E7E5DF40",
     borderStyle: "solid"
   },
   divider: {
@@ -62,20 +61,7 @@ const SteppersPage = () => (
     <UserList />
   </div>
 );
-const EditPage = () => (
-  <div
-    style={{
-      display: "flex",
-      flex: 1,
-      width: "50%",
-      height: "50%",
-      backgroundColor: "#393E41",
-      color: "#E7E5DF"
-    }}
-  >
-    <EditSteps />
-  </div>
-);
+const EditPage = () => <EditSteps />;
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
@@ -123,7 +109,11 @@ function App() {
   const FeatureRoutes = () => (
     <Route
       render={({ location }) => (
-        <div key={location.pathname}>
+        <div
+          id="content"
+          key={location.pathname}
+          style={{ width: "100%", height: "100%" }}
+        >
           <Switch location={location}>
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/steppers" component={SteppersPage} />
@@ -140,7 +130,20 @@ function App() {
   }, []);
 
   if (user.isLoading) {
-    return <div>Loading</div>;
+    return (
+      <div
+        style={{
+          backgroundColor: "#393E41",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100vw"
+        }}
+      >
+        <SyncLoader color={"#fdc029"} />
+      </div>
+    );
   }
 
   if (!user.loggedIn) {
@@ -166,7 +169,6 @@ function App() {
           <CssBaseline />
           <Drawer
             variant="permanent"
-            className={classes.drawer}
             classes={{
               paper: classes.drawerPaper,
               paperAnchorDockedLeft: classes.paperAnchorDockedLeft
@@ -235,8 +237,9 @@ function App() {
           <div
             style={{
               height: "100vh",
+              width: "100vw - 200px",
               display: "flex",
-              marginLeft: 200,
+              marginLeft: 240,
               flex: 1,
               backgroundColor: "#393E41"
             }}
