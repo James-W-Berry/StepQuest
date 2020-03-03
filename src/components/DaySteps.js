@@ -4,10 +4,6 @@ import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
 import moment from "moment";
 
-function preventDefault(event) {
-  event.preventDefault();
-}
-
 const useStyles = makeStyles({
   stepContext: {
     flex: 1
