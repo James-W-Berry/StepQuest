@@ -71,17 +71,29 @@ function createData(day, steps) {
 
 function generateDailyTotals(dailyTotals) {
   let data = [];
-  let runningTotal = 0;
 
   dailyTotals.map(day => {
-    runningTotal += day.totalSteps;
     const formattedDay = moment(day.id).format("MMM D");
-    data.push(createData(formattedDay, runningTotal));
+    data.push(createData(formattedDay, day.totalSteps));
   });
 
-  console.log(data);
-
   return data;
+}
+
+function applyRangeFilter(dailyTotals, startDate, endDate) {
+  let startEpoch = new Date(startDate).getTime();
+  let endEpoch = new Date(endDate).getTime();
+
+  let filteredDocs = [];
+
+  dailyTotals.map(doc => {
+    let docDate = new Date(doc.id).getTime();
+
+    if (docDate >= startEpoch && docDate <= endEpoch) {
+      filteredDocs.push(doc);
+    }
+  });
+  return filteredDocs;
 }
 
 const CustomInput = ({ value, onClick, classes }) => (
@@ -104,6 +116,7 @@ export default function Chart() {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
 
   const dailyTotals = useDailyTotals(sortBy);
+  const filteredDailyTotals = applyRangeFilter(dailyTotals, startDate, endDate);
 
   return (
     <React.Fragment>
@@ -115,34 +128,43 @@ export default function Chart() {
             alignItems: "center"
           }}
         >
-          <Title>Group Steps</Title>
+          <Title>Daily Group Step Total</Title>
 
-          <DatePicker
-            selected={startDate}
-            onChange={date => {
-              setStartDate(date);
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginLeft: "100px"
             }}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            customInput={<CustomInput classes={classes} />}
-          />
-          <Title style={{ marginLeft: "100px" }}> - </Title>
-          <DatePicker
-            selected={endDate}
-            onChange={date => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            minDate={startDate}
-            customInput={<CustomInput classes={classes} />}
-          />
+          >
+            <DatePicker
+              selected={startDate}
+              onChange={date => {
+                setStartDate(date);
+              }}
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+              customInput={<CustomInput classes={classes} />}
+            />
+            <Title style={{ marginLeft: "100px" }}> - </Title>
+            <DatePicker
+              selected={endDate}
+              onChange={date => setEndDate(date)}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+              customInput={<CustomInput classes={classes} />}
+            />
+          </div>
         </div>
       </div>
 
       <ResponsiveContainer>
         <LineChart
-          data={generateDailyTotals(dailyTotals)}
+          data={generateDailyTotals(filteredDailyTotals)}
           margin={{
             top: 16,
             right: 16,

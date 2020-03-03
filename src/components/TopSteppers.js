@@ -23,6 +23,7 @@ function useUsers(sortBy = "STEPS_DESC") {
       .firestore()
       .collection("users")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
+      .limit(5)
       .onSnapshot(snapshot => {
         const newUsers = snapshot.docs.map(doc => ({
           id: doc.id,

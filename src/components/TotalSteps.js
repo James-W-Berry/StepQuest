@@ -21,14 +21,17 @@ const TotalSteps = props => {
 
   return (
     <React.Fragment>
-      <Title>Total Group Steps</Title>
-      <Typography style={{ marginTop: "20px" }} component="p" variant="h3">
+      <Title>Total Steps</Title>
+      <Typography
+        style={{ marginTop: "20px", color: "#171820" }}
+        component="p"
+        variant="h3"
+      >
         {numberWithCommas(props.totalGroupSteps)}
       </Typography>
       <Typography
-        style={{ marginTop: "10px" }}
+        style={{ marginTop: "10px", color: "#171820" }}
         variant="subtitle1"
-        color="textSecondary"
         className={classes.stepContext}
       >
         as of {today}

@@ -5,7 +5,7 @@ import Title from "./Title";
 import moment from "moment";
 
 const useStyles = makeStyles({
-  stepContext: {
+  depositContext: {
     flex: 1
   }
 });
@@ -14,40 +14,32 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const DaySteps = props => {
+const AverageSteps = props => {
   const classes = useStyles();
 
-  let formattedDate;
-
-  if (props.selectedDate !== "") {
-    try {
-      formattedDate = moment(props.selectedDate).format("MMMM Do, YYYY");
-    } catch {
-      console.log("invalid date");
-    }
-  } else {
-    formattedDate = "Pick a day to record your steps";
-  }
+  const today = moment().format("MMMM Do, YYYY");
 
   return (
     <React.Fragment>
-      <Title>Step Count</Title>
+      <Title>Average Daily Steps</Title>
       <Typography
         style={{ marginTop: "20px", color: "#171820" }}
         component="p"
         variant="h3"
       >
-        {numberWithCommas(props.totalDaySteps)}
+        {props.numberOfDays === 0
+          ? 0
+          : numberWithCommas(props.totalGroupSteps / props.numberOfDays)}
       </Typography>
       <Typography
         style={{ marginTop: "10px", color: "#171820" }}
         variant="subtitle1"
         className={classes.stepContext}
       >
-        {formattedDate}
+        Goal: 7,000
       </Typography>
     </React.Fragment>
   );
 };
 
-export default DaySteps;
+export default AverageSteps;
