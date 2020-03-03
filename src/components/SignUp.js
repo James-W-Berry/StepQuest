@@ -101,7 +101,7 @@ function SignUp() {
         <TextField
           className={classes.textInput}
           id="standard-username-input"
-          label="Username"
+          label="Display Name"
           type="username"
           InputProps={{
             className: classes.input
