@@ -135,7 +135,10 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <TotalSteps totalGroupSteps={totalGroupSteps} />
+                <TotalSteps
+                  title={"Total Group Steps"}
+                  totalGroupSteps={totalGroupSteps}
+                />
               </Paper>
             </Grid>
             <Grid item xs={12}>

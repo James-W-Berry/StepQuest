@@ -21,7 +21,7 @@ const TotalSteps = props => {
 
   return (
     <React.Fragment>
-      <Title>Total Steps</Title>
+      <Title>{props.title}</Title>
       <Typography
         style={{ marginTop: "20px", color: "#171820" }}
         component="p"

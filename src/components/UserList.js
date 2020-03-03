@@ -201,7 +201,10 @@ export default function UserList() {
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div style={{ marginTop: "40px", marginRight: "10px" }}>
               <Paper className={classes.paper}>
-                <TotalSteps totalGroupSteps={selectedStepper.totalSteps} />
+                <TotalSteps
+                  title={"Total Steps"}
+                  totalGroupSteps={selectedStepper.totalSteps}
+                />
               </Paper>
             </div>
             <div style={{ marginTop: "40px", marginLeft: "10px" }}>
