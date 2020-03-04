@@ -250,7 +250,7 @@ const EditSteps = () => {
                 className={classes.textInput}
                 label="enter # of steps"
                 type="number"
-                min="0"
+                inputProps={{ min: "0" }}
                 onChange={event => {
                   setSteps(parseInt(event.target.value));
                 }}
