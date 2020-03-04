@@ -25,6 +25,7 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import EditSteps from "./components/EditSteps";
 import SyncLoader from "react-spinners/SyncLoader";
+import ForgottenPassword from "./components/ForgottenPassword";
 
 const useStyles = makeStyles({
   drawerPaper: {
@@ -99,6 +100,7 @@ function App() {
           <Switch location={location}>
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />
+            <Route path="/forgotpassword" component={ForgottenPassword} />
             <Redirect to="/signin" />
           </Switch>
         </div>

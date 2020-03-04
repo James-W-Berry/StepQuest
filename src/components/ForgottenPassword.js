@@ -36,32 +36,12 @@ const useStyles = makeStyles({
   },
   input: {
     color: "white"
-  },
-  forgotButton: {
-    "&:hover": {
-      color: "#fdc029"
-    },
-    border: 0,
-    borderRadius: 3,
-    color: "#E7E5DF90",
-    height: 48,
-    padding: "0 30px"
   }
 });
 
-function onSignIn(email, password) {
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(function() {
-      console.log("Sign in successful");
-    })
-    .catch(function(error) {
-      alert("Incorrect email or password, please try again");
-    });
-}
-
 function onResetPassword(email) {
+  console.log("resettingpassword ");
+  console.log(email);
   firebase
     .auth()
     .sendPasswordResetEmail(email)
@@ -69,20 +49,17 @@ function onResetPassword(email) {
       alert("Check your email to reset your password.");
     })
     .catch(function(error) {
+      console.log("error resetting password ");
+
       alert(
         "Could not send email, please enter your email address and try again."
       );
     });
 }
 
-function SignIn(props) {
-  const [user, setUser] = useState({ isNew: false });
+function ForgottenPassword(props) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const classes = useStyles();
-  if (user.isNew) {
-    return <SignUp />;
-  }
 
   return (
     <div
@@ -134,58 +111,24 @@ function SignIn(props) {
             setEmail(event.target.value);
           }}
         />
-        <TextField
-          className={classes.textInput}
-          id="standard-password-input"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          InputProps={{
-            className: classes.input
-          }}
-          onChange={event => {
-            setPassword(event.target.value);
-          }}
-        />
       </div>
-
       <div
         style={{
           display: "flex",
           flex: "1",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          marginTop: "30px",
-          marginRight: "20px"
+          marginTop: "30px"
         }}
       >
         <Button
           onClick={() => {
-            onSignIn(email, password);
+            onResetPassword(email);
           }}
           className={classes.root}
         >
-          Sign In
+          Reset Password
         </Button>
-
-        <NavLink
-          style={{
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            color: "#E7E5DF",
-            marginLeft: "20px"
-          }}
-          to="/signUp"
-        >
-          <Typography
-            variant="subtitle1"
-            component="h2"
-            style={{ cursor: "pointer", marginRight: "10px" }}
-          ></Typography>
-          <Button className={classes.root}>Sign Up</Button>
-        </NavLink>
       </div>
 
       <div
@@ -198,21 +141,18 @@ function SignIn(props) {
           marginTop: "120px"
         }}
       >
-        <NavLink
-          style={{
-            textDecoration: "none"
-          }}
-          to="/forgotpassword"
-        >
-          <Button className={classes.forgotButton}>Forgot Password?</Button>
+        <NavLink style={{ textDecoration: "none" }} to="/signIn">
+          <Button className={classes.root} style={{ color: "#E7E5DF80" }}>
+            Back to Sign In
+          </Button>
         </NavLink>
       </div>
     </div>
   );
 }
 
-SignIn.propTypes = {
+ForgottenPassword.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(useStyles)(SignIn);
+export default withStyles(useStyles)(ForgottenPassword);

@@ -21,7 +21,9 @@ const useStyles = makeStyles({
     }
   },
   root: {
-    background: "#171820",
+    "&:hover": {
+      color: "#fdc029"
+    },
     border: 0,
     borderRadius: 3,
     color: "#E7E5DF",
@@ -167,17 +169,10 @@ function SignUp() {
           marginTop: "120px"
         }}
       >
-        <NavLink
-          style={{ textDecoration: "none", color: "#EFEFEF" }}
-          to="/signIn"
-        >
-          <Typography
-            variant="subtitle1"
-            component="h2"
-            style={{ cursor: "pointer" }}
-          >
+        <NavLink style={{ textDecoration: "none" }} to="/signIn">
+          <Button className={classes.root} style={{ color: "#E7E5DF80" }}>
             Back to Sign In
-          </Typography>
+          </Button>
         </NavLink>
       </div>
     </div>
