@@ -85,7 +85,11 @@ function SignUp() {
           alignItems: "center"
         }}
       >
-        <Typography variant="h1" component="h2" style={{ color: "#fdc029" }}>
+        <Typography
+          variant="h1"
+          component="h2"
+          style={{ color: "#fdc029", marginTop: "20px" }}
+        >
           Step It Up
         </Typography>
       </div>
