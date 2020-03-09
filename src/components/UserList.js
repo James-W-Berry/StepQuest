@@ -19,6 +19,7 @@ import TotalSteps from "./TotalSteps";
 import Title from "./Title";
 import moment from "moment";
 import AverageSteps from "./AverageSteps";
+import Scrollbar from "react-scrollbars-custom";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -60,6 +61,28 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 300,
     justifyContent: "center",
     alignItems: "center"
+  },
+  grid: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "flexStart",
+    overflow: "hidden"
+  },
+  gridList: {
+    width: "30vw",
+    height: "70vh"
+  },
+  gridTile: {
+    width: "100%",
+    height: "100%",
+    borderWidth: "1px",
+    "&:hover": {
+      color: "#fdc029"
+    },
+    border: 0,
+    borderRadius: 3,
+    color: "white",
+    padding: "0 30px"
   }
 }));
 
@@ -108,10 +131,6 @@ async function calculateDailyTotals(user) {
       return userSteps;
     });
   return response;
-}
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export default function UserList() {
@@ -168,22 +187,23 @@ export default function UserList() {
             <MenuItem value={"STEPS_ASC"}>Steps (least first)</MenuItem>
           </Select>
         </FormControl>
-        <ol>
-          {users.map(user => (
-            <li key={user.id}>
-              <div>
-                <Button
-                  className={classes.button}
-                  onClick={() => handleStepperClicked(user)}
-                >
-                  {`${user.displayName} - ${numberWithCommas(
-                    user.totalSteps
-                  )} steps`}
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ol>
+
+        <Scrollbar style={{ height: "70vh", width: "30vw" }}>
+          <ol>
+            {users.map(user => (
+              <li key={user.id}>
+                <div>
+                  <Button
+                    className={classes.button}
+                    onClick={() => handleStepperClicked(user)}
+                  >
+                    {user.displayName}
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </Scrollbar>
       </div>
 
       {selectedStepper !== "" && (

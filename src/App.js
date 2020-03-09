@@ -16,6 +16,7 @@ import {
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EditIcon from "@material-ui/icons/Edit";
+import ProfileIcon from "@material-ui/icons/AccountCircle";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
@@ -27,6 +28,7 @@ import EditSteps from "./components/EditSteps";
 import SyncLoader from "react-spinners/SyncLoader";
 import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
+import Profile from "./components/Profile";
 
 const useStyles = makeStyles({
   drawerPaper: {
@@ -64,6 +66,7 @@ const SteppersPage = () => (
   </div>
 );
 const EditPage = () => <EditSteps />;
+const ProfilePage = () => <Profile />;
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
@@ -122,6 +125,7 @@ function App() {
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/steppers" component={SteppersPage} />
             <Route path="/edit" component={EditPage} />
+            <Route path="/profile" component={ProfilePage} />
             <Redirect to="/dashboard" />
           </Switch>
         </div>
@@ -218,6 +222,17 @@ function App() {
                     <EditIcon style={{ color: "#fdc029" }} />
                   </ListItemIcon>
                   <ListItemText primary="Edit your steps" />
+                </ListItem>
+              </NavLink>
+              <NavLink
+                style={{ textDecoration: "none", color: "#E7E5DF" }}
+                to="/profile"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <ProfileIcon style={{ color: "#fdc029" }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
                 </ListItem>
               </NavLink>
             </List>
