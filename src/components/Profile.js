@@ -59,32 +59,34 @@ function useDisplayName() {
 }
 
 function onEditDisplayName(displayName) {
-  const userId = firebase.auth().currentUser.uid;
+  if (displayName !== "") {
+    const userId = firebase.auth().currentUser.uid;
 
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+    const docRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(userId);
 
-  return docRef
-    .set(
-      {
-        displayName: displayName
-      },
-      { merge: true }
-    )
-    .then(function() {
-      console.log("successfully updated display name");
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+    return docRef
+      .set(
+        {
+          displayName: displayName
+        },
+        { merge: true }
+      )
+      .then(function() {
+        console.log("successfully updated display name");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
 }
 
 const Profile = props => {
   const classes = useStyles();
   const currentDisplayName = useDisplayName();
-  const [displayName, setDisplayName] = useState();
+  const [displayName, setDisplayName] = useState("");
   const photoUrl = "../assets/walking.jpg";
 
   return (
