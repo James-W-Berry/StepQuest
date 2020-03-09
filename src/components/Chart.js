@@ -74,10 +74,33 @@ function generateDailyTotals(dailyTotals) {
 
   dailyTotals.map(day => {
     const formattedDay = moment(day.id).format("MMM D");
-    data.push(createData(formattedDay, day.totalSteps));
+    const checkForDate = checkIfDateIsPresent(data, formattedDay);
+    if (checkForDate.isPresent) {
+      // add to existing day
+      data[checkForDate.index].steps += day.totalSteps;
+    } else {
+      // add new day
+      data.push(createData(formattedDay, day.totalSteps));
+    }
   });
 
   return data;
+}
+
+function checkIfDateIsPresent(data, date) {
+  let result = {
+    isPresent: false,
+    index: 0
+  };
+
+  data.forEach((value, index, array) => {
+    if (data[index].day === date) {
+      result.isPresent = true;
+      result.index = index;
+    }
+  });
+
+  return result;
 }
 
 function applyRangeFilter(dailyTotals, startDate, endDate) {

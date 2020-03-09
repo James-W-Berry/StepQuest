@@ -29,7 +29,9 @@ const AverageSteps = props => {
       >
         {props.numberOfDays === 0
           ? 0
-          : numberWithCommas(props.totalGroupSteps / props.numberOfDays)}
+          : numberWithCommas(
+              Math.round(props.totalGroupSteps / props.numberOfDays)
+            )}
       </Typography>
       <Typography
         style={{ marginTop: "10px", color: "#171820" }}

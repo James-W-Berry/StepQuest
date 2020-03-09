@@ -6,19 +6,32 @@ import { NavLink } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { Typography } from "@material-ui/core";
 import "typeface-roboto";
+import { Typography, Divider } from "@material-ui/core";
 import PropTypes from "prop-types";
+import Img from "react-image";
+import landingPhoto from "../assets/walking.jpg";
+import logo from "../assets/walk.png";
 import { withStyles } from "@material-ui/core/styles";
 
+const Logo = () => <Img src={logo} height={60} />;
+
 const useStyles = makeStyles({
+  divider: {
+    border: "none",
+    height: "1px",
+    backgroundColor: "#171820",
+    margin: 0,
+    flexShrink: 0,
+    width: "100%"
+  },
   textInput: {
     width: "20vw",
     "& label ": {
-      color: "#E7E5DF80"
+      color: "#17182080"
     },
     "& label.Mui-focused": {
-      color: "#fdc029"
+      color: "#171820"
     },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#171820"
@@ -26,24 +39,24 @@ const useStyles = makeStyles({
   },
   root: {
     "&:hover": {
-      color: "#fdc029"
+      color: "#17182090"
     },
     border: 0,
     borderRadius: 3,
-    color: "#E7E5DF",
+    color: "#171820",
     height: 48,
     padding: "0 30px"
   },
   input: {
-    color: "white"
+    color: "#171820"
   },
   forgotButton: {
     "&:hover": {
-      color: "#fdc029"
+      color: "#171820"
     },
     border: 0,
     borderRadius: 3,
-    color: "#E7E5DF90",
+    color: "#17182080",
     height: 48,
     padding: "0 30px"
   }
@@ -61,28 +74,10 @@ function onSignIn(email, password) {
     });
 }
 
-function onResetPassword(email) {
-  firebase
-    .auth()
-    .sendPasswordResetEmail(email)
-    .then(function() {
-      alert("Check your email to reset your password.");
-    })
-    .catch(function(error) {
-      alert(
-        "Could not send email, please enter your email address and try again."
-      );
-    });
-}
-
 function SignIn(props) {
-  const [user, setUser] = useState({ isNew: false });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
-  if (user.isNew) {
-    return <SignUp />;
-  }
 
   return (
     <div
@@ -90,9 +85,91 @@ function SignIn(props) {
         flex: 1,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#393E41"
+        backgroundImage: `url(${landingPhoto})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat"
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          justifyContent: "center",
+          flexDirection: "row",
+          alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "20px",
+            flex: 1
+          }}
+        >
+          <NavLink
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              textDecoration: "none",
+              color: "#171820"
+            }}
+            to="/home"
+          >
+            <Logo />
+            <Typography
+              variant="h5"
+              style={{ color: "#171820", marginLeft: "20px" }}
+            >
+              Step It Up
+            </Typography>
+          </NavLink>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flex: 3
+          }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            margin: "10px"
+          }}
+        >
+          <NavLink
+            style={{
+              textDecoration: "none",
+              color: "#171820"
+            }}
+            to="/signup"
+          >
+            <Button className={classes.root}>Sign Up</Button>
+          </NavLink>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            margin: "10px"
+          }}
+        >
+          <Button className={classes.root}>Sign In</Button>
+        </div>
+      </div>
+
       <div
         style={{
           display: "flex",
@@ -102,13 +179,11 @@ function SignIn(props) {
           alignItems: "center"
         }}
       >
-        <Typography
-          variant="h1"
-          component="h2"
-          style={{ color: "#fdc029", marginTop: "20px" }}
-        >
-          Step It Up
-        </Typography>
+        <Divider
+          classes={{
+            root: classes.divider
+          }}
+        />
       </div>
 
       <div
@@ -118,7 +193,7 @@ function SignIn(props) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "30px"
+          marginTop: "50px"
         }}
       >
         <TextField
@@ -168,24 +243,6 @@ function SignIn(props) {
         >
           Sign In
         </Button>
-
-        <NavLink
-          style={{
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            color: "#E7E5DF",
-            marginLeft: "20px"
-          }}
-          to="/signUp"
-        >
-          <Typography
-            variant="subtitle1"
-            component="h2"
-            style={{ cursor: "pointer", marginRight: "10px" }}
-          ></Typography>
-          <Button className={classes.root}>Sign Up</Button>
-        </NavLink>
       </div>
 
       <div

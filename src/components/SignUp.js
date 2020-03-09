@@ -2,19 +2,35 @@ import React, { useState } from "react";
 import firebase from "../firebase";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
-import { Typography, TextField, Button } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import "typeface-roboto";
+import { Typography, Divider } from "@material-ui/core";
 import PropTypes from "prop-types";
+import Img from "react-image";
+import landingPhoto from "../assets/walking.jpg";
+import logo from "../assets/walk.png";
 import { withStyles } from "@material-ui/core/styles";
 
+const Logo = () => <Img src={logo} height={60} />;
+
 const useStyles = makeStyles({
+  divider: {
+    border: "none",
+    height: "1px",
+    backgroundColor: "#171820",
+    margin: 0,
+    flexShrink: 0,
+    width: "100%"
+  },
   textInput: {
     width: "20vw",
     "& label ": {
-      color: "#E7E5DF80"
+      color: "#17182080"
     },
     "& label.Mui-focused": {
-      color: "#fdc029"
+      color: "#171820"
     },
     "& .MuiInput-underline:after": {
       borderBottomColor: "#171820"
@@ -22,18 +38,19 @@ const useStyles = makeStyles({
   },
   root: {
     "&:hover": {
-      color: "#fdc029"
+      color: "#17182090"
     },
     border: 0,
     borderRadius: 3,
-    color: "#E7E5DF",
+    color: "#171820",
     height: 48,
     padding: "0 30px"
   },
   input: {
-    color: "white"
+    color: "#171820"
   }
 });
+
 function onSignUp(username, email, password) {
   const db = firebase.firestore();
 
@@ -73,9 +90,91 @@ function SignUp() {
         flex: 1,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#393E41"
+        backgroundImage: `url(${landingPhoto})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat"
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          justifyContent: "center",
+          flexDirection: "row",
+          alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "20px",
+            flex: 1
+          }}
+        >
+          <NavLink
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              textDecoration: "none",
+              color: "#171820"
+            }}
+            to="/home"
+          >
+            <Logo />
+            <Typography
+              variant="h5"
+              style={{ color: "#171820", marginLeft: "20px" }}
+            >
+              Step It Up
+            </Typography>
+          </NavLink>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flex: 3
+          }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            margin: "10px"
+          }}
+        >
+          <Button className={classes.root}>Sign Up</Button>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            margin: "10px"
+          }}
+        >
+          <NavLink
+            style={{
+              textDecoration: "none",
+              color: "#171820"
+            }}
+            to="/signin"
+          >
+            <Button className={classes.root}>Sign In</Button>
+          </NavLink>
+        </div>
+      </div>
+
       <div
         style={{
           display: "flex",
@@ -85,13 +184,11 @@ function SignUp() {
           alignItems: "center"
         }}
       >
-        <Typography
-          variant="h1"
-          component="h2"
-          style={{ color: "#fdc029", marginTop: "20px" }}
-        >
-          Step It Up
-        </Typography>
+        <Divider
+          classes={{
+            root: classes.divider
+          }}
+        />
       </div>
 
       <div
@@ -101,7 +198,7 @@ function SignUp() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "30px"
+          marginTop: "50px"
         }}
       >
         <TextField
@@ -161,23 +258,6 @@ function SignUp() {
         >
           Sign Up
         </Button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "120px"
-        }}
-      >
-        <NavLink style={{ textDecoration: "none" }} to="/signIn">
-          <Button className={classes.root} style={{ color: "#E7E5DF80" }}>
-            Back to Sign In
-          </Button>
-        </NavLink>
       </div>
     </div>
   );

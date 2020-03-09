@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import firebase from "../firebase";
+import React from "react";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { Typography, Divider } from "@material-ui/core";
 import "typeface-roboto";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Divider } from "@material-ui/core";
 import Img from "react-image";
-import landingPhoto from "../assets/walking.jpg";
 import logo from "../assets/walk.png";
+import landingPhoto from "../assets/walking.jpg";
 
 const Logo = () => <Img src={logo} height={60} />;
 
@@ -24,18 +22,6 @@ const useStyles = makeStyles({
     flexShrink: 0,
     width: "100%"
   },
-  textInput: {
-    width: "20vw",
-    "& label ": {
-      color: "#17182080"
-    },
-    "& label.Mui-focused": {
-      color: "#171820"
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820"
-    }
-  },
   root: {
     "&:hover": {
       color: "#17182090"
@@ -45,32 +31,10 @@ const useStyles = makeStyles({
     color: "#171820",
     height: 48,
     padding: "0 30px"
-  },
-  input: {
-    color: "#171820"
   }
 });
 
-function onResetPassword(email) {
-  console.log("resettingpassword ");
-  console.log(email);
-  firebase
-    .auth()
-    .sendPasswordResetEmail(email)
-    .then(function() {
-      alert("Check your email to reset your password.");
-    })
-    .catch(function(error) {
-      console.log("error resetting password ");
-
-      alert(
-        "Could not send email, please enter your email address and try again."
-      );
-    });
-}
-
-function ForgottenPassword(props) {
-  const [email, setEmail] = useState("");
+function Landing(props) {
   const classes = useStyles();
 
   return (
@@ -103,25 +67,13 @@ function ForgottenPassword(props) {
             flex: 1
           }}
         >
-          <NavLink
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
-              textDecoration: "none",
-              color: "#171820"
-            }}
-            to="/home"
+          <Logo />
+          <Typography
+            variant="h5"
+            style={{ color: "#171820", marginLeft: "20px" }}
           >
-            <Logo />
-            <Typography
-              variant="h5"
-              style={{ color: "#171820", marginLeft: "20px" }}
-            >
-              Step It Up
-            </Typography>
-          </NavLink>
+            Step It Up
+          </Typography>
         </div>
 
         <div
@@ -192,50 +144,50 @@ function ForgottenPassword(props) {
         style={{
           display: "flex",
           flex: "1",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "50px"
+          flexDirection: "row",
+          marginTop: "10vh",
+          marginLeft: "10vw"
         }}
       >
-        <TextField
-          className={classes.textInput}
-          id="standard-email-input"
-          label="Email"
-          type="email"
-          InputProps={{
-            className: classes.input
+        <div
+          style={{
+            display: "flex",
+            flex: "1",
+            flexDirection: "column"
           }}
-          autoComplete="email"
-          onChange={event => {
-            setEmail(event.target.value);
-          }}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flex: "1",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "30px"
-        }}
-      >
-        <Button
-          onClick={() => {
-            onResetPassword(email);
-          }}
-          className={classes.root}
         >
-          Reset Password
-        </Button>
+          <Typography variant="h3" style={{ color: "#171820" }}>
+            Your step tracking solution
+          </Typography>
+
+          <Typography
+            variant="body1"
+            style={{ color: "#171820", marginTop: "25px" }}
+          >
+            Step It Up provides a common space to record your daily steps along
+            with friends, family, and coworkers.
+          </Typography>
+
+          <div
+            style={{
+              display: "flex",
+              flex: "1",
+              alignItems: "center"
+            }}
+          >
+            <Typography variant="body1" style={{ color: "#171820" }}>
+              Track group and individual performance over time and encourage and
+              compete to increase physical wellness.
+            </Typography>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-ForgottenPassword.propTypes = {
+Landing.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(useStyles)(ForgottenPassword);
+export default withStyles(useStyles)(Landing);
