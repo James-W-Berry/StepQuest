@@ -58,6 +58,102 @@ function useDisplayName() {
   return displayName;
 }
 
+function useDownloadProfilePic() {
+  const userId = firebase.auth().currentUser.uid;
+  const [downloadUrl, setDownloadUrl] = useState("");
+
+  firebase
+    .storage()
+    .ref()
+    .child(`profilePics/${userId}`)
+    .getDownloadURL()
+    .then(function(url) {
+      setDownloadUrl(url);
+    })
+    .catch(function(error) {
+      switch (error.code) {
+        case "storage/object-not-found":
+          console.log("file does not exist");
+          break;
+        case "storage/unauthorized":
+          console.log("missing permissions");
+          break;
+
+        case "storage/canceled":
+          console.log("cancelled");
+          break;
+        case "storage/unknown":
+          console.log("unknown server response");
+          break;
+        default:
+          console.log("error retrieving profile picture download url");
+          break;
+      }
+    });
+
+  return downloadUrl;
+}
+
+function uploadProfilePic(picture) {
+  const userId = firebase.auth().currentUser.uid;
+
+  var storageRef = firebase.storage().ref();
+  var profilePicRef = storageRef.child(`profilePics/${userId}`);
+  let uploadProfilePicTask = profilePicRef.put(picture);
+
+  uploadProfilePicTask.on(
+    "state_changed",
+    function(snapshot) {
+      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log("Upload is " + progress + "% done");
+      switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED:
+          console.log("Upload is paused");
+          break;
+        case firebase.storage.TaskState.RUNNING:
+          console.log("Upload is running");
+          break;
+        default:
+          break;
+      }
+    },
+    function(error) {
+      console.log(error);
+    },
+    function() {
+      uploadProfilePicTask.snapshot.ref
+        .getDownloadURL()
+        .then(function(downloadURL) {
+          console.log("File available at", downloadURL);
+          registerProfilePictureUrl(downloadURL);
+        });
+    }
+  );
+}
+
+function registerProfilePictureUrl(url) {
+  const userId = firebase.auth().currentUser.uid;
+
+  const docRef = firebase
+    .firestore()
+    .collection("users")
+    .doc(userId);
+
+  return docRef
+    .set(
+      {
+        profilePictureUrl: url
+      },
+      { merge: true }
+    )
+    .then(function() {
+      console.log("successfully updated profile picture");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
 function onEditDisplayName(displayName) {
   if (displayName !== "") {
     const userId = firebase.auth().currentUser.uid;
@@ -87,7 +183,8 @@ const Profile = props => {
   const classes = useStyles();
   const currentDisplayName = useDisplayName();
   const [displayName, setDisplayName] = useState("");
-  const photoUrl = "../assets/walking.jpg";
+  const currentProfilePicUrl = useDownloadProfilePic();
+  const [profilePic, setProfilePic] = useState("");
 
   return (
     <div
@@ -109,13 +206,43 @@ const Profile = props => {
           alignItems: "center"
         }}
       >
-        <IconButton>
-          <Avatar
-            style={{ height: "100px", width: "100px", margin: "10px" }}
-            alt={currentDisplayName}
-            src={photoUrl}
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "50px"
+          }}
+        >
+          <label htmlFor="contained-button-file">
+            <IconButton>
+              <Avatar
+                src={currentProfilePicUrl}
+                style={{ height: "150px", width: "150px", margin: "10px" }}
+              />
+            </IconButton>
+          </label>
+
+          <input
+            accept="image/*"
+            className={classes.input}
+            id="contained-button-file"
+            multiple
+            type="file"
+            onChange={e => setProfilePic(e.target.files[0])}
           />
-        </IconButton>
+
+          <button
+            onClick={() => {
+              uploadProfilePic(profilePic);
+            }}
+          >
+            Upload
+          </button>
+        </div>
+
         <Typography variant="h2" style={{ color: "#E7E5DF" }}>
           {currentDisplayName}
         </Typography>
@@ -125,7 +252,7 @@ const Profile = props => {
           display: "flex",
           flex: 3,
           justifyContent: "center",
-          alignItems: "flexStart"
+          marginTop: "80px"
         }}
       >
         <TextField

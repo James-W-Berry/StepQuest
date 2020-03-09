@@ -11,7 +11,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Typography
+  Typography,
+  Avatar
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -140,7 +141,6 @@ export default function UserList() {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedStepper, setSelectedStepper] = useState("");
   const [userDailyTotals, setUserDailyTotals] = useState([]);
-
   const users = useUsers(sortBy);
 
   const handleFilterChange = event => {
@@ -166,7 +166,7 @@ export default function UserList() {
         style={{
           display: "flex",
           flexDirection: "column",
-          flex: 2,
+          flex: 1,
           borderRightWidth: "1px",
           borderRightColor: "#171820"
         }}
@@ -197,7 +197,23 @@ export default function UserList() {
                     className={classes.button}
                     onClick={() => handleStepperClicked(user)}
                   >
-                    {user.displayName}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                      }}
+                    >
+                      <Avatar
+                        src={user.profilePictureUrl}
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          margin: "10px"
+                        }}
+                      />
+                      {user.displayName}
+                    </div>
                   </Button>
                 </div>
               </li>
@@ -269,17 +285,6 @@ export default function UserList() {
           </div>
         </div>
       )}
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flexStart",
-          flex: 1,
-          marginRight: "40px",
-          borderRadius: "5px"
-        }}
-      />
     </div>
   );
 }
