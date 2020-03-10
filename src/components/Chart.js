@@ -200,15 +200,7 @@ export default function Chart() {
           }}
         >
           <XAxis dataKey="day" stroke={theme.palette.text.secondary} />
-          <YAxis stroke={theme.palette.text.secondary}>
-            <Label
-              angle={270}
-              position="left"
-              style={{ textAnchor: "middle", fill: theme.palette.text.primary }}
-            >
-              Steps
-            </Label>
-          </YAxis>
+          <YAxis stroke={theme.palette.text.secondary}></YAxis>
           <Line
             type="monotone"
             dataKey="steps"

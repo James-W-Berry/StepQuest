@@ -8,6 +8,7 @@ import {
   Avatar,
   IconButton
 } from "@material-ui/core";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -94,43 +95,6 @@ function useDownloadProfilePic() {
   return downloadUrl;
 }
 
-function uploadProfilePic(picture) {
-  const userId = firebase.auth().currentUser.uid;
-
-  var storageRef = firebase.storage().ref();
-  var profilePicRef = storageRef.child(`profilePics/${userId}`);
-  let uploadProfilePicTask = profilePicRef.put(picture);
-
-  uploadProfilePicTask.on(
-    "state_changed",
-    function(snapshot) {
-      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log("Upload is " + progress + "% done");
-      switch (snapshot.state) {
-        case firebase.storage.TaskState.PAUSED:
-          console.log("Upload is paused");
-          break;
-        case firebase.storage.TaskState.RUNNING:
-          console.log("Upload is running");
-          break;
-        default:
-          break;
-      }
-    },
-    function(error) {
-      console.log(error);
-    },
-    function() {
-      uploadProfilePicTask.snapshot.ref
-        .getDownloadURL()
-        .then(function(downloadURL) {
-          console.log("File available at", downloadURL);
-          registerProfilePictureUrl(downloadURL);
-        });
-    }
-  );
-}
-
 function registerProfilePictureUrl(url) {
   const userId = firebase.auth().currentUser.uid;
 
@@ -185,6 +149,45 @@ const Profile = props => {
   const [displayName, setDisplayName] = useState("");
   const currentProfilePicUrl = useDownloadProfilePic();
   const [profilePic, setProfilePic] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  function uploadProfilePic(picture) {
+    setIsUploading(true);
+    const userId = firebase.auth().currentUser.uid;
+
+    var storageRef = firebase.storage().ref();
+    var profilePicRef = storageRef.child(`profilePics/${userId}`);
+    let uploadProfilePicTask = profilePicRef.put(picture);
+
+    uploadProfilePicTask.on(
+      "state_changed",
+      function(snapshot) {
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED:
+            console.log("Upload is paused");
+            break;
+          case firebase.storage.TaskState.RUNNING:
+            console.log("Upload is running");
+            break;
+          default:
+            break;
+        }
+      },
+      function(error) {
+        console.log(error);
+        setIsUploading(false);
+      },
+      function() {
+        uploadProfilePicTask.snapshot.ref
+          .getDownloadURL()
+          .then(function(downloadURL) {
+            console.log("File available at", downloadURL);
+            registerProfilePictureUrl(downloadURL);
+            setIsUploading(false);
+          });
+      }
+    );
+  }
 
   return (
     <div
@@ -225,22 +228,39 @@ const Profile = props => {
             </IconButton>
           </label>
 
-          <input
-            accept="image/*"
-            className={classes.input}
-            id="contained-button-file"
-            multiple
-            type="file"
-            onChange={e => setProfilePic(e.target.files[0])}
-          />
-
-          <button
-            onClick={() => {
-              uploadProfilePic(profilePic);
-            }}
-          >
-            Upload
-          </button>
+          {isUploading ? (
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column"
+              }}
+            >
+              <SyncLoader color={"#fdc029"} />
+            </div>
+          ) : (
+            <div>
+              <input
+                accept="image/*"
+                className={classes.input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={e => setProfilePic(e.target.files[0])}
+              />
+              {profilePic !== "" && (
+                <button
+                  onClick={() => {
+                    uploadProfilePic(profilePic);
+                  }}
+                >
+                  Upload
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <Typography variant="h2" style={{ color: "#E7E5DF" }}>

@@ -29,11 +29,15 @@ import SyncLoader from "react-spinners/SyncLoader";
 import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
 import Profile from "./components/Profile";
+import drawerPhoto from "./assets/drawer.jpg";
 
 const useStyles = makeStyles({
   drawerPaper: {
-    backgroundColor: "#191919",
-    color: "#fdc029",
+    backgroundImage: `url(${drawerPhoto})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    color: "#191919",
     width: "220px"
   },
   paperAnchorDockedLeft: {
@@ -45,7 +49,7 @@ const useStyles = makeStyles({
     borderStyle: "solid"
   },
   divider: {
-    backgroundColor: "#E7E5DF40",
+    backgroundColor: "#191919",
     width: "90%",
     display: "flex",
     alignSelf: "center"
@@ -185,23 +189,23 @@ function App() {
             <Divider />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#E7E5DF" }}
+                style={{ textDecoration: "none", color: "#191919" }}
                 to="/dashboard"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <DashboardIcon style={{ color: "#fdc029" }} />
+                    <DashboardIcon style={{ color: "#191919" }} />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
               </NavLink>
               <NavLink
-                style={{ textDecoration: "none", color: "#E7E5DF" }}
+                style={{ textDecoration: "none", color: "#191919" }}
                 to="/steppers"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <DirectionsWalkIcon style={{ color: "#fdc029" }} />
+                    <DirectionsWalkIcon style={{ color: "#191919" }} />
                   </ListItemIcon>
                   <ListItemText primary="Steppers" />
                 </ListItem>
@@ -214,23 +218,23 @@ function App() {
             />
             <List component="nav">
               <NavLink
-                style={{ textDecoration: "none", color: "#E7E5DF" }}
+                style={{ textDecoration: "none", color: "#191919" }}
                 to="/edit"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <EditIcon style={{ color: "#fdc029" }} />
+                    <EditIcon style={{ color: "#191919" }} />
                   </ListItemIcon>
                   <ListItemText primary="Edit your steps" />
                 </ListItem>
               </NavLink>
               <NavLink
-                style={{ textDecoration: "none", color: "#E7E5DF" }}
+                style={{ textDecoration: "none", color: "#191919" }}
                 to="/profile"
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <ProfileIcon style={{ color: "#fdc029" }} />
+                    <ProfileIcon style={{ color: "#191919" }} />
                   </ListItemIcon>
                   <ListItemText primary="Profile" />
                 </ListItem>
@@ -247,7 +251,7 @@ function App() {
                 width: "100%"
               }}
             >
-              <Typography style={{ marginRight: "10px", color: "#E7E5DF" }}>
+              <Typography style={{ marginRight: "10px", color: "#191919" }}>
                 Logout{" "}
               </Typography>
               <LogoutIcon />

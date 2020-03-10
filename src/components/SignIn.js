@@ -13,6 +13,7 @@ import Img from "react-image";
 import landingPhoto from "../assets/walking.jpg";
 import logo from "../assets/walk.png";
 import { withStyles } from "@material-ui/core/styles";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const Logo = () => <Img src={logo} height={60} />;
 
@@ -62,21 +63,25 @@ const useStyles = makeStyles({
   }
 });
 
-function onSignIn(email, password) {
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(function() {
-      console.log("Sign in successful");
-    })
-    .catch(function(error) {
-      alert("Incorrect email or password, please try again");
-    });
-}
-
 function SignIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onSignIn(email, password) {
+    setIsLoading(true);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(function() {
+        console.log("Sign in successful");
+      })
+      .catch(function(error) {
+        alert("Incorrect email or password, please try again");
+        setIsLoading(false);
+      });
+  }
+
   const classes = useStyles();
 
   return (
@@ -235,14 +240,20 @@ function SignIn(props) {
           marginRight: "20px"
         }}
       >
-        <Button
-          onClick={() => {
-            onSignIn(email, password);
-          }}
-          className={classes.root}
-        >
-          Sign In
-        </Button>
+        {isLoading ? (
+          <Button className={classes.root}>
+            <SyncLoader color={"#171820"} />
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              onSignIn(email, password);
+            }}
+            className={classes.root}
+          >
+            Sign In
+          </Button>
+        )}
       </div>
 
       <div

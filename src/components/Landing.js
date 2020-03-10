@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,6 +10,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Img from "react-image";
 import logo from "../assets/walk.png";
 import landingPhoto from "../assets/walking.jpg";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const Logo = () => <Img src={logo} height={60} />;
 

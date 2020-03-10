@@ -12,6 +12,7 @@ import Img from "react-image";
 import landingPhoto from "../assets/walking.jpg";
 import logo from "../assets/walk.png";
 import { withStyles } from "@material-ui/core/styles";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const Logo = () => <Img src={logo} height={60} />;
 
@@ -51,38 +52,41 @@ const useStyles = makeStyles({
   }
 });
 
-function onSignUp(username, email, password) {
-  const db = firebase.firestore();
-
-  firebase
-    .auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then(function() {
-      var userId = firebase.auth().currentUser.uid;
-
-      db.collection("users")
-        .doc(userId)
-        .set({
-          displayName: username,
-          totalSteps: 0
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-
-      console.log("sign up successful");
-    })
-    .catch(function(error) {
-      var errorMessage = error.message;
-      alert(errorMessage);
-    });
-}
-
 function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onSignUp(username, email, password) {
+    setIsLoading(true);
+    const db = firebase.firestore();
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(function() {
+        var userId = firebase.auth().currentUser.uid;
+
+        db.collection("users")
+          .doc(userId)
+          .set({
+            displayName: username,
+            totalSteps: 0
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+
+        console.log("sign up successful");
+      })
+      .catch(function(error) {
+        var errorMessage = error.message;
+        setIsLoading(false);
+        alert(errorMessage);
+      });
+  }
 
   return (
     <div
@@ -250,14 +254,20 @@ function SignUp() {
           marginTop: "30px"
         }}
       >
-        <Button
-          onClick={() => {
-            onSignUp(username, email, password);
-          }}
-          className={classes.root}
-        >
-          Sign Up
-        </Button>
+        {isLoading ? (
+          <Button className={classes.root}>
+            <SyncLoader color={"#171820"} />
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              onSignUp(username, email, password);
+            }}
+            className={classes.root}
+          >
+            Sign Up
+          </Button>
+        )}
       </div>
     </div>
   );
