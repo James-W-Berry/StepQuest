@@ -122,7 +122,6 @@ async function calculateDailyTotals(user) {
     .doc(user.id)
     .collection("steps")
     .orderBy("steps", "desc")
-    .limit(5)
     .get()
     .then(function(docs) {
       const userSteps = docs.docs.map(doc => ({
@@ -131,7 +130,12 @@ async function calculateDailyTotals(user) {
       }));
       return userSteps;
     });
-  return response;
+  let top5 = response.slice(0, 5);
+  let values = {
+    top5: top5,
+    allDays: response
+  };
+  return values;
 }
 
 export default function UserList() {
@@ -141,6 +145,7 @@ export default function UserList() {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedStepper, setSelectedStepper] = useState("");
   const [userDailyTotals, setUserDailyTotals] = useState([]);
+  const [top5UserDailyTotals, setTop5UserDailyTotals] = useState([]);
   const users = useUsers(sortBy);
 
   const handleFilterChange = event => {
@@ -150,7 +155,8 @@ export default function UserList() {
   async function handleStepperClicked(user) {
     setSelectedStepper(user);
     let totals = await calculateDailyTotals(user);
-    setUserDailyTotals(totals);
+    setUserDailyTotals(totals.allDays);
+    setTop5UserDailyTotals(totals.top5);
   }
 
   return (
@@ -285,8 +291,8 @@ export default function UserList() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {userDailyTotals &&
-                      userDailyTotals.map(day => (
+                    {top5UserDailyTotals &&
+                      top5UserDailyTotals.map(day => (
                         <TableRow key={day.id}>
                           <TableCell>
                             {moment(day.id).format("MMMM Do, YYYY")}
