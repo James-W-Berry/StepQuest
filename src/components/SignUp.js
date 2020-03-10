@@ -255,9 +255,7 @@ function SignUp() {
         }}
       >
         {isLoading ? (
-          <Button className={classes.root}>
             <SyncLoader color={"#171820"} />
-          </Button>
         ) : (
           <Button
             onClick={() => {

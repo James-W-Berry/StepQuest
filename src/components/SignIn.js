@@ -241,9 +241,7 @@ function SignIn(props) {
         }}
       >
         {isLoading ? (
-          <Button className={classes.root}>
-            <SyncLoader color={"#171820"} />
-          </Button>
+          <SyncLoader color={"#171820"} />
         ) : (
           <Button
             onClick={() => {

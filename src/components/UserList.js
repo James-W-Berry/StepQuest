@@ -234,12 +234,28 @@ export default function UserList() {
             borderRadius: "5px"
           }}
         >
-          <div style={{ marginTop: "40px" }}>
+          <div
+            style={{
+              marginTop: "40px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flexStart",
+              alignItems: "center"
+            }}
+          >
+            <Avatar
+              src={selectedStepper.profilePictureUrl}
+              style={{
+                height: "120px",
+                width: "120px",
+                margin: "10px"
+              }}
+            />
             <Typography variant="h2">{selectedStepper.displayName}</Typography>
           </div>
 
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ marginTop: "40px", marginRight: "10px" }}>
+            <div style={{ marginTop: "20px", marginRight: "10px" }}>
               <Paper className={classes.paper}>
                 <TotalSteps
                   title={"Total Steps"}
@@ -247,7 +263,7 @@ export default function UserList() {
                 />
               </Paper>
             </div>
-            <div style={{ marginTop: "40px", marginLeft: "10px" }}>
+            <div style={{ marginTop: "20px", marginLeft: "10px" }}>
               <Paper className={classes.paper}>
                 <AverageSteps
                   totalGroupSteps={selectedStepper.totalSteps}
@@ -257,7 +273,7 @@ export default function UserList() {
             </div>
           </div>
 
-          <div style={{ marginTop: "40px" }}>
+          <div style={{ marginTop: "20px" }}>
             <React.Fragment>
               <Paper className={classes.paper}>
                 <Title>Tops Days</Title>
