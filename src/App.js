@@ -11,7 +11,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -38,7 +38,7 @@ const useStyles = makeStyles({
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     color: "#191919",
-    width: "220px"
+    width: "220px",
   },
   paperAnchorDockedLeft: {
     borderRight: "1px",
@@ -46,39 +46,28 @@ const useStyles = makeStyles({
     borderTop: "0px",
     borderBottom: "0px",
     borderRightColor: "#E7E5DF40",
-    borderStyle: "solid"
+    borderStyle: "solid",
   },
   divider: {
     backgroundColor: "#191919",
     width: "90%",
     display: "flex",
-    alignSelf: "center"
-  }
+    alignSelf: "center",
+  },
 });
-
-const DashboardPage = () => <Dashboard />;
-const SteppersPage = () => (
-  <div
-    style={{
-      display: "flex",
-      flex: 1,
-      backgroundColor: "#393E41",
-      color: "#E7E5DF"
-    }}
-  >
-    <UserList />
-  </div>
-);
-const EditPage = () => <EditSteps />;
-const ProfilePage = () => <Profile />;
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
 
 function onAuthStateChange(callback) {
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      callback({ loggedIn: true, email: user.email, isLoading: false });
+      callback({
+        loggedIn: true,
+        email: user.email,
+        isLoading: false,
+        userId: user.uid,
+      });
     } else {
       callback({ loggedIn: false, isLoading: false });
     }
@@ -90,9 +79,29 @@ function logout() {
 }
 
 function App() {
-  const [user, setUser] = useState({ loggedIn: false, isLoading: true });
+  const [user, setUser] = useState({
+    loggedIn: false,
+    isLoading: true,
+    userId: "",
+  });
 
   const classes = useStyles();
+
+  const DashboardPage = () => <Dashboard />;
+  const SteppersPage = () => (
+    <div
+      style={{
+        display: "flex",
+        flex: 1,
+        backgroundColor: "#393E41",
+        color: "#E7E5DF",
+      }}
+    >
+      <UserList />
+    </div>
+  );
+  const EditPage = () => <EditSteps />;
+  const ProfilePage = () => <Profile userId={user.userId} />;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange(setUser);
@@ -150,7 +159,7 @@ function App() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          width: "100vw"
+          width: "100vw",
         }}
       >
         <SyncLoader color={"#fdc029"} />
@@ -174,7 +183,7 @@ function App() {
           display: "flex",
           flexDirection: "column",
           width: "100vw",
-          height: "100vh"
+          height: "100vh",
         }}
       >
         <BrowserRouter>
@@ -183,7 +192,7 @@ function App() {
             variant="permanent"
             classes={{
               paper: classes.drawerPaper,
-              paperAnchorDockedLeft: classes.paperAnchorDockedLeft
+              paperAnchorDockedLeft: classes.paperAnchorDockedLeft,
             }}
           >
             <Divider />
@@ -213,7 +222,7 @@ function App() {
             </List>
             <Divider
               classes={{
-                root: classes.divider
+                root: classes.divider,
               }}
             />
             <List component="nav">
@@ -248,7 +257,7 @@ function App() {
                 position: "absolute",
                 bottom: "40px",
                 cursor: "pointer",
-                width: "100%"
+                width: "100%",
               }}
             >
               <Typography style={{ marginRight: "10px", color: "#191919" }}>
@@ -264,7 +273,7 @@ function App() {
               display: "flex",
               marginLeft: 240,
               flex: 1,
-              backgroundColor: "#393E41"
+              backgroundColor: "#393E41",
             }}
           >
             {FeatureRoutes()}

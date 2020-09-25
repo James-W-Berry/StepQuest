@@ -17,6 +17,7 @@
     "react-calendar": "^2.19.2",
     "react-datepicker": "^2.13.0",
     "react-dom": "^16.13.0",
+    "react-emoji-render": "^1.2.4",
     "react-image": "^2.4.0",
     "react-images-upload": "^1.2.8",
     "react-lottie": "^1.2.3",

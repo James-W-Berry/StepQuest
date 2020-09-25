@@ -6,37 +6,66 @@ import {
   TextField,
   Typography,
   Avatar,
-  IconButton
+  IconButton,
+  Dialog,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  List,
 } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SyncLoader from "react-spinners/SyncLoader";
+import groupIcon from "../assets/groupIcon.png";
+import Scrollbar from "react-scrollbars-custom";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import CloseIcon from "@material-ui/icons/Close";
+import Emoji from "react-emoji-render";
+import { SpeakerGroupSharp } from "@material-ui/icons";
 
-const useStyles = makeStyles(theme => ({
+const styles = (theme) => ({
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: "#fdc029",
+  },
+});
+
+const SORT_OPTIONS = {
+  STEPS_ASC: { column: "totalSteps", direction: "asc" },
+  STEPS_DESC: { column: "totalSteps", direction: "desc" },
+};
+
+const useStyles = makeStyles((theme) => ({
   root: {
     "&:hover": {
-      color: "#E7E5DF80"
+      color: "#E7E5DF80",
     },
     border: 0,
     borderRadius: 3,
     color: "#E7E5DF",
     backgroundColor: "#E7E5DF80",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
   },
   textInput: {
     width: "20vw",
     "& label ": {
-      color: "#E7E5DF80"
+      color: "#E7E5DF80",
     },
     "& label.Mui-focused": {
-      color: "#E7E5DF"
+      color: "#E7E5DF",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#E7E5DF"
-    }
+      borderBottomColor: "#E7E5DF",
+    },
   },
   input: {
-    color: "#E7E5DF"
-  }
+    color: "#E7E5DF",
+  },
 }));
 
 function useDisplayName() {
@@ -48,7 +77,7 @@ function useDisplayName() {
       .firestore()
       .collection("users")
       .doc(userId)
-      .onSnapshot(doc => {
+      .onSnapshot((doc) => {
         const user = doc.data();
         setDisplayName(user.displayName);
       });
@@ -68,10 +97,10 @@ function useDownloadProfilePic() {
     .ref()
     .child(`profilePics/${userId}`)
     .getDownloadURL()
-    .then(function(url) {
+    .then(function (url) {
       setDownloadUrl(url);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       switch (error.code) {
         case "storage/object-not-found":
           console.log("file does not exist");
@@ -98,22 +127,19 @@ function useDownloadProfilePic() {
 function registerProfilePictureUrl(url) {
   const userId = firebase.auth().currentUser.uid;
 
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return docRef
     .set(
       {
-        profilePictureUrl: url
+        profilePictureUrl: url,
       },
       { merge: true }
     )
-    .then(function() {
+    .then(function () {
       console.log("successfully updated profile picture");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 }
@@ -122,34 +148,130 @@ function onEditDisplayName(displayName) {
   if (displayName !== "") {
     const userId = firebase.auth().currentUser.uid;
 
-    const docRef = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId);
+    const docRef = firebase.firestore().collection("users").doc(userId);
 
     return docRef
       .set(
         {
-          displayName: displayName
+          displayName: displayName,
         },
         { merge: true }
       )
-      .then(function() {
+      .then(function () {
         console.log("successfully updated display name");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
 }
 
-const Profile = props => {
+function updateGroup(groupId) {
+  const userId = firebase.auth().currentUser.uid;
+  const docRef = firebase.firestore().collection("users").doc(userId);
+
+  return docRef
+    .set(
+      {
+        group: groupId,
+      },
+      { merge: true }
+    )
+    .then(function () {
+      console.log("successfully updated group");
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function addNewGroup(groupName, userId) {
+  if (groupName) {
+    const docRef = firebase.firestore().collection("groups").doc();
+
+    return docRef
+      .set(
+        {
+          name: groupName,
+          totalSteps: 0,
+          members: [userId],
+        },
+        { merge: true }
+      )
+      .then(function () {
+        console.log("successfully added new group");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+}
+
+function useGroups(sortBy = "STEPS_DESC") {
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("groups")
+      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
+      .onSnapshot((snapshot) => {
+        const retrievedGroups = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setGroups(retrievedGroups);
+      });
+
+    return () => unsubscribe();
+  }, [sortBy]);
+  return groups;
+}
+
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography style={{ color: "#f7f7f5" }} variant="h6">
+        {children}
+      </Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    backgroundColor: "#252a2e",
+    color: "#f7f7f5",
+  },
+}))(MuiDialogContent);
+
+const Profile = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
   const currentDisplayName = useDisplayName();
   const [displayName, setDisplayName] = useState("");
   const currentProfilePicUrl = useDownloadProfilePic();
   const [profilePic, setProfilePic] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [newGroupName, setNewGroupName] = useState();
+  const [groupName, setGroupName] = useState();
+  const [sortBy, setSortBy] = useState("STEPS_DESC");
+  const groups = useGroups(sortBy);
+  const [user, setUser] = useState(props.userId);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -161,7 +283,7 @@ const Profile = props => {
 
     uploadProfilePicTask.on(
       "state_changed",
-      function(snapshot) {
+      function (snapshot) {
         switch (snapshot.state) {
           case firebase.storage.TaskState.PAUSED:
             console.log("Upload is paused");
@@ -173,14 +295,14 @@ const Profile = props => {
             break;
         }
       },
-      function(error) {
+      function (error) {
         console.log(error);
         setIsUploading(false);
       },
-      function() {
+      function () {
         uploadProfilePicTask.snapshot.ref
           .getDownloadURL()
-          .then(function(downloadURL) {
+          .then(function (downloadURL) {
             console.log("File available at", downloadURL);
             registerProfilePictureUrl(downloadURL);
             setIsUploading(false);
@@ -188,6 +310,49 @@ const Profile = props => {
       }
     );
   }
+
+  function createGroupItem(group) {
+    if (group !== undefined) {
+      return (
+        <div key={group.id}>
+          <ListItem
+            key={group.id}
+            style={{ backgroundColor: "#252a2e", marginBottom: "1px" }}
+            button={true}
+            onClick={() => {
+              updateGroup(group.id);
+            }}
+          >
+            <ListItemAvatar>
+              <Avatar style={{ backgroundColor: "#fdc029" }}>
+                <img src={groupIcon} alt="" height="100%" />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              disableTypography
+              primary={
+                <Typography
+                  variant="h6"
+                  style={{
+                    color: "#f7f7f5",
+                  }}
+                >
+                  {group.name}
+                </Typography>
+              }
+            />
+          </ListItem>
+        </div>
+      );
+    }
+  }
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
   return (
     <div
@@ -198,7 +363,7 @@ const Profile = props => {
         flex: 1,
         justifyContent: "center",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <div
@@ -206,7 +371,7 @@ const Profile = props => {
           display: "flex",
           flex: 1,
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <div
@@ -216,7 +381,7 @@ const Profile = props => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "50px"
+            marginTop: "50px",
           }}
         >
           <label htmlFor="contained-button-file">
@@ -235,7 +400,7 @@ const Profile = props => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                flexDirection: "column"
+                flexDirection: "column",
               }}
             >
               <SyncLoader color={"#fdc029"} />
@@ -248,7 +413,7 @@ const Profile = props => {
                 id="contained-button-file"
                 multiple
                 type="file"
-                onChange={e => setProfilePic(e.target.files[0])}
+                onChange={(e) => setProfilePic(e.target.files[0])}
               />
               {profilePic !== "" && (
                 <button
@@ -271,31 +436,152 @@ const Profile = props => {
         style={{
           display: "flex",
           flex: 3,
-          justifyContent: "center",
-          marginTop: "80px"
+          justifyContent: "flex-start",
+          flexDirection: "column",
         }}
       >
-        <TextField
-          className={classes.textInput}
-          id="standard-username-input"
-          label="update your display name"
-          type="username"
-          InputProps={{
-            className: classes.input
-          }}
-          onChange={event => {
-            setDisplayName(event.target.value);
-          }}
-        />
-        <Button
-          className={classes.root}
-          onClick={() => {
-            onEditDisplayName(displayName);
+        <div style={{ marginTop: "60px" }}>
+          <TextField
+            className={classes.textInput}
+            id="standard-username-input"
+            label="update your display name"
+            type="username"
+            InputProps={{
+              className: classes.input,
+            }}
+            onChange={(event) => {
+              setDisplayName(event.target.value);
+            }}
+          />
+          <Button
+            className={classes.root}
+            onClick={() => {
+              onEditDisplayName(displayName);
+            }}
+          >
+            Update
+          </Button>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            marginTop: "30px",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Update
-        </Button>
+          <Button
+            className={classes.root}
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
+            Manage Group
+          </Button>
+        </div>
       </div>
+
+      <Dialog
+        fullScreen={fullScreen}
+        fullWidth={true}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#393E41",
+          }}
+        >
+          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Group Settings
+          </DialogTitle>
+        </div>
+
+        <DialogContent dividers>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              style={{
+                color: "#f7f7f5",
+                fontSize: "16px",
+                marginBottom: "10px",
+              }}
+              gutterBottom
+            >
+              {groupName ? (
+                `Currently a member of ${groupName}`
+              ) : (
+                <Emoji text="Currently you're steppin' solo :(" />
+              )}
+            </Typography>
+            <Typography style={{ color: "#f7f7f5" }} gutterBottom>
+              Pick a group to join
+            </Typography>
+          </div>
+          <div style={{ backgroundColor: "#f7f7f5" }}>
+            <Scrollbar style={{ height: "30vh", width: "100%" }}>
+              <List style={{ borderRadius: "10px" }}>
+                {groups.map((group) => createGroupItem(group))}
+              </List>
+            </Scrollbar>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: "30px",
+            }}
+          >
+            <Typography
+              style={{
+                color: "#f7f7f5",
+              }}
+              gutterBottom
+            >
+              Or create a new group
+            </Typography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <TextField
+                className={classes.textInput}
+                label="New group name"
+                InputProps={{
+                  className: classes.input,
+                }}
+                onChange={(event) => {
+                  setNewGroupName(event.target.value);
+                }}
+              />
+
+              <Button
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "#fdc029",
+                  color: "#191919",
+                }}
+                onClick={() => {
+                  console.log(newGroupName);
+                  console.log(user);
+                  addNewGroup(newGroupName, user);
+                }}
+                color="primary"
+              >
+                <Typography>Create</Typography>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
