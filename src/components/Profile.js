@@ -166,23 +166,48 @@ function onEditDisplayName(displayName) {
   }
 }
 
-function updateGroup(groupId) {
+async function updateGroup(group) {
   const userId = firebase.auth().currentUser.uid;
   const docRef = firebase.firestore().collection("users").doc(userId);
 
-  return docRef
-    .set(
+  try {
+    await docRef.set(
       {
-        group: groupId,
+        groupId: group.id,
+        groupName: group.name,
       },
       { merge: true }
-    )
-    .then(function () {
-      console.log("successfully updated group");
-    })
-    .catch(function (error) {
-      console.log(error);
+    );
+    console.log(`successfully updated user group to ${group.name}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function joinGroup(group, userId) {
+  const docRef = firebase.firestore().collection("groups").doc(group.id);
+
+  try {
+    await docRef.update({
+      members: firebase.firestore.FieldValue.arrayUnion(userId),
     });
+    console.log(`successfully joined ${group.name}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function leaveGroup(group, userId) {
+  const docRef = firebase.firestore().collection("groups").doc(group.id);
+
+  try {
+    await docRef.update({
+      members: firebase.firestore.FieldValue.arrayRemove(userId),
+    });
+    console.log(`successfully left ${group.name}`);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function addNewGroup(groupName, userId) {
@@ -229,6 +254,27 @@ function useGroups(sortBy = "STEPS_DESC") {
   return groups;
 }
 
+function useUser(userId) {
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .onSnapshot((snapshot) => {
+        const doc = {
+          ...snapshot.data(),
+        };
+        setUser(doc);
+      });
+
+    return () => unsubscribe();
+  }, [userId]);
+
+  return user;
+}
+
 const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
@@ -268,10 +314,10 @@ const Profile = (props) => {
   const [isUploading, setIsUploading] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
-  const [groupName, setGroupName] = useState();
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const groups = useGroups(sortBy);
-  const [user, setUser] = useState(props.userId);
+  const [userId, setUserId] = useState(props.userId);
+  const user = useUser(userId);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -317,10 +363,21 @@ const Profile = (props) => {
         <div key={group.id}>
           <ListItem
             key={group.id}
-            style={{ backgroundColor: "#252a2e", marginBottom: "1px" }}
+            style={{
+              backgroundColor: "#252a2e",
+              marginBottom: "1px",
+            }}
             button={true}
             onClick={() => {
-              updateGroup(group.id);
+              group.id === user.groupId
+                ? leaveGroup(group, userId).then(
+                    updateGroup({ id: null, name: null })
+                  )
+                : user.groupId !== null
+                ? leaveGroup({ id: user.groupId, name: user.groupName }, userId)
+                    .then(joinGroup(group, userId))
+                    .then(updateGroup(group))
+                : joinGroup(group, userId).then(updateGroup(group));
             }}
           >
             <ListItemAvatar>
@@ -331,14 +388,25 @@ const Profile = (props) => {
             <ListItemText
               disableTypography
               primary={
-                <Typography
-                  variant="h6"
-                  style={{
-                    color: "#f7f7f5",
-                  }}
-                >
-                  {group.name}
-                </Typography>
+                group.id === user.groupId ? (
+                  <Typography
+                    variant="h6"
+                    style={{
+                      color: "#fdc029",
+                    }}
+                  >
+                    {group.name}
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="h6"
+                    style={{
+                      color: "#f7f7f5",
+                    }}
+                  >
+                    {group.name}
+                  </Typography>
+                )
               }
             />
           </ListItem>
@@ -518,8 +586,8 @@ const Profile = (props) => {
               }}
               gutterBottom
             >
-              {groupName ? (
-                `Currently a member of ${groupName}`
+              {user?.groupName ? (
+                `Currently a member of ${user?.groupName}`
               ) : (
                 <Emoji text="Currently you're steppin' solo :(" />
               )}
@@ -570,9 +638,7 @@ const Profile = (props) => {
                   color: "#191919",
                 }}
                 onClick={() => {
-                  console.log(newGroupName);
-                  console.log(user);
-                  addNewGroup(newGroupName, user);
+                  addNewGroup(newGroupName, userId);
                 }}
                 color="primary"
               >
