@@ -18,6 +18,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import EditIcon from "@material-ui/icons/Edit";
 import ProfileIcon from "@material-ui/icons/AccountCircle";
 import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
+import GroupIcon from "@material-ui/icons/Group";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
 import firebase from "./firebase";
@@ -30,6 +31,7 @@ import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
 import Profile from "./components/Profile";
 import drawerPhoto from "./assets/drawer.jpg";
+import GroupsList from "./components/GroupsList";
 
 const useStyles = makeStyles({
   drawerPaper: {
@@ -100,6 +102,18 @@ function App() {
       <UserList />
     </div>
   );
+  const GroupsPage = () => (
+    <div
+      style={{
+        display: "flex",
+        flex: 1,
+        backgroundColor: "#393E41",
+        color: "#E7E5DF",
+      }}
+    >
+      <GroupsList />
+    </div>
+  );
   const EditPage = () => <EditSteps />;
   const ProfilePage = () => <Profile userId={user.userId} />;
 
@@ -137,6 +151,7 @@ function App() {
           <Switch location={location}>
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/steppers" component={SteppersPage} />
+            <Route path="/groups" component={GroupsPage} />
             <Route path="/edit" component={EditPage} />
             <Route path="/profile" component={ProfilePage} />
             <Redirect to="/dashboard" />
@@ -217,6 +232,17 @@ function App() {
                     <DirectionsWalkIcon style={{ color: "#191919" }} />
                   </ListItemIcon>
                   <ListItemText primary="Steppers" />
+                </ListItem>
+              </NavLink>
+              <NavLink
+                style={{ textDecoration: "none", color: "#191919" }}
+                to="/groups"
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <GroupIcon style={{ color: "#191919" }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Groups" />
                 </ListItem>
               </NavLink>
             </List>

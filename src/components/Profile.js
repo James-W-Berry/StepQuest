@@ -12,18 +12,19 @@ import {
   ListItemAvatar,
   ListItemText,
   List,
+  Tooltip,
+  ListItemIcon,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SyncLoader from "react-spinners/SyncLoader";
-import groupIcon from "../assets/groupIcon.png";
 import Scrollbar from "react-scrollbars-custom";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import CloseIcon from "@material-ui/icons/Close";
+import GroupIcon from "@material-ui/icons/Group";
 import Emoji from "react-emoji-render";
-import { SpeakerGroupSharp } from "@material-ui/icons";
 
 const styles = (theme) => ({
   closeButton: {
@@ -178,7 +179,7 @@ async function updateGroup(group) {
       },
       { merge: true }
     );
-    console.log(`successfully updated user group to ${group.name}`);
+    //console.log(`successfully updated user group to ${group.name}`);
   } catch (error) {
     console.log(error);
   }
@@ -191,7 +192,7 @@ async function joinGroup(group, userId) {
     await docRef.update({
       members: firebase.firestore.FieldValue.arrayUnion(userId),
     });
-    console.log(`successfully joined ${group.name}`);
+    //console.log(`successfully joined ${group.name}`);
   } catch (error) {
     console.log(error);
   }
@@ -204,7 +205,7 @@ async function leaveGroup(group, userId) {
     await docRef.update({
       members: firebase.firestore.FieldValue.arrayRemove(userId),
     });
-    console.log(`successfully left ${group.name}`);
+    //console.log(`successfully left ${group.name}`);
   } catch (error) {
     console.log(error);
   }
@@ -381,31 +382,35 @@ const Profile = (props) => {
             }}
           >
             <ListItemAvatar>
-              <Avatar style={{ backgroundColor: "#fdc029" }}>
-                <img src={groupIcon} alt="" height="100%" />
-              </Avatar>
+              <ListItemIcon>
+                <GroupIcon style={{ color: "#fdc029" }} />
+              </ListItemIcon>
             </ListItemAvatar>
             <ListItemText
               disableTypography
               primary={
                 group.id === user.groupId ? (
-                  <Typography
-                    variant="h6"
-                    style={{
-                      color: "#fdc029",
-                    }}
-                  >
-                    {group.name}
-                  </Typography>
+                  <Tooltip title="Leave group" placement="bottom-start">
+                    <Typography
+                      variant="h6"
+                      style={{
+                        color: "#fdc029",
+                      }}
+                    >
+                      {group.name}
+                    </Typography>
+                  </Tooltip>
                 ) : (
-                  <Typography
-                    variant="h6"
-                    style={{
-                      color: "#f7f7f5",
-                    }}
-                  >
-                    {group.name}
-                  </Typography>
+                  <Tooltip title="Join group" placement="bottom-start">
+                    <Typography
+                      variant="h6"
+                      style={{
+                        color: "#f7f7f5",
+                      }}
+                    >
+                      {group.name}
+                    </Typography>
+                  </Tooltip>
                 )
               }
             />
