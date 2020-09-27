@@ -1,24 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
-
-const useStyles = makeStyles({
-  depositContext: {
-    flex: 1,
-  },
-});
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const AverageSteps = (props) => {
-  const classes = useStyles();
-
+const AverageMemberSteps = (props) => {
   return (
     <React.Fragment>
-      <Title>Average Daily Steps</Title>
+      <Title>Member Average Steps</Title>
       <Typography
         style={{ marginTop: "20px", color: "#171820" }}
         component="p"
@@ -30,15 +21,8 @@ const AverageSteps = (props) => {
               Math.round(props.totalGroupSteps / props.numberOfDays)
             )}
       </Typography>
-      <Typography
-        style={{ marginTop: "10px", color: "#171820" }}
-        variant="subtitle1"
-        className={classes.stepContext}
-      >
-        Goal: 7,000
-      </Typography>
     </React.Fragment>
   );
 };
 
-export default AverageSteps;
+export default AverageMemberSteps;

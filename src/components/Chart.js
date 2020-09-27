@@ -6,7 +6,7 @@ import {
   XAxis,
   YAxis,
   Label,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 import Title from "./Title";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,11 +21,11 @@ const useStyles = makeStyles({
   textInput: {
     width: "20vw",
     "& label.Mui-focused": {
-      color: "#171820"
+      color: "#171820",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820"
-    }
+      borderBottomColor: "#171820",
+    },
   },
   root: {
     backgroundColor: "#E7E5DF40",
@@ -33,13 +33,13 @@ const useStyles = makeStyles({
     borderRadius: 3,
     color: "#171820",
     height: 48,
-    padding: "0 30px"
-  }
+    padding: "0 30px",
+  },
 });
 
 const SORT_OPTIONS = {
   STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" }
+  STEPS_DESC: { column: "totalSteps", direction: "desc" },
 };
 
 function useDailyTotals(sortBy = "STEPS_DESC") {
@@ -50,10 +50,10 @@ function useDailyTotals(sortBy = "STEPS_DESC") {
       .firestore()
       .collection("dailyTotals")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot(snapshot => {
-        const docs = snapshot.docs.map(doc => ({
+      .onSnapshot((snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setDailyTotals(docs);
@@ -72,7 +72,7 @@ function createData(day, steps) {
 function generateDailyTotals(dailyTotals) {
   let data = [];
 
-  dailyTotals.map(day => {
+  dailyTotals.map((day) => {
     const formattedDay = moment(day.id).format("MMM D");
     const checkForDate = checkIfDateIsPresent(data, formattedDay);
     if (checkForDate.isPresent) {
@@ -90,7 +90,7 @@ function generateDailyTotals(dailyTotals) {
 function checkIfDateIsPresent(data, date) {
   let result = {
     isPresent: false,
-    index: 0
+    index: 0,
   };
 
   data.forEach((value, index, array) => {
@@ -109,7 +109,7 @@ function applyRangeFilter(dailyTotals, startDate, endDate) {
 
   let filteredDocs = [];
 
-  dailyTotals.map(doc => {
+  dailyTotals.map((doc) => {
     let docDate = new Date(doc.id).getTime();
 
     if (docDate >= startEpoch && docDate <= endEpoch) {
@@ -152,22 +152,22 @@ export default function Chart() {
           style={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
-          <Title>Daily Group Step Total</Title>
+          <Title>Daily Step Totals</Title>
 
           <div
             style={{
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginLeft: "100px"
+              marginLeft: "100px",
             }}
           >
             <DatePicker
               selected={startDate}
-              onChange={date => {
+              onChange={(date) => {
                 setStartDate(date);
               }}
               selectsStart
@@ -178,7 +178,7 @@ export default function Chart() {
             <Title style={{ marginLeft: "100px" }}> - </Title>
             <DatePicker
               selected={endDate}
-              onChange={date => setEndDate(date)}
+              onChange={(date) => setEndDate(date)}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
@@ -196,7 +196,7 @@ export default function Chart() {
             top: 16,
             right: 16,
             bottom: 0,
-            left: 24
+            left: 24,
           }}
         >
           <XAxis dataKey="day" stroke={theme.palette.text.secondary} />

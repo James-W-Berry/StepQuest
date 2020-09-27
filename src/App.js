@@ -114,7 +114,7 @@ function App() {
       <GroupsList />
     </div>
   );
-  const EditPage = () => <EditSteps />;
+  const EditPage = () => <EditSteps userId={user.userId} />;
   const ProfilePage = () => <Profile userId={user.userId} />;
 
   useEffect(() => {

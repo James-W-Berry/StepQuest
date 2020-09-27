@@ -12,7 +12,7 @@ import firebase from "../firebase";
 
 const SORT_OPTIONS = {
   STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" }
+  STEPS_DESC: { column: "totalSteps", direction: "desc" },
 };
 
 function useUsers(sortBy = "STEPS_DESC") {
@@ -24,10 +24,10 @@ function useUsers(sortBy = "STEPS_DESC") {
       .collection("users")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
       .limit(5)
-      .onSnapshot(snapshot => {
-        const newUsers = snapshot.docs.map(doc => ({
+      .onSnapshot((snapshot) => {
+        const newUsers = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setUsers(newUsers);
@@ -39,10 +39,14 @@ function useUsers(sortBy = "STEPS_DESC") {
   return users;
 }
 
-const useStyles = makeStyles(theme => ({
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const useStyles = makeStyles((theme) => ({
   seeMore: {
-    marginTop: theme.spacing(3)
-  }
+    marginTop: theme.spacing(3),
+  },
 }));
 
 export default function TopSteppers() {
@@ -61,10 +65,10 @@ export default function TopSteppers() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map(user => (
+          {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.displayName}</TableCell>
-              <TableCell>{user.totalSteps}</TableCell>
+              <TableCell>{numberWithCommas(user.totalSteps)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

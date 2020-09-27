@@ -179,33 +179,65 @@ async function updateGroup(group) {
       },
       { merge: true }
     );
-    //console.log(`successfully updated user group to ${group.name}`);
   } catch (error) {
     console.log(error);
   }
 }
 
-async function joinGroup(group, userId) {
-  const docRef = firebase.firestore().collection("groups").doc(group.id);
+async function joinGroup(group, userId, user) {
+  const docRef = firebase
+    .firestore()
+    .collection("groups")
+    .doc(group.id)
+    .collection("members")
+    .doc(userId);
 
   try {
-    await docRef.update({
-      members: firebase.firestore.FieldValue.arrayUnion(userId),
+    await docRef.set({
+      name: user.displayName,
+      totalSteps: user.totalSteps,
     });
-    //console.log(`successfully joined ${group.name}`);
+  } catch (error) {
+    console.log(error);
+  }
+
+  const groupDocRef = firebase.firestore().collection("groups").doc(group.id);
+
+  try {
+    await groupDocRef.set(
+      {
+        memberCount: firebase.firestore.FieldValue.increment(1),
+      },
+      { merge: true }
+    );
   } catch (error) {
     console.log(error);
   }
 }
 
 async function leaveGroup(group, userId) {
-  const docRef = firebase.firestore().collection("groups").doc(group.id);
+  const docRef = firebase
+    .firestore()
+    .collection("groups")
+    .doc(group.id)
+    .collection("members")
+    .doc(userId);
 
   try {
-    await docRef.update({
-      members: firebase.firestore.FieldValue.arrayRemove(userId),
-    });
-    //console.log(`successfully left ${group.name}`);
+    await docRef.delete();
+  } catch (error) {
+    console.log(error);
+  }
+
+  const groupDocRef = firebase.firestore().collection("groups").doc(group.id);
+
+  try {
+    await groupDocRef.set(
+      {
+        memberCount: firebase.firestore.FieldValue.increment(-1),
+      },
+      { merge: true }
+    );
   } catch (error) {
     console.log(error);
   }
@@ -376,9 +408,9 @@ const Profile = (props) => {
                   )
                 : user.groupId !== null
                 ? leaveGroup({ id: user.groupId, name: user.groupName }, userId)
-                    .then(joinGroup(group, userId))
+                    .then(joinGroup(group, userId, user))
                     .then(updateGroup(group))
-                : joinGroup(group, userId).then(updateGroup(group));
+                : joinGroup(group, userId, user).then(updateGroup(group));
             }}
           >
             <ListItemAvatar>

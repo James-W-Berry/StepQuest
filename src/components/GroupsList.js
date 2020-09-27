@@ -18,10 +18,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import TotalSteps from "./TotalSteps";
 import Title from "./Title";
-import moment from "moment";
-import AverageSteps from "./AverageSteps";
 import Scrollbar from "react-scrollbars-custom";
 import GroupIcon from "@material-ui/icons/Group";
+import AverageMemberSteps from "./AverageMemberSteps";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -116,27 +115,32 @@ function useGroups(sortBy = "STEPS_DESC") {
   return groups;
 }
 
-async function calculateDailyTotals(user) {
-  let response = await firebase
+async function calculateGroupTotal(group) {
+  await firebase
     .firestore()
-    .collection("users")
-    .doc(user.id)
-    .collection("steps")
-    .orderBy("steps", "desc")
+    .collection("groups")
+    .doc(group.id)
+    .collection("members")
     .get()
-    .then(function (docs) {
-      const userSteps = docs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      return userSteps;
+    .then((docs) => {
+      let groupTotal = 0;
+
+      docs.docs.forEach((doc) => {
+        groupTotal += doc.data().totalSteps;
+      });
+
+      return groupTotal;
+    })
+    .then((total) => {
+      firebase
+        .firestore()
+        .collection("groups")
+        .doc(group.id)
+        .set({ totalSteps: total }, { merge: true });
+    })
+    .catch(function (error) {
+      console.log(error);
     });
-  let top5 = response.slice(0, 5);
-  let values = {
-    top5: top5,
-    allDays: response,
-  };
-  return values;
 }
 
 export default function GroupsList() {
@@ -154,10 +158,12 @@ export default function GroupsList() {
   };
 
   async function handleGroupClicked(group) {
+    calculateGroupTotal(group);
     setSelectedGroup(group);
-    let totals = await calculateDailyTotals(group);
-    setGroupDailyTotals(totals.allDays);
-    setTop5GroupDailyTotals(totals.top5);
+
+    //let totals = await calculateDailyTotals(group);
+    //setGroupDailyTotals(totals.allDays);
+    //setTop5GroupDailyTotals(totals.top5);
   }
 
   return (
@@ -281,7 +287,7 @@ export default function GroupsList() {
               />
             )}
 
-            <Typography variant="h2">{selectedGroup.displayName}</Typography>
+            <Typography variant="h2">{selectedGroup.name}</Typography>
           </div>
 
           <div style={{ display: "flex", flexDirection: "row" }}>
@@ -295,39 +301,15 @@ export default function GroupsList() {
             </div>
             <div style={{ marginTop: "20px", marginLeft: "10px" }}>
               <Paper className={classes.paper}>
-                <AverageSteps
+                <AverageMemberSteps
                   totalGroupSteps={selectedGroup.totalSteps}
-                  numberOfDays={selectedGroup.length}
+                  numberOfDays={selectedGroup.memberCount}
                 />
               </Paper>
             </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ marginTop: "20px", marginRight: "10px" }}>
-              <Paper className={classes.paper}>
-                <Title>Tops Days</Title>
-                <TableRow size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Day</TableCell>
-                      <TableCell>Total Steps</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {top5GroupDailyTotals &&
-                      top5GroupDailyTotals.map((day) => (
-                        <TableRow key={day.id}>
-                          <TableCell>
-                            {moment(day.id).format("MMMM Do, YYYY")}
-                          </TableCell>
-                          <TableCell>{day.steps}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </TableRow>
-              </Paper>
-            </div>
             <div style={{ marginTop: "20px", marginRight: "10px" }}>
               <Paper className={classes.paper}>
                 <Title>Members</Title>
@@ -342,8 +324,8 @@ export default function GroupsList() {
                     {selectedGroup.members &&
                       selectedGroup.members.map((member) => (
                         <TableRow key={member}>
-                          <TableCell>Member name here</TableCell>
-                          <TableCell>Member steps here</TableCell>
+                          <TableCell>{member.id}</TableCell>
+                          <TableCell>{member.totalSteps}</TableCell>
                         </TableRow>
                       ))}
                   </TableBody>

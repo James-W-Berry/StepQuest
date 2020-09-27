@@ -113,7 +113,9 @@ function useUsers() {
 
   let totalGroupSteps = 0;
   users.map((user) => {
-    totalGroupSteps += user.totalSteps;
+    if (user.totalSteps) {
+      totalGroupSteps += user.totalSteps;
+    }
   });
   return totalGroupSteps;
 }
@@ -137,7 +139,7 @@ export default function Dashboard() {
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
                 <TotalSteps
-                  title={"Total Group Steps"}
+                  title={"Total Steps"}
                   totalGroupSteps={totalGroupSteps}
                 />
               </Paper>

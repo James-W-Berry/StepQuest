@@ -8,9 +8,9 @@ import Calendar from "react-calendar";
 import DaySteps from "./DaySteps";
 import { Button, TextField } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   button: {
     background: "#171820",
@@ -18,13 +18,13 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 3,
     color: "white",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
   },
   appBarSpacer: theme.mixins.toolbar,
 
   container: {
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
+    paddingBottom: theme.spacing(4),
   },
   paper: {
     padding: theme.spacing(2),
@@ -32,28 +32,26 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "flexEnd",
     flexDirection: "column",
-    backgroundColor: "#E7E5DF"
+    backgroundColor: "#E7E5DF",
   },
 
   textInput: {
     width: "20vw",
     marginBottom: "20px",
     "& label.Mui-focused": {
-      color: "#171820"
+      color: "#171820",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820"
-    }
+      borderBottomColor: "#171820",
+    },
   },
   calendar: {
-    width: "450px"
-  }
+    width: "450px",
+  },
 }));
 
-function onEditSteps(date, steps) {
+function onEditSteps(userId, date, steps) {
   if (date !== "") {
-    const userId = firebase.auth().currentUser.uid;
-
     const docRef = firebase
       .firestore()
       .collection("users")
@@ -63,12 +61,12 @@ function onEditSteps(date, steps) {
 
     return docRef
       .set({
-        steps: steps
+        steps: steps,
       })
-      .then(function() {
+      .then(function () {
         console.log("successfully added steps document");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -76,7 +74,6 @@ function onEditSteps(date, steps) {
 
 function onEditDailyTotals(date, steps, dayStepCount) {
   if (date !== "") {
-    const userId = firebase.auth().currentUser.uid;
     const decrement = -1 * dayStepCount;
 
     const docRef = firebase
@@ -87,66 +84,89 @@ function onEditDailyTotals(date, steps, dayStepCount) {
     docRef
       .set(
         {
-          totalSteps: firebase.firestore.FieldValue.increment(decrement)
+          totalSteps: firebase.firestore.FieldValue.increment(decrement),
         },
         { merge: true }
       )
-      .then(function() {
-        console.log("successfully incremented daily total steps document");
+      .then(function () {
+        console.log("removed old day count from daily total steps");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
 
     return docRef
       .set(
         {
-          totalSteps: firebase.firestore.FieldValue.increment(steps)
+          totalSteps: firebase.firestore.FieldValue.increment(steps),
         },
         { merge: true }
       )
-      .then(function() {
-        console.log("successfully incremented daily total steps document");
+      .then(function () {
+        console.log("successfully incremented daily total steps");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
 }
 
-function calculateTotal(docs) {
+function calculateTotal(userId, docs, user) {
   let totalSteps = 0;
-  docs.map(doc => {
+
+  docs.map((doc) => {
     totalSteps += doc.steps;
   });
 
-  const userId = firebase.auth().currentUser.uid;
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
-  const docRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId);
-
-  return docRef
-    .update({
-      totalSteps: totalSteps
-    })
-    .then(function() {
+  console.log(`updating user total steps: ${totalSteps}`);
+  docRef
+    .set(
+      {
+        totalSteps: totalSteps,
+      },
+      { merge: true }
+    )
+    .then(function () {
       console.log("successfully updated total steps");
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
+
+  if (user?.groupId) {
+    console.log(user.groupId);
+    const groupDocRef = firebase
+      .firestore()
+      .collection("groups")
+      .doc(user.groupId)
+      .collection("members")
+      .doc(userId);
+
+    groupDocRef
+      .set(
+        {
+          totalSteps: totalSteps,
+        },
+        { merge: true }
+      )
+      .then(function () {
+        console.log("successfully updated group member total steps");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 }
 
 const SORT_OPTIONS = {
   STEPS_ASC: { column: "steps", direction: "asc" },
-  STEPS_DESC: { column: "steps", direction: "desc" }
+  STEPS_DESC: { column: "steps", direction: "desc" },
 };
 
-function useSteps(sortBy = "STEPS_DESC") {
+function useSteps(sortBy = "STEPS_DESC", userId, user) {
   const [steps, setSteps] = useState([]);
-  const userId = firebase.auth().currentUser.uid;
 
   useEffect(() => {
     const unsubscribe = firebase
@@ -155,38 +175,65 @@ function useSteps(sortBy = "STEPS_DESC") {
       .doc(userId)
       .collection("steps")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot(snapshot => {
-        const docs = snapshot.docs.map(doc => ({
+      .onSnapshot((snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setSteps(docs);
-        calculateTotal(docs);
+        calculateTotal(userId, docs, user);
       });
 
     return () => unsubscribe();
-  }, []);
+  }, [sortBy, userId, user]);
 
   return steps;
 }
 
 function showStepCount(date) {}
 
-const EditSteps = () => {
-  const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+function useUser(userId) {
+  const [user, setUser] = useState();
 
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .onSnapshot((snapshot) => {
+        const doc = {
+          ...snapshot.data(),
+        };
+        setUser(doc);
+      });
+
+    return () => unsubscribe();
+  }, [userId]);
+
+  return user;
+}
+
+const EditSteps = (props) => {
+  const classes = useStyles();
+
+  const [userId, setUserId] = useState(props.userId);
   const [date, setDate] = useState("");
   const [steps, setSteps] = useState(0);
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedDate, setSelectedDate] = useState("");
+  const user = useUser(userId);
+  const savedSteps = useSteps(sortBy, userId, user);
 
-  const savedSteps = useSteps(sortBy);
+  useEffect(() => {
+    return () => {
+      console.log("EditSteps UNMOUNTED");
+    };
+  }, []);
 
   let dayStepCount = "0";
 
-  savedSteps.map(step => {
+  savedSteps.map((step) => {
     if (step.id === selectedDate.toString()) {
       dayStepCount = step.steps;
     }
@@ -197,7 +244,7 @@ const EditSteps = () => {
       style={{
         flex: 1,
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
       }}
     >
       <div
@@ -207,15 +254,15 @@ const EditSteps = () => {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "40px"
+          marginTop: "40px",
         }}
       >
         <Paper className={classes.paper}>
           <Calendar
             className={classes.calendar}
-            onChange={newDate => setDate(newDate)}
+            onChange={(newDate) => setDate(newDate)}
             value={date}
-            onClickDay={selectedDate => {
+            onClickDay={(selectedDate) => {
               showStepCount(selectedDate);
               setSelectedDate(selectedDate);
             }}
@@ -226,13 +273,13 @@ const EditSteps = () => {
       <div
         style={{
           display: "flex",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <div
           style={{
             flex: 2,
-            display: "flex"
+            display: "flex",
           }}
         />
         {selectedDate && (
@@ -242,7 +289,7 @@ const EditSteps = () => {
               display: "flex",
               alignItems: "center",
               marginTop: "40px",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <Paper className={classes.paper}>
@@ -251,13 +298,13 @@ const EditSteps = () => {
                 label="enter # of steps"
                 type="number"
                 inputProps={{ min: "0" }}
-                onChange={event => {
+                onChange={(event) => {
                   setSteps(parseInt(event.target.value));
                 }}
               />
               <Button
-                onClick={e => {
-                  onEditSteps(date, steps);
+                onClick={(e) => {
+                  onEditSteps(userId, date, steps);
                   onEditDailyTotals(date, steps, dayStepCount);
                 }}
                 className={classes.button}
@@ -274,7 +321,7 @@ const EditSteps = () => {
             display: "flex",
             alignItems: "center",
             marginTop: "40px",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <Paper className={classes.paper}>
@@ -288,7 +335,7 @@ const EditSteps = () => {
         <div
           style={{
             flex: 2,
-            display: "flex"
+            display: "flex",
           }}
         />
       </div>
