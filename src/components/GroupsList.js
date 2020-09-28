@@ -115,28 +115,18 @@ function useGroups(sortBy = "STEPS_DESC") {
   return groups;
 }
 
-async function calculateGroupTotal(group) {
-  await firebase
+async function calculateGroupInfo(group) {
+  return await firebase
     .firestore()
-    .collection("groups")
-    .doc(group.id)
-    .collection("members")
+    .collection("users")
+    .where("groupId", "==", group.id)
     .get()
     .then((docs) => {
-      let groupTotal = 0;
-
-      docs.docs.forEach((doc) => {
-        groupTotal += doc.data().totalSteps;
+      let members = {};
+      docs.forEach((member) => {
+        members[member.id] = member.data();
       });
-
-      return groupTotal;
-    })
-    .then((total) => {
-      firebase
-        .firestore()
-        .collection("groups")
-        .doc(group.id)
-        .set({ totalSteps: total }, { merge: true });
+      return members;
     })
     .catch(function (error) {
       console.log(error);
@@ -149,21 +139,33 @@ export default function GroupsList() {
 
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedGroup, setSelectedGroup] = useState("");
-  const [groupDailyTotals, setGroupDailyTotals] = useState([]);
-  const [top5GroupDailyTotals, setTop5GroupDailyTotals] = useState([]);
   const groups = useGroups(sortBy);
+  const [totalGroupSteps, setTotalGroupSteps] = useState();
+  const [groupInfo, setGroupInfo] = useState();
 
   const handleFilterChange = (event) => {
     setSortBy(event.target.value);
   };
 
   async function handleGroupClicked(group) {
-    calculateGroupTotal(group);
     setSelectedGroup(group);
+    const groupInfo = await calculateGroupInfo(group);
+    let total = 0;
+    Object.entries(groupInfo).forEach((member) => {
+      total += member[1].totalSteps;
+    });
 
-    //let totals = await calculateDailyTotals(group);
-    //setGroupDailyTotals(totals.allDays);
-    //setTop5GroupDailyTotals(totals.top5);
+    firebase
+      .firestore()
+      .collection("groups")
+      .doc(group.id)
+      .set({ totalSteps: total }, { merge: true })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    setTotalGroupSteps(total);
+    setGroupInfo(groupInfo);
   }
 
   return (
@@ -290,49 +292,62 @@ export default function GroupsList() {
             <Typography variant="h2">{selectedGroup.name}</Typography>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ marginTop: "20px", marginRight: "10px" }}>
-              <Paper className={classes.paper}>
-                <TotalSteps
-                  title={"Total Steps"}
-                  totalGroupSteps={selectedGroup.totalSteps}
-                />
-              </Paper>
+          {groupInfo && totalGroupSteps !== 0 && (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div style={{ marginTop: "20px", marginRight: "10px" }}>
+                <Paper className={classes.paper}>
+                  <TotalSteps
+                    title="Total Steps"
+                    totalGroupSteps={totalGroupSteps}
+                  />
+                </Paper>
+              </div>
+              <div style={{ marginTop: "20px", marginLeft: "10px" }}>
+                <Paper className={classes.paper}>
+                  <AverageMemberSteps
+                    groupName={selectedGroup.name}
+                    totalGroupSteps={totalGroupSteps}
+                    numberOfMembers={Object.entries(groupInfo).length}
+                  />
+                </Paper>
+              </div>
             </div>
-            <div style={{ marginTop: "20px", marginLeft: "10px" }}>
-              <Paper className={classes.paper}>
-                <AverageMemberSteps
-                  totalGroupSteps={selectedGroup.totalSteps}
-                  numberOfDays={selectedGroup.memberCount}
-                />
-              </Paper>
-            </div>
-          </div>
+          )}
 
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ marginTop: "20px", marginRight: "10px" }}>
-              <Paper className={classes.paper}>
-                <Title>Members</Title>
-                <TableRow size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Total Steps</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {selectedGroup.members &&
-                      selectedGroup.members.map((member) => (
-                        <TableRow key={member}>
-                          <TableCell>{member.id}</TableCell>
-                          <TableCell>{member.totalSteps}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </TableRow>
-              </Paper>
+          {groupInfo ? (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div style={{ marginTop: "20px", marginRight: "10px" }}>
+                <Paper className={classes.paper}>
+                  <Title>Members</Title>
+                  <TableRow size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Total Steps</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {groupInfo &&
+                        Object.entries(groupInfo).map((member) => (
+                          <TableRow key={member[0]}>
+                            <TableCell>{member[1].displayName}</TableCell>
+                            <TableCell>{member[1].totalSteps}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </TableRow>
+                </Paper>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div style={{ marginTop: "20px", marginRight: "10px" }}>
+                <Paper className={classes.paper}>
+                  <Title>No Members yet</Title>
+                </Paper>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

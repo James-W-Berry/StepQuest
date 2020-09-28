@@ -134,30 +134,6 @@ function calculateTotal(userId, docs, user) {
     .catch(function (error) {
       console.log(error);
     });
-
-  if (user?.groupId) {
-    console.log(user.groupId);
-    const groupDocRef = firebase
-      .firestore()
-      .collection("groups")
-      .doc(user.groupId)
-      .collection("members")
-      .doc(userId);
-
-    groupDocRef
-      .set(
-        {
-          totalSteps: totalSteps,
-        },
-        { merge: true }
-      )
-      .then(function () {
-        console.log("successfully updated group member total steps");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
 }
 
 const SORT_OPTIONS = {

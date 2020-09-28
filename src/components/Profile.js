@@ -195,21 +195,7 @@ async function joinGroup(group, userId, user) {
   try {
     await docRef.set({
       name: user.displayName,
-      totalSteps: user.totalSteps,
     });
-  } catch (error) {
-    console.log(error);
-  }
-
-  const groupDocRef = firebase.firestore().collection("groups").doc(group.id);
-
-  try {
-    await groupDocRef.set(
-      {
-        memberCount: firebase.firestore.FieldValue.increment(1),
-      },
-      { merge: true }
-    );
   } catch (error) {
     console.log(error);
   }
@@ -228,19 +214,6 @@ async function leaveGroup(group, userId) {
   } catch (error) {
     console.log(error);
   }
-
-  const groupDocRef = firebase.firestore().collection("groups").doc(group.id);
-
-  try {
-    await groupDocRef.set(
-      {
-        memberCount: firebase.firestore.FieldValue.increment(-1),
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 function addNewGroup(groupName, userId) {
@@ -251,7 +224,6 @@ function addNewGroup(groupName, userId) {
       .set(
         {
           name: groupName,
-          totalSteps: 0,
           members: [userId],
         },
         { merge: true }

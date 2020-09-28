@@ -9,16 +9,16 @@ function numberWithCommas(x) {
 const AverageMemberSteps = (props) => {
   return (
     <React.Fragment>
-      <Title>Member Average Steps</Title>
+      <Title>{`Average Steps for a ${props.groupName} member`}</Title>
       <Typography
         style={{ marginTop: "20px", color: "#171820" }}
         component="p"
         variant="h3"
       >
-        {props.numberOfDays === 0
-          ? 0
+        {props.numberOfMembers === 0
+          ? null
           : numberWithCommas(
-              Math.round(props.totalGroupSteps / props.numberOfDays)
+              Math.round(props.totalGroupSteps / props.numberOfMembers)
             )}
       </Typography>
     </React.Fragment>
