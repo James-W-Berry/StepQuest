@@ -244,7 +244,7 @@ function useGroups(sortBy = "STEPS_DESC") {
     const unsubscribe = firebase
       .firestore()
       .collection("groups")
-      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
+      // .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
       .onSnapshot((snapshot) => {
         const retrievedGroups = snapshot.docs.map((doc) => ({
           id: doc.id,
