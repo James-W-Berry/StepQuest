@@ -99,7 +99,7 @@ function useGroups(sortBy = "STEPS_DESC") {
     const unsubscribe = firebase
       .firestore()
       .collection("groups")
-      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
+      // .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
       .onSnapshot((snapshot) => {
         const retrievedGroups = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -143,9 +143,9 @@ export default function GroupsList() {
   const [totalGroupSteps, setTotalGroupSteps] = useState();
   const [groupInfo, setGroupInfo] = useState();
 
-  const handleFilterChange = (event) => {
-    setSortBy(event.target.value);
-  };
+  // const handleFilterChange = (event) => {
+  //   setSortBy(event.target.value);
+  // };
 
   async function handleGroupClicked(group) {
     setSelectedGroup(group);
@@ -186,22 +186,7 @@ export default function GroupsList() {
           borderRightColor: "#171820",
         }}
       >
-        <h1>Group Ranking</h1>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="sortSelectLabel" style={{ color: "#E7E5DF" }}>
-            Sort By
-          </InputLabel>
-          <Select
-            className={selectStyle}
-            labelId="sortSelectLabel"
-            id="sortSelect"
-            value={sortBy}
-            onChange={handleFilterChange}
-          >
-            <MenuItem value={"STEPS_DESC"}>Steps (most first)</MenuItem>
-            <MenuItem value={"STEPS_ASC"}>Steps (least first)</MenuItem>
-          </Select>
-        </FormControl>
+        <h1>Group Stats</h1>
 
         <Scrollbar style={{ height: "70vh", width: "30vw" }}>
           <ol>
