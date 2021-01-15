@@ -9,47 +9,56 @@ import "typeface-roboto";
 import { Typography, Divider } from "@material-ui/core";
 import PropTypes from "prop-types";
 import Img from "react-image";
-import landingPhoto from "../assets/walking.jpg";
-import logo from "../assets/walk.png";
+import logo from "../assets/logo.png";
 import { withStyles } from "@material-ui/core/styles";
 import SyncLoader from "react-spinners/SyncLoader";
 
-const Logo = () => <Img src={logo} height={60} />;
+const Logo = () => <Img src={logo} height={50} width={50} />;
 
 const useStyles = makeStyles({
   divider: {
     border: "none",
     height: "1px",
-    backgroundColor: "#171820",
+    backgroundColor: "#ffffff",
     margin: 0,
     flexShrink: 0,
-    width: "100%"
+    width: "100%",
   },
   textInput: {
     width: "20vw",
     "& label ": {
-      color: "#17182080"
+      color: "#ffffff",
     },
     "& label.Mui-focused": {
-      color: "#171820"
+      color: "#ffffff",
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820"
-    }
+      borderBottomColor: "#ffffff",
+    },
   },
   root: {
     "&:hover": {
-      color: "#17182090"
+      color: "#ffffff90",
     },
     border: 0,
     borderRadius: 3,
-    color: "#171820",
+    color: "#ffffff",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
   },
   input: {
-    color: "#171820"
-  }
+    color: "#ffffff",
+  },
+  forgotButton: {
+    "&:hover": {
+      color: "#ffffff",
+    },
+    border: 0,
+    borderRadius: 3,
+    color: "#ffffff80",
+    height: 48,
+    padding: "0 30px",
+  },
 });
 
 function SignUp() {
@@ -66,22 +75,22 @@ function SignUp() {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(function() {
+      .then(function () {
         var userId = firebase.auth().currentUser.uid;
 
         db.collection("users")
           .doc(userId)
           .set({
             displayName: username,
-            totalSteps: 0
+            totalSteps: 0,
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log(error);
           });
 
         console.log("sign up successful");
       })
-      .catch(function(error) {
+      .catch(function (error) {
         var errorMessage = error.message;
         setIsLoading(false);
         alert(errorMessage);
@@ -90,49 +99,44 @@ function SignUp() {
 
   return (
     <div
+      className="landing"
       style={{
         flex: 1,
         width: "100vw",
         height: "100vh",
-        backgroundImage: `url(${landingPhoto})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat"
       }}
     >
       <div
         style={{
           display: "flex",
-          flex: 1,
-          justifyContent: "center",
           flexDirection: "row",
-          alignItems: "center"
+          alignItems: "center",
+          background: "#191919",
+          height: "60px",
+          width: "100vw",
         }}
       >
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             margin: "20px",
-            flex: 1
           }}
         >
           <NavLink
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
+              justifyContent: "flex-start",
               textDecoration: "none",
-              color: "#171820"
             }}
             to="/home"
           >
             <Logo />
             <Typography
               variant="h5"
-              style={{ color: "#171820", marginLeft: "20px" }}
+              style={{ color: "#ffffff", marginLeft: "20px" }}
             >
               Step It Up
             </Typography>
@@ -142,39 +146,36 @@ function SignUp() {
         <div
           style={{
             display: "flex",
-            flex: 3
           }}
         />
 
         <div
           style={{
             display: "flex",
-            flex: 1,
             flexDirection: "row",
-            justifyContent: "center",
-            margin: "10px"
-          }}
-        >
-          <Button className={classes.root}>Sign Up</Button>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
+            justifyContent: "flex-end",
+            margin: "10px",
             flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            margin: "10px"
           }}
         >
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#171820"
+              color: "#ffffff",
             }}
             to="/signin"
           >
             <Button className={classes.root}>Sign In</Button>
+          </NavLink>
+
+          <NavLink
+            style={{
+              textDecoration: "none",
+              color: "#ffffff",
+            }}
+            to="/signup"
+          >
+            <Button className={classes.root}>Sign Up</Button>
           </NavLink>
         </div>
       </div>
@@ -182,15 +183,14 @@ function SignUp() {
       <div
         style={{
           display: "flex",
-          flex: "1",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Divider
           classes={{
-            root: classes.divider
+            root: classes.divider,
           }}
         />
       </div>
@@ -202,7 +202,7 @@ function SignUp() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "50px"
+          marginTop: "50px",
         }}
       >
         <TextField
@@ -211,9 +211,9 @@ function SignUp() {
           label="Display Name"
           type="username"
           InputProps={{
-            className: classes.input
+            className: classes.input,
           }}
-          onChange={event => {
+          onChange={(event) => {
             setUsername(event.target.value);
           }}
         />
@@ -224,9 +224,9 @@ function SignUp() {
           type="email"
           autoComplete="email"
           InputProps={{
-            className: classes.input
+            className: classes.input,
           }}
-          onChange={event => {
+          onChange={(event) => {
             setEmail(event.target.value);
           }}
         />
@@ -237,9 +237,9 @@ function SignUp() {
           type="password"
           autoComplete="current-password"
           InputProps={{
-            className: classes.input
+            className: classes.input,
           }}
-          onChange={event => {
+          onChange={(event) => {
             setPassword(event.target.value);
           }}
         />
@@ -251,11 +251,11 @@ function SignUp() {
           flex: "1",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: "30px"
+          marginTop: "30px",
         }}
       >
         {isLoading ? (
-            <SyncLoader color={"#171820"} />
+          <SyncLoader color={"#ffffff"} />
         ) : (
           <Button
             onClick={() => {
@@ -272,7 +272,7 @@ function SignUp() {
 }
 
 SignUp.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(useStyles)(SignUp);

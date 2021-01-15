@@ -8,31 +8,37 @@ import "typeface-roboto";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Img from "react-image";
-import logo from "../assets/walk.png";
-import landingPhoto from "../assets/walking.jpg";
-import SyncLoader from "react-spinners/SyncLoader";
+import logo from "../assets/logo.png";
+import team from "../assets/team.png";
+import target from "../assets/target.png";
+import chart from "../assets/chart.png";
 
-const Logo = () => <Img src={logo} height={60} />;
+import "../App.css";
+
+const Logo = () => <Img src={logo} height={50} width={50} />;
+const TeamIcon = () => <Img src={team} height={60} width={60} />;
+const TargetIcon = () => <Img src={target} height={60} width={60} />;
+const ChartIcon = () => <Img src={chart} height={60} width={60} />;
 
 const useStyles = makeStyles({
   divider: {
     border: "none",
     height: "1px",
-    backgroundColor: "#171820",
+    backgroundColor: "#ffffff",
     margin: 0,
     flexShrink: 0,
-    width: "100%"
+    width: "100%",
   },
   root: {
     "&:hover": {
-      color: "#17182090"
+      color: "#ffffff80",
     },
     border: 0,
     borderRadius: 3,
-    color: "#171820",
+    color: "#ffffff",
     height: 48,
-    padding: "0 30px"
-  }
+    padding: "0 30px",
+  },
 });
 
 function Landing(props) {
@@ -40,38 +46,35 @@ function Landing(props) {
 
   return (
     <div
+      className="landing"
       style={{
         flex: 1,
         width: "100vw",
         height: "100vh",
-        backgroundImage: `url(${landingPhoto})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat"
       }}
     >
       <div
         style={{
           display: "flex",
-          flex: 1,
-          justifyContent: "center",
           flexDirection: "row",
-          alignItems: "center"
+          alignItems: "center",
+          background: "#191919",
+          height: "60px",
+          width: "100vw",
         }}
       >
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             margin: "20px",
-            flex: 1
           }}
         >
           <Logo />
           <Typography
             variant="h5"
-            style={{ color: "#171820", marginLeft: "20px" }}
+            style={{ color: "#ffffff", marginLeft: "20px" }}
           >
             Step It Up
           </Typography>
@@ -80,63 +83,51 @@ function Landing(props) {
         <div
           style={{
             display: "flex",
-            flex: 3
           }}
         />
 
         <div
           style={{
             display: "flex",
-            flex: 1,
             flexDirection: "row",
-            justifyContent: "center",
-            margin: "10px"
+            justifyContent: "flex-end",
+            margin: "10px",
+            flex: 1,
           }}
         >
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#171820"
+              color: "#ffffff",
+            }}
+            to="/signin"
+          >
+            <Button className={classes.root}>Sign In</Button>
+          </NavLink>
+
+          <NavLink
+            style={{
+              textDecoration: "none",
+              color: "#ffffff",
             }}
             to="/signup"
           >
             <Button className={classes.root}>Sign Up</Button>
           </NavLink>
         </div>
-
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            margin: "10px"
-          }}
-        >
-          <NavLink
-            style={{
-              textDecoration: "none",
-              color: "#171820"
-            }}
-            to="/signin"
-          >
-            <Button className={classes.root}>Sign In</Button>
-          </NavLink>
-        </div>
       </div>
 
       <div
         style={{
           display: "flex",
-          flex: "1",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Divider
           classes={{
-            root: classes.divider
+            root: classes.divider,
           }}
         />
       </div>
@@ -144,41 +135,68 @@ function Landing(props) {
       <div
         style={{
           display: "flex",
-          flex: "1",
           flexDirection: "row",
-          marginTop: "10vh",
-          marginLeft: "10vw"
+          margin: "10%",
         }}
       >
         <div
           style={{
             display: "flex",
             flex: "1",
-            flexDirection: "column"
+            flexDirection: "column",
           }}
         >
-          <Typography variant="h3" style={{ color: "#171820" }}>
-            Your step tracking solution
-          </Typography>
-
-          <Typography
-            variant="body1"
-            style={{ color: "#171820", marginTop: "25px" }}
-          >
-            Step It Up provides a common space to record your daily steps along
-            with friends, family, and coworkers.
+          <Typography variant="h3" style={{ color: "#ffffff" }}>
+            Your team's fitness tracking solution
           </Typography>
 
           <div
             style={{
               display: "flex",
-              flex: "1",
-              alignItems: "center"
+              alignItems: "center",
+              marginTop: "5vh",
             }}
           >
-            <Typography variant="body1" style={{ color: "#171820" }}>
-              Track group and individual performance over time and encourage and
-              compete to increase physical wellness.
+            <TeamIcon />
+            <Typography
+              variant="body1"
+              style={{ color: "#ffffff", marginLeft: "10px" }}
+            >
+              Tools to record your fitness activities with friends, family, and
+              coworkers
+            </Typography>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: "5vh",
+            }}
+          >
+            <ChartIcon />
+
+            <Typography
+              variant="body1"
+              style={{ color: "#ffffff", marginLeft: "10px" }}
+            >
+              Track organization, team, and individual activities over time
+            </Typography>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: "5vh",
+            }}
+          >
+            <TargetIcon />
+
+            <Typography
+              variant="body1"
+              style={{ color: "#ffffff", marginLeft: "10px" }}
+            >
+              Set goals and encourage team members to increase physical wellness
+              together
             </Typography>
           </div>
         </div>
@@ -188,7 +206,7 @@ function Landing(props) {
 }
 
 Landing.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(useStyles)(Landing);

@@ -7,12 +7,13 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import {
-  makeStyles,
   ListItem,
   ListItemIcon,
   ListItemText,
   Typography,
 } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EditIcon from "@material-ui/icons/Edit";
@@ -30,33 +31,79 @@ import SyncLoader from "react-spinners/SyncLoader";
 import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
 import Profile from "./components/Profile";
-import drawerPhoto from "./assets/drawer.jpg";
 import GroupsList from "./components/GroupsList";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import clsx from "clsx";
 
-const useStyles = makeStyles({
+const drawerWidth = 250;
+
+const useStyles = makeStyles((theme) => ({
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: "auto",
+  },
   drawerPaper: {
-    backgroundImage: `url(${drawerPhoto})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    color: "#191919",
-    width: "220px",
+    background: `#50c9c3`,
+    width: drawerWidth,
   },
   paperAnchorDockedLeft: {
     borderRight: "1px",
     borderLeft: "0px",
     borderTop: "0px",
     borderBottom: "0px",
-    borderRightColor: "#E7E5DF40",
+    borderRightColor: "#ffffff",
     borderStyle: "solid",
   },
   divider: {
-    backgroundColor: "#191919",
+    backgroundColor: "#ffffff",
     width: "90%",
     display: "flex",
     alignSelf: "center",
   },
-});
+  root: {
+    display: "flex",
+  },
+  menuButton: {
+    position: "absolute",
+    left: theme.spacing(1),
+    top: theme.spacing(1),
+    height: 100,
+    width: 100,
+  },
+  hide: {
+    display: "none",
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-end",
+  },
+  content: {
+    width: "100%",
+    height: "100%",
+    padding: theme.spacing(3),
+    background: `#d7e1ec`,
+    // background: `#50c9c3` /* fallback for old browsers */,
+    // background: `-webkit-linear-gradient(to left, #50c9c3, #96deda)` /* Chrome 10-25, Safari 5.1-6 */,
+    // background: `linear-gradient(to left, #50c9c3, #96deda)` /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
+  },
+  contentShift: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  },
+}));
 
 const UserContext = React.createContext({});
 const UserProvider = UserContext.Provider;
@@ -86,6 +133,18 @@ function App() {
     isLoading: true,
     userId: "",
   });
+  const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState("");
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpen(open);
+  };
 
   const classes = useStyles();
 
@@ -95,7 +154,6 @@ function App() {
       style={{
         display: "flex",
         flex: 1,
-        backgroundColor: "#393E41",
         color: "#E7E5DF",
       }}
     >
@@ -107,7 +165,6 @@ function App() {
       style={{
         display: "flex",
         flex: 1,
-        backgroundColor: "#393E41",
         color: "#E7E5DF",
       }}
     >
@@ -143,11 +200,7 @@ function App() {
   const FeatureRoutes = () => (
     <Route
       render={({ location }) => (
-        <div
-          id="content"
-          key={location.pathname}
-          style={{ width: "100%", height: "100%" }}
-        >
+        <div id="content" key={location.pathname}>
           <Switch location={location}>
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/steppers" component={SteppersPage} />
@@ -169,7 +222,7 @@ function App() {
     return (
       <div
         style={{
-          backgroundColor: "#393E41",
+          backgroundColor: "#191919",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -177,14 +230,14 @@ function App() {
           width: "100vw",
         }}
       >
-        <SyncLoader color={"#fdc029"} />
+        <SyncLoader color={"#93f9b9"} />
       </div>
     );
   }
 
   if (!user.loggedIn) {
     return (
-      <div style={{ backgroundColor: "#393E41" }}>
+      <div style={{ backgroundColor: "#f7f7f5" }}>
         <BrowserRouter>{AuthRoutes()}</BrowserRouter>
       </div>
     );
@@ -194,7 +247,6 @@ function App() {
     <UserProvider value={user}>
       <div
         style={{
-          backgroundColor: "#393E41",
           display: "flex",
           flexDirection: "column",
           width: "100vw",
@@ -203,107 +255,113 @@ function App() {
       >
         <BrowserRouter>
           <CssBaseline />
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon style={{ fontSize: 40 }} color="#ffffff" />
+          </IconButton>
           <Drawer
-            variant="permanent"
+            className={classes.drawer}
+            anchor="left"
             classes={{
               paper: classes.drawerPaper,
-              paperAnchorDockedLeft: classes.paperAnchorDockedLeft,
             }}
+            open={open}
+            onClose={toggleDrawer(false)}
           >
-            <Divider />
-            <List component="nav">
-              <NavLink
-                style={{ textDecoration: "none", color: "#191919" }}
-                to="/dashboard"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <DashboardIcon style={{ color: "#191919" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Dashboard" />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                style={{ textDecoration: "none", color: "#191919" }}
-                to="/steppers"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <DirectionsWalkIcon style={{ color: "#191919" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Steppers" />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                style={{ textDecoration: "none", color: "#191919" }}
-                to="/groups"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <GroupIcon style={{ color: "#191919" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Groups" />
-                </ListItem>
-              </NavLink>
-            </List>
-            <Divider
-              classes={{
-                root: classes.divider,
-              }}
-            />
-            <List component="nav">
-              <NavLink
-                style={{ textDecoration: "none", color: "#191919" }}
-                to="/edit"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <EditIcon style={{ color: "#191919" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Edit your steps" />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                style={{ textDecoration: "none", color: "#191919" }}
-                to="/profile"
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <ProfileIcon style={{ color: "#191919" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Profile" />
-                </ListItem>
-              </NavLink>
-            </List>
             <div
-              onClick={requestLogout}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                position: "absolute",
-                bottom: "40px",
-                cursor: "pointer",
-                width: "100%",
-              }}
+              className={clsx(classes.list)}
+              role="presentation"
+              onClick={toggleDrawer(false)}
+              onKeyDown={toggleDrawer(false)}
             >
-              <Typography style={{ marginRight: "10px", color: "#191919" }}>
-                Logout{" "}
-              </Typography>
-              <LogoutIcon />
+              <List component="nav">
+                <NavLink
+                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  to="/dashboard"
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <DashboardIcon style={{ color: "#ffffff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" />
+                  </ListItem>
+                </NavLink>
+                <NavLink
+                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  to="/steppers"
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <DirectionsWalkIcon style={{ color: "#ffffff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Steppers" />
+                  </ListItem>
+                </NavLink>
+                <NavLink
+                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  to="/groups"
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <GroupIcon style={{ color: "#ffffff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Groups" />
+                  </ListItem>
+                </NavLink>
+              </List>
+              <Divider
+                classes={{
+                  root: classes.divider,
+                }}
+              />
+              <List component="nav">
+                <NavLink
+                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  to="/edit"
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <EditIcon style={{ color: "#ffffff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Edit your steps" />
+                  </ListItem>
+                </NavLink>
+                <NavLink
+                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  to="/profile"
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <ProfileIcon style={{ color: "#ffffff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Profile" />
+                  </ListItem>
+                </NavLink>
+              </List>
+              <div
+                onClick={requestLogout}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  position: "absolute",
+                  bottom: "40px",
+                  cursor: "pointer",
+                  width: "100%",
+                }}
+              >
+                <Typography style={{ marginRight: "10px", color: "#ffffff" }}>
+                  Logout
+                </Typography>
+                <LogoutIcon style={{ color: "#ffffff" }} />
+              </div>
             </div>
           </Drawer>
-          <div
-            style={{
-              height: "100vh",
-              width: "100vw - 200px",
-              display: "flex",
-              marginLeft: 240,
-              flex: 1,
-              backgroundColor: "#393E41",
-            }}
-          >
-            {FeatureRoutes()}
-          </div>
+          <div className={classes.content}>{FeatureRoutes()}</div>
         </BrowserRouter>
       </div>
     </UserProvider>
