@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@material-ui/core/styles";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Label,
-  ResponsiveContainer,
-} from "recharts";
-import Title from "./Title";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,24 +9,23 @@ import { Button } from "@material-ui/core";
 import firebase from "../firebase";
 import "firebase/auth";
 import moment from "moment";
+import colors from "../assets/colors";
 
 const useStyles = makeStyles({
-  textInput: {
-    width: "20vw",
-    "& label.Mui-focused": {
-      color: "#171820",
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820",
-    },
-  },
   root: {
     backgroundColor: "#E7E5DF40",
     border: 0,
     borderRadius: 3,
-    color: "#171820",
+    color: colors.almostWhite,
     height: 48,
     padding: "0 30px",
+  },
+  lightTextHeading: {
+    color: colors.almostWhite,
+    fontSize: "1.25rem",
+    fontWeight: "500",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
   },
 });
 
@@ -155,7 +147,9 @@ export default function Chart() {
             alignItems: "center",
           }}
         >
-          <Title>Daily Step Totals</Title>
+          <Typography h1 className={classes.lightTextHeading}>
+            Daily Step Totals
+          </Typography>
 
           <div
             style={{
@@ -175,7 +169,7 @@ export default function Chart() {
               endDate={endDate}
               customInput={<CustomInput classes={classes} />}
             />
-            <Title style={{ marginLeft: "100px" }}> - </Title>
+            <Typography className={classes.lightTextHeading}> - </Typography>
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date)}

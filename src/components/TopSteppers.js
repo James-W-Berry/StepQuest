@@ -6,9 +6,10 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Title from "./Title";
+import { Typography } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import firebase from "../firebase";
+import colors from "../assets/colors";
 
 const SORT_OPTIONS = {
   STEPS_ASC: { column: "totalSteps", direction: "asc" },
@@ -47,6 +48,13 @@ const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),
   },
+  lightTextTitle: {
+    color: colors.almostWhite,
+    fontSize: "1.25rem",
+    fontWeight: "500",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
+  },
 }));
 
 export default function TopSteppers() {
@@ -56,7 +64,9 @@ export default function TopSteppers() {
 
   return (
     <React.Fragment>
-      <Title>Top Steppers</Title>
+      <Typography h1 className={classes.lightTextTitle}>
+        Top Steppers
+      </Typography>
       <Table size="small">
         <TableHead>
           <TableRow>

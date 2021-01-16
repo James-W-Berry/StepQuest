@@ -12,7 +12,7 @@ import {
   TableCell,
   TableBody,
   Typography,
-  Avatar
+  Avatar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -21,75 +21,79 @@ import Title from "./Title";
 import moment from "moment";
 import AverageSteps from "./AverageSteps";
 import Scrollbar from "react-scrollbars-custom";
+import colors from "../assets/colors";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 240
+    maxWidth: 240,
   },
   root: {
-    color: "#E7E5DF"
+    color: "#E7E5DF",
   },
   select: {
     "&:before": {
-      borderColor: "#fdc029"
+      borderColor: colors.stepitup_teal,
     },
     "&:after": {
-      borderColor: "#fdc029"
-    }
+      borderColor: colors.stepitup_teal,
+    },
   },
   selectEmpty: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   button: {
     "&:hover": {
-      color: "#fdc029"
+      color: colors.stepitup_teal,
     },
     border: 0,
     borderRadius: 3,
     color: "white",
     height: 48,
-    padding: "0 30px"
+    padding: "0 30px",
   },
 
   paper: {
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#E7E5DF",
+    backgroundColor: colors.almostWhite,
     fixedHeight: 240,
     maxWidth: 300,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   grid: {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "flexStart",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   gridList: {
     width: "30vw",
-    height: "70vh"
+    height: "70vh",
   },
   gridTile: {
     width: "100%",
     height: "100%",
     borderWidth: "1px",
     "&:hover": {
-      color: "#fdc029"
+      color: colors.stepitup_teal,
     },
     border: 0,
     borderRadius: 3,
     color: "white",
-    padding: "0 30px"
-  }
+    padding: "0 30px",
+  },
+  lightText: {
+    color: colors.almostWhite,
+  },
 }));
 
 const SORT_OPTIONS = {
   STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" }
+  STEPS_DESC: { column: "totalSteps", direction: "desc" },
 };
 
 function useUsers(sortBy = "STEPS_DESC") {
@@ -100,10 +104,10 @@ function useUsers(sortBy = "STEPS_DESC") {
       .firestore()
       .collection("users")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot(snapshot => {
-        const newUsers = snapshot.docs.map(doc => ({
+      .onSnapshot((snapshot) => {
+        const newUsers = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setUsers(newUsers);
@@ -123,17 +127,17 @@ async function calculateDailyTotals(user) {
     .collection("steps")
     .orderBy("steps", "desc")
     .get()
-    .then(function(docs) {
-      const userSteps = docs.docs.map(doc => ({
+    .then(function (docs) {
+      const userSteps = docs.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       return userSteps;
     });
   let top5 = response.slice(0, 5);
   let values = {
     top5: top5,
-    allDays: response
+    allDays: response,
   };
   return values;
 }
@@ -148,7 +152,7 @@ export default function UserList() {
   const [top5UserDailyTotals, setTop5UserDailyTotals] = useState([]);
   const users = useUsers(sortBy);
 
-  const handleFilterChange = event => {
+  const handleFilterChange = (event) => {
     setSortBy(event.target.value);
   };
 
@@ -165,7 +169,7 @@ export default function UserList() {
         display: "flex",
         flex: 1,
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <div
@@ -174,12 +178,17 @@ export default function UserList() {
           flexDirection: "column",
           flex: 1,
           borderRightWidth: "1px",
-          borderRightColor: "#171820"
+          borderRightColor: "#171820",
         }}
       >
-        <h1>Stepper Ranking</h1>
+        <Typography h1 style={{ color: colors.almostBlack }}>
+          Stepper Ranking
+        </Typography>
         <FormControl className={classes.formControl}>
-          <InputLabel id="sortSelectLabel" style={{ color: "#E7E5DF" }}>
+          <InputLabel
+            id="sortSelectLabel"
+            style={{ color: colors.almostBlack }}
+          >
             Sort By
           </InputLabel>
           <Select
@@ -189,14 +198,22 @@ export default function UserList() {
             value={sortBy}
             onChange={handleFilterChange}
           >
-            <MenuItem value={"STEPS_DESC"}>Steps (most first)</MenuItem>
-            <MenuItem value={"STEPS_ASC"}>Steps (least first)</MenuItem>
+            <MenuItem value={"STEPS_DESC"}>
+              <Typography style={{ color: colors.almostBlack }}>
+                Steps (most first)
+              </Typography>
+            </MenuItem>
+            <MenuItem value={"STEPS_ASC"}>
+              <Typography style={{ color: colors.almostBlack }}>
+                Steps (least first)
+              </Typography>
+            </MenuItem>
           </Select>
         </FormControl>
 
         <Scrollbar style={{ height: "70vh", width: "30vw" }}>
           <ol>
-            {users.map(user => (
+            {users.map((user) => (
               <li key={user.id}>
                 <div>
                   <Button
@@ -207,7 +224,7 @@ export default function UserList() {
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        alignItems: "center"
+                        alignItems: "center",
                       }}
                     >
                       <Avatar
@@ -215,7 +232,7 @@ export default function UserList() {
                         style={{
                           height: "30px",
                           width: "30px",
-                          margin: "10px"
+                          margin: "10px",
                         }}
                       />
                       {user.displayName}
@@ -237,7 +254,7 @@ export default function UserList() {
             alignItems: "center",
             flex: 2,
             marginRight: "40px",
-            borderRadius: "5px"
+            borderRadius: "5px",
           }}
         >
           <div
@@ -246,7 +263,7 @@ export default function UserList() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "flexStart",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <Avatar
@@ -254,7 +271,7 @@ export default function UserList() {
               style={{
                 height: "120px",
                 width: "120px",
-                margin: "10px"
+                margin: "10px",
               }}
             />
             <Typography variant="h2">{selectedStepper.displayName}</Typography>
@@ -292,7 +309,7 @@ export default function UserList() {
                   </TableHead>
                   <TableBody>
                     {top5UserDailyTotals &&
-                      top5UserDailyTotals.map(day => (
+                      top5UserDailyTotals.map((day) => (
                         <TableRow key={day.id}>
                           <TableCell>
                             {moment(day.id).format("MMMM Do, YYYY")}
