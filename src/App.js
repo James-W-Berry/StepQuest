@@ -67,10 +67,8 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     position: "absolute",
-    left: theme.spacing(1),
-    top: theme.spacing(1),
-    height: 100,
-    width: 100,
+    height: 80,
+    width: 80,
   },
   hide: {
     display: "none",
@@ -91,10 +89,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     padding: theme.spacing(3),
-    background: `#d7e1ec`,
-    // background: `#50c9c3` /* fallback for old browsers */,
-    // background: `-webkit-linear-gradient(to left, #50c9c3, #96deda)` /* Chrome 10-25, Safari 5.1-6 */,
-    // background: `linear-gradient(to left, #50c9c3, #96deda)` /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -134,7 +128,6 @@ function App() {
     userId: "",
   });
   const [open, setOpen] = useState(false);
-  const [location, setLocation] = useState("");
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -200,7 +193,11 @@ function App() {
   const FeatureRoutes = () => (
     <Route
       render={({ location }) => (
-        <div id="content" key={location.pathname}>
+        <div
+          id="content"
+          key={location.pathname}
+          style={{ height: "100%", width: "100%" }}
+        >
           <Switch location={location}>
             <Route path="/dashboard" component={DashboardPage} />
             <Route path="/steppers" component={SteppersPage} />
@@ -249,8 +246,6 @@ function App() {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100vw",
-          height: "100vh",
         }}
       >
         <BrowserRouter>
@@ -259,7 +254,7 @@ function App() {
             color="inherit"
             aria-label="open drawer"
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={classes.menuButton}
             onClick={toggleDrawer(true)}
           >
             <MenuIcon style={{ fontSize: 40 }} color="#ffffff" />
