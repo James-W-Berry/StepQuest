@@ -1,11 +1,18 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Title from "./Title";
+import colors from "../assets/colors";
 
 const useStyles = makeStyles({
   depositContext: {
     flex: 1,
+  },
+  lightTextTitle: {
+    color: colors.almostWhite,
+    fontSize: "1.25rem",
+    fontWeight: "500",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
   },
 });
 
@@ -18,9 +25,11 @@ const AverageSteps = (props) => {
 
   return (
     <React.Fragment>
-      <Title>Average Daily Steps</Title>
+      <Typography h1 className={classes.lightTextTitle}>
+        Average Daily Steps
+      </Typography>
       <Typography
-        style={{ marginTop: "20px", color: "#171820" }}
+        style={{ marginTop: "20px", color: colors.almostWhite }}
         component="p"
         variant="h3"
       >
@@ -31,7 +40,7 @@ const AverageSteps = (props) => {
             )}
       </Typography>
       <Typography
-        style={{ marginTop: "10px", color: "#171820" }}
+        style={{ marginTop: "10px", color: colors.almostBlack }}
         variant="subtitle1"
         className={classes.stepContext}
       >

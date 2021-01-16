@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import {
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   Button,
@@ -18,12 +17,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import TotalSteps from "./TotalSteps";
-import Title from "./Title";
 import moment from "moment";
 import AverageSteps from "./AverageSteps";
-import Scrollbar from "react-scrollbars-custom";
 import colors from "../assets/colors";
-import { AnimatePresence, motion } from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -47,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     "&:hover": {
-      color: colors.stepitup_teal,
+      color: colors.almostWhite,
     },
     border: 0,
     borderRadius: 3,
@@ -55,12 +51,11 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     padding: "0 30px",
   },
-
   paper: {
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
-    backgroundColor: colors.almostWhite,
+    backgroundColor: colors.stepitup_teal,
     fixedHeight: 240,
     maxWidth: 300,
     justifyContent: "center",
@@ -81,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     borderWidth: "1px",
     "&:hover": {
-      color: colors.stepitup_teal,
+      color: colors.almostWhite,
     },
     border: 0,
     borderRadius: 3,
@@ -91,12 +86,50 @@ const useStyles = makeStyles((theme) => ({
   lightText: {
     color: colors.almostWhite,
   },
-  title: {
-    color: colors.almostBlack,
+  lightTextTitle: {
+    color: colors.almostWhite,
     fontSize: "1.25rem",
     fontWeight: "500",
     lineHeight: "1.6",
     letterSpacing: "0.0075em",
+  },
+  title: {
+    color: colors.almostBlack,
+    fontSize: "1.25rem",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
+  },
+  scrollbar: {
+    [theme.breakpoints.down("sm")]: {
+      height: "30vh",
+    },
+    [theme.breakpoints.up("md")]: {
+      height: "80vh",
+    },
+    width: "100%",
+    backgroundColor: colors.stepitup_teal,
+    overflow: "scroll",
+  },
+  userList: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  focusedUser: {
+    [theme.breakpoints.down("sm")]: {
+      borderTop: "1px #19191930 solid",
+    },
+    [theme.breakpoints.up("md")]: {
+      borderLeft: "1px #19191930 solid",
+    },
+  },
+  name: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.5rem",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "2rem",
+    },
   },
 }));
 
@@ -190,98 +223,96 @@ export default function UserList() {
         lg={4}
         xl={4}
         item
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+        className={classes.userList}
       >
-        <Typography h1 className={classes.title}>
-          Stepper Ranking
-        </Typography>
-        <FormControl className={classes.formControl}>
-          <InputLabel
-            id="sortSelectLabel"
-            style={{ color: colors.almostBlack }}
-          >
-            Sort By
-          </InputLabel>
-          <Select
-            className={selectStyle}
-            labelId="sortSelectLabel"
-            id="sortSelect"
-            value={sortBy}
-            onChange={handleFilterChange}
-          >
-            <MenuItem value={"STEPS_DESC"}>
-              <Typography style={{ color: colors.almostBlack }}>
-                Steps (most first)
-              </Typography>
-            </MenuItem>
-            <MenuItem value={"STEPS_ASC"}>
-              <Typography style={{ color: colors.almostBlack }}>
-                Steps (least first)
-              </Typography>
-            </MenuItem>
-          </Select>
-        </FormControl>
-
-        <Scrollbar
+        <div
           style={{
-            height: "50vh",
-            width: "100%",
-            backgroundColor: colors.almostWhite,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <ol>
+          <Typography h1 className={classes.title}>
+            Leaderboard
+          </Typography>
+          <FormControl className={classes.formControl}>
+            <Select
+              className={selectStyle}
+              labelId="sortSelectLabel"
+              id="sortSelect"
+              value={sortBy}
+              onChange={handleFilterChange}
+            >
+              <MenuItem value={"STEPS_DESC"}>
+                <Typography style={{ color: colors.almostBlack }}>
+                  Steps (most first)
+                </Typography>
+              </MenuItem>
+              <MenuItem value={"STEPS_ASC"}>
+                <Typography style={{ color: colors.almostBlack }}>
+                  Steps (least first)
+                </Typography>
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <Grid
+          key="list"
+          container
+          spacing={4}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Paper className={classes.scrollbar}>
             {users.map((user) => (
-              <li style={{ color: colors.almostBlack }} key={user.id}>
-                <div>
-                  <Button
-                    className={classes.button}
-                    onClick={() => handleStepperClicked(user)}
+              <div>
+                <Button
+                  Button
+                  className={classes.button}
+                  onClick={() => handleStepperClicked(user)}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
                   >
-                    <div
+                    <Avatar
+                      src={user.profilePictureUrl}
                       style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
+                        height: "30px",
+                        width: "30px",
+                        margin: "10px",
                       }}
-                    >
-                      <Avatar
-                        src={user.profilePictureUrl}
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          margin: "10px",
-                        }}
-                      />
-                      {user.displayName}
-                    </div>
-                  </Button>
-                </div>
-              </li>
+                    />
+                    {user.displayName}
+                  </div>
+                </Button>
+              </div>
             ))}
-          </ol>
-        </Scrollbar>
+          </Paper>
+        </Grid>
       </Grid>
 
       <Grid key="focusedUser" item xs={12} sm={12} md={8} lg={8} xl={8}>
-        {selectedStepper !== "" && (
+        {selectedStepper !== "" ? (
           <div
+            className={classes.focusedUser}
             style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "flexStart",
               alignItems: "center",
               flex: 2,
-              marginRight: "40px",
-              borderRadius: "5px",
             }}
           >
             <div
               style={{
-                marginTop: "40px",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "flexStart",
@@ -296,56 +327,101 @@ export default function UserList() {
                   margin: "10px",
                 }}
               />
-              <Typography variant="h2">
+              <Typography
+                variant="h2"
+                style={{ color: colors.almostBlack }}
+                className={classes.name}
+              >
                 {selectedStepper.displayName}
               </Typography>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div style={{ marginTop: "20px", marginRight: "10px" }}>
-                <Paper className={classes.paper}>
+            <Grid container spacing={4}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={6}
+                xl={6}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Paper className={classes.paper} style={{ width: "80%" }}>
                   <TotalSteps
                     title={"Total Steps"}
                     totalGroupSteps={selectedStepper.totalSteps}
                   />
                 </Paper>
-              </div>
-              <div style={{ marginTop: "20px", marginLeft: "10px" }}>
-                <Paper className={classes.paper}>
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={6}
+                xl={6}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Paper className={classes.paper} style={{ width: "80%" }}>
                   <AverageSteps
                     totalGroupSteps={selectedStepper.totalSteps}
                     numberOfDays={userDailyTotals.length}
                   />
                 </Paper>
-              </div>
-            </div>
+              </Grid>
 
-            <div style={{ marginTop: "20px" }}>
-              <React.Fragment>
-                <Paper className={classes.paper}>
-                  <Title>Tops Days</Title>
-                  <TableRow size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Day</TableCell>
-                        <TableCell>Total Steps</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {top5UserDailyTotals &&
-                        top5UserDailyTotals.map((day) => (
-                          <TableRow key={day.id}>
-                            <TableCell>
-                              {moment(day.id).format("MMMM Do, YYYY")}
-                            </TableCell>
-                            <TableCell>{day.steps}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </TableRow>
-                </Paper>
-              </React.Fragment>
-            </div>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
+                xl={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <React.Fragment>
+                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                    <Typography h1 className={classes.lightTextTitle}>
+                      Tops Days
+                    </Typography>
+                    <TableRow size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Day</TableCell>
+                          <TableCell>Total Steps</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {top5UserDailyTotals &&
+                          top5UserDailyTotals.map((day) => (
+                            <TableRow key={day.id}>
+                              <TableCell>
+                                {moment(day.id).format("MMMM Do, YYYY")}
+                              </TableCell>
+                              <TableCell>{day.steps}</TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </TableRow>
+                  </Paper>
+                </React.Fragment>
+              </Grid>
+            </Grid>
+          </div>
+        ) : (
+          <div
+            className={classes.focusedUser}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <Typography h1 className={classes.title}>
+              Select a user to see their stats
+            </Typography>
           </div>
         )}
       </Grid>
