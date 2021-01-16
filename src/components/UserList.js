@@ -13,6 +13,7 @@ import {
   TableBody,
   Typography,
   Avatar,
+  Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -22,6 +23,7 @@ import moment from "moment";
 import AverageSteps from "./AverageSteps";
 import Scrollbar from "react-scrollbars-custom";
 import colors from "../assets/colors";
+import { AnimatePresence, motion } from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
     border: 0,
     borderRadius: 3,
-    color: "white",
+    color: colors.almostBlack,
     height: 48,
     padding: "0 30px",
   },
@@ -88,6 +90,13 @@ const useStyles = makeStyles((theme) => ({
   },
   lightText: {
     color: colors.almostWhite,
+  },
+  title: {
+    color: colors.almostBlack,
+    fontSize: "1.25rem",
+    fontWeight: "500",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
   },
 }));
 
@@ -164,24 +173,30 @@ export default function UserList() {
   }
 
   return (
-    <div
+    <Grid
+      container
+      spacing={4}
       style={{
         display: "flex",
-        flex: 1,
         flexDirection: "row",
         justifyContent: "center",
       }}
     >
-      <div
+      <Grid
+        key="userlist"
+        xs={12}
+        sm={12}
+        md={4}
+        lg={4}
+        xl={4}
+        item
         style={{
           display: "flex",
           flexDirection: "column",
-          flex: 1,
-          borderRightWidth: "1px",
-          borderRightColor: "#171820",
+          alignItems: "center",
         }}
       >
-        <Typography h1 style={{ color: colors.almostBlack }}>
+        <Typography h1 className={classes.title}>
           Stepper Ranking
         </Typography>
         <FormControl className={classes.formControl}>
@@ -211,10 +226,16 @@ export default function UserList() {
           </Select>
         </FormControl>
 
-        <Scrollbar style={{ height: "70vh", width: "30vw" }}>
+        <Scrollbar
+          style={{
+            height: "50vh",
+            width: "100%",
+            backgroundColor: colors.almostWhite,
+          }}
+        >
           <ol>
             {users.map((user) => (
-              <li key={user.id}>
+              <li style={{ color: colors.almostBlack }} key={user.id}>
                 <div>
                   <Button
                     className={classes.button}
@@ -243,87 +264,91 @@ export default function UserList() {
             ))}
           </ol>
         </Scrollbar>
-      </div>
+      </Grid>
 
-      {selectedStepper !== "" && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flexStart",
-            alignItems: "center",
-            flex: 2,
-            marginRight: "40px",
-            borderRadius: "5px",
-          }}
-        >
+      <Grid key="focusedUser" item xs={12} sm={12} md={8} lg={8} xl={8}>
+        {selectedStepper !== "" && (
           <div
             style={{
-              marginTop: "40px",
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "flexStart",
               alignItems: "center",
+              flex: 2,
+              marginRight: "40px",
+              borderRadius: "5px",
             }}
           >
-            <Avatar
-              src={selectedStepper.profilePictureUrl}
+            <div
               style={{
-                height: "120px",
-                width: "120px",
-                margin: "10px",
+                marginTop: "40px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flexStart",
+                alignItems: "center",
               }}
-            />
-            <Typography variant="h2">{selectedStepper.displayName}</Typography>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ marginTop: "20px", marginRight: "10px" }}>
-              <Paper className={classes.paper}>
-                <TotalSteps
-                  title={"Total Steps"}
-                  totalGroupSteps={selectedStepper.totalSteps}
-                />
-              </Paper>
+            >
+              <Avatar
+                src={selectedStepper.profilePictureUrl}
+                style={{
+                  height: "120px",
+                  width: "120px",
+                  margin: "10px",
+                }}
+              />
+              <Typography variant="h2">
+                {selectedStepper.displayName}
+              </Typography>
             </div>
-            <div style={{ marginTop: "20px", marginLeft: "10px" }}>
-              <Paper className={classes.paper}>
-                <AverageSteps
-                  totalGroupSteps={selectedStepper.totalSteps}
-                  numberOfDays={userDailyTotals.length}
-                />
-              </Paper>
+
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div style={{ marginTop: "20px", marginRight: "10px" }}>
+                <Paper className={classes.paper}>
+                  <TotalSteps
+                    title={"Total Steps"}
+                    totalGroupSteps={selectedStepper.totalSteps}
+                  />
+                </Paper>
+              </div>
+              <div style={{ marginTop: "20px", marginLeft: "10px" }}>
+                <Paper className={classes.paper}>
+                  <AverageSteps
+                    totalGroupSteps={selectedStepper.totalSteps}
+                    numberOfDays={userDailyTotals.length}
+                  />
+                </Paper>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "20px" }}>
+              <React.Fragment>
+                <Paper className={classes.paper}>
+                  <Title>Tops Days</Title>
+                  <TableRow size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Day</TableCell>
+                        <TableCell>Total Steps</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {top5UserDailyTotals &&
+                        top5UserDailyTotals.map((day) => (
+                          <TableRow key={day.id}>
+                            <TableCell>
+                              {moment(day.id).format("MMMM Do, YYYY")}
+                            </TableCell>
+                            <TableCell>{day.steps}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </TableRow>
+                </Paper>
+              </React.Fragment>
             </div>
           </div>
-
-          <div style={{ marginTop: "20px" }}>
-            <React.Fragment>
-              <Paper className={classes.paper}>
-                <Title>Tops Days</Title>
-                <TableRow size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Day</TableCell>
-                      <TableCell>Total Steps</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {top5UserDailyTotals &&
-                      top5UserDailyTotals.map((day) => (
-                        <TableRow key={day.id}>
-                          <TableCell>
-                            {moment(day.id).format("MMMM Do, YYYY")}
-                          </TableCell>
-                          <TableCell>{day.steps}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </TableRow>
-              </Paper>
-            </React.Fragment>
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </Grid>
+    </Grid>
   );
 }
