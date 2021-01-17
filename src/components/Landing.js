@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "firebase/auth";
 import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,16 +40,6 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     padding: "0 30px",
   },
-  logoText: {
-    color: colors.almostWhite,
-    marginLeft: "20px",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "1.0em",
-    },
-    [theme.breakpoints.up("md")]: {
-      fontSize: "1.5em",
-    },
-  },
   title: {
     [theme.breakpoints.down("sm")]: {
       fontSize: "2.0em",
@@ -65,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       fontSize: "2.0em",
     },
+    marginBottom: "5vh",
   },
 }));
 
@@ -138,7 +129,7 @@ function Landing(props) {
               <Typography
                 style={{ color: colors.almostWhite, width: "max-content" }}
               >
-                Sign In
+                Sign Up
               </Typography>
             </Button>
           </NavLink>
@@ -164,7 +155,7 @@ function Landing(props) {
         style={{
           display: "flex",
           flexDirection: "row",
-          margin: "10%",
+          margin: "5%",
         }}
       >
         <div
@@ -188,13 +179,12 @@ function Landing(props) {
             Your team's fitness tracking solution
           </Typography>
 
-          <Divider />
-
           <div
             style={{
               display: "flex",
               alignItems: "center",
               padding: "5px",
+              margin: "5px",
             }}
           >
             <TeamIcon />
@@ -207,12 +197,12 @@ function Landing(props) {
             </Typography>
           </div>
 
-          <Divider />
           <div
             style={{
               display: "flex",
               alignItems: "center",
               padding: "5px",
+              margin: "5px",
             }}
           >
             <ChartIcon />
@@ -223,13 +213,13 @@ function Landing(props) {
               Track organization, team, and individual activities over time
             </Typography>
           </div>
-          <Divider />
 
           <div
             style={{
               display: "flex",
               alignItems: "center",
               padding: "5px",
+              margin: "5px",
             }}
           >
             <TargetIcon />
