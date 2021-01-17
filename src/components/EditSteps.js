@@ -229,7 +229,7 @@ const EditSteps = (props) => {
 
       <Grid
         container
-        spacing={6}
+        spacing={2}
         style={{
           display: "flex",
           flexDirection: "row",
