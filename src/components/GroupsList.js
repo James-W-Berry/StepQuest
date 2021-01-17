@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Button,
   Paper,
   TableHead,
@@ -13,14 +9,14 @@ import {
   TableBody,
   Typography,
   Avatar,
+  Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import TotalSteps from "./TotalSteps";
-import Title from "./Title";
-import Scrollbar from "react-scrollbars-custom";
 import GroupIcon from "@material-ui/icons/Group";
 import AverageMemberSteps from "./AverageMemberSteps";
+import colors from "../assets/colors";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -33,10 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     "&:before": {
-      borderColor: "#fdc029",
+      borderColor: colors.stepitup_teal,
     },
     "&:after": {
-      borderColor: "#fdc029",
+      borderColor: colors.stepitup_teal,
     },
   },
   selectEmpty: {
@@ -44,22 +40,20 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     "&:hover": {
-      color: "#fdc029",
+      color: colors.almostWhite,
     },
     border: 0,
     borderRadius: 3,
-    color: "white",
+    color: colors.almostBlack,
     height: 48,
     padding: "0 30px",
   },
-
   paper: {
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#E7E5DF",
+    backgroundColor: colors.stepitup_teal,
     fixedHeight: 240,
-    maxWidth: 300,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -69,21 +63,54 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flexStart",
     overflow: "hidden",
   },
-  gridList: {
-    width: "30vw",
-    height: "70vh",
+  lightText: {
+    color: colors.almostWhite,
   },
-  gridTile: {
-    width: "100%",
-    height: "100%",
-    borderWidth: "1px",
-    "&:hover": {
-      color: "#fdc029",
+  lightTextTitle: {
+    color: colors.almostWhite,
+    fontSize: "1.25rem",
+    fontWeight: "500",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
+  },
+  title: {
+    color: colors.almostBlack,
+    fontSize: "1.25rem",
+    lineHeight: "1.6",
+    letterSpacing: "0.0075em",
+  },
+  scrollbar: {
+    [theme.breakpoints.down("sm")]: {
+      height: "30vh",
     },
-    border: 0,
-    borderRadius: 3,
-    color: "white",
-    padding: "0 30px",
+    [theme.breakpoints.up("md")]: {
+      height: "80vh",
+    },
+    width: "100%",
+    marginTop: "20px",
+    backgroundColor: colors.stepitup_blueishGray,
+    overflow: "scroll",
+  },
+  userList: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  focusedGroup: {
+    [theme.breakpoints.down("sm")]: {
+      borderTop: "1px #19191930 solid",
+    },
+    [theme.breakpoints.up("md")]: {
+      borderLeft: "1px #19191930 solid",
+    },
+  },
+  name: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.5rem",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "2rem",
+    },
   },
 }));
 
@@ -135,7 +162,6 @@ async function calculateGroupInfo(group) {
 
 export default function GroupsList() {
   const classes = useStyles();
-  const selectStyle = clsx(classes.root, classes.select);
 
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -169,172 +195,238 @@ export default function GroupsList() {
   }
 
   return (
-    <div
+    <Grid
+      container
+      spacing={4}
       style={{
         display: "flex",
-        flex: 1,
         flexDirection: "row",
         justifyContent: "center",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          borderRightWidth: "1px",
-          borderRightColor: "#171820",
-        }}
+      <Grid
+        key="teamList"
+        xs={12}
+        sm={12}
+        md={4}
+        lg={4}
+        xl={4}
+        item
+        className={classes.userList}
       >
-        <h1>Group Stats</h1>
-
-        <Scrollbar style={{ height: "70vh", width: "30vw" }}>
-          <ol>
-            {groups.map((group) => (
-              <li key={group.id}>
-                <div>
-                  <Button
-                    className={classes.button}
-                    onClick={() => handleGroupClicked(group)}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      {group.profilePictureUrl ? (
-                        <Avatar
-                          src={group.profilePictureUrl}
-                          style={{
-                            height: "30px",
-                            width: "30px",
-                            margin: "10px",
-                          }}
-                        />
-                      ) : (
-                        <GroupIcon
-                          style={{
-                            color: "#fdc029",
-                            height: "30px",
-                            width: "30px",
-                            margin: "10px",
-                          }}
-                        />
-                      )}
-                      {group.name}
-                    </div>
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Scrollbar>
-      </div>
-
-      {selectedGroup !== "" && (
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flexStart",
             alignItems: "center",
-            flex: 2,
-            marginRight: "40px",
-            borderRadius: "5px",
+            justifyContent: "center",
           }}
         >
+          <Typography h1 className={classes.title}>
+            Teams
+          </Typography>
+        </div>
+
+        <Grid
+          key="list"
+          container
+          spacing={4}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Paper className={classes.scrollbar}>
+            {groups.map((group) => (
+              <div>
+                <Button
+                  className={classes.button}
+                  onClick={() => handleGroupClicked(group)}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {group.profilePictureUrl ? (
+                      <Avatar
+                        src={group.profilePictureUrl}
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          margin: "10px",
+                        }}
+                      />
+                    ) : (
+                      <GroupIcon
+                        style={{
+                          color: colors.stepitup_teal,
+                          height: "30px",
+                          width: "30px",
+                          margin: "10px",
+                        }}
+                      />
+                    )}
+                    {group.name}
+                  </div>
+                </Button>
+              </div>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
+
+      <Grid key="focusedGroup" item xs={12} sm={12} md={8} lg={8} xl={8}>
+        {selectedGroup !== "" ? (
           <div
             style={{
-              marginTop: "40px",
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "flexStart",
               alignItems: "center",
+              flex: 2,
             }}
           >
-            {selectedGroup.profilePictureUrl ? (
-              <Avatar
-                src={selectedGroup.profilePictureUrl}
-                style={{
-                  height: "120px",
-                  width: "120px",
-                  margin: "10px",
-                }}
-              />
-            ) : (
-              <GroupIcon
-                style={{
-                  color: "#fdc029",
-                  height: "120px",
-                  width: "120px",
-                  margin: "10px",
-                }}
-              />
-            )}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flexStart",
+                alignItems: "center",
+              }}
+            >
+              {selectedGroup.profilePictureUrl ? (
+                <Avatar
+                  src={selectedGroup.profilePictureUrl}
+                  style={{
+                    height: "120px",
+                    width: "120px",
+                    margin: "10px",
+                  }}
+                />
+              ) : (
+                <GroupIcon
+                  style={{
+                    color: colors.stepitup_teal,
+                    height: "120px",
+                    width: "120px",
+                    margin: "10px",
+                  }}
+                />
+              )}
 
-            <Typography variant="h2">{selectedGroup.name}</Typography>
-          </div>
-
-          {groupInfo && totalGroupSteps !== 0 && (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div style={{ marginTop: "20px", marginRight: "10px" }}>
-                <Paper className={classes.paper}>
-                  <TotalSteps
-                    title="Total Steps"
-                    totalGroupSteps={totalGroupSteps}
-                  />
-                </Paper>
-              </div>
-              <div style={{ marginTop: "20px", marginLeft: "10px" }}>
-                <Paper className={classes.paper}>
-                  <AverageMemberSteps
-                    groupName={selectedGroup.name}
-                    totalGroupSteps={totalGroupSteps}
-                    numberOfMembers={Object.entries(groupInfo).length}
-                  />
-                </Paper>
-              </div>
+              <Typography
+                variant="h2"
+                style={{ color: colors.almostBlack }}
+                className={classes.name}
+              >
+                {selectedGroup.name}
+              </Typography>
             </div>
-          )}
 
-          {groupInfo ? (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div style={{ marginTop: "20px", marginRight: "10px" }}>
-                <Paper className={classes.paper}>
-                  <Title>Members</Title>
-                  <TableRow size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Total Steps</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {groupInfo &&
-                        Object.entries(groupInfo).map((member) => (
-                          <TableRow key={member[0]}>
-                            <TableCell>{member[1].displayName}</TableCell>
-                            <TableCell>{member[1].totalSteps}</TableCell>
+            {groupInfo && totalGroupSteps !== 0 && (
+              <Grid container spacing={4}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={6}
+                  lg={6}
+                  xl={6}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                    <TotalSteps
+                      title="Total Steps"
+                      totalGroupSteps={totalGroupSteps}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={6}
+                  lg={6}
+                  xl={6}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                    <AverageMemberSteps
+                      groupName={selectedGroup.name}
+                      totalGroupSteps={totalGroupSteps}
+                      numberOfMembers={Object.entries(groupInfo).length}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <React.Fragment>
+                    <Paper className={classes.paper} style={{ width: "80%" }}>
+                      {groupInfo ? (
+                        <div>
+                          <Typography h1 className={classes.lightTextTitle}>
+                            Members
+                          </Typography>
+                          <TableRow size="small">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Total Steps</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {groupInfo &&
+                                Object.entries(groupInfo).map((member) => (
+                                  <TableRow key={member[0]}>
+                                    <TableCell>
+                                      {member[1].displayName}
+                                    </TableCell>
+                                    <TableCell>
+                                      {member[1].totalSteps}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
                           </TableRow>
-                        ))}
-                    </TableBody>
-                  </TableRow>
-                </Paper>
-              </div>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div style={{ marginTop: "20px", marginRight: "10px" }}>
-                <Paper className={classes.paper}>
-                  <Title>No Members yet</Title>
-                </Paper>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                        </div>
+                      ) : (
+                        <Typography h1 className={classes.lightTextTitle}>
+                          No Members yet
+                        </Typography>
+                      )}
+                    </Paper>
+                  </React.Fragment>
+                </Grid>
+              </Grid>
+            )}
+          </div>
+        ) : (
+          <div
+            className={classes.focusedGroup}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <Typography h1 className={classes.title}>
+              Select a group to see their stats
+            </Typography>
+          </div>
+        )}
+      </Grid>
+    </Grid>
   );
 }

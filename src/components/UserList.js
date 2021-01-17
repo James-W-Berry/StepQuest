@@ -67,22 +67,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flexStart",
     overflow: "hidden",
   },
-  gridList: {
-    width: "30vw",
-    height: "70vh",
-  },
-  gridTile: {
-    width: "100%",
-    height: "100%",
-    borderWidth: "1px",
-    "&:hover": {
-      color: colors.almostWhite,
-    },
-    border: 0,
-    borderRadius: 3,
-    color: "white",
-    padding: "0 30px",
-  },
   lightText: {
     color: colors.almostWhite,
   },
@@ -107,7 +91,8 @@ const useStyles = makeStyles((theme) => ({
       height: "80vh",
     },
     width: "100%",
-    backgroundColor: colors.stepitup_teal,
+    marginTop: "10px",
+    backgroundColor: colors.stepitup_blueishGray,
     overflow: "scroll",
   },
   userList: {
