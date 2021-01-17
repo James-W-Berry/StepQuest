@@ -12,6 +12,7 @@ import logo from "../assets/logo.png";
 import team from "../assets/team.png";
 import target from "../assets/target.png";
 import chart from "../assets/chart.png";
+import colors from "../assets/colors";
 
 import "../App.css";
 
@@ -20,11 +21,11 @@ const TeamIcon = () => <Img src={team} height={60} width={60} />;
 const TargetIcon = () => <Img src={target} height={60} width={60} />;
 const ChartIcon = () => <Img src={chart} height={60} width={60} />;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   divider: {
     border: "none",
     height: "1px",
-    backgroundColor: "#ffffff",
+    color: colors.almostWhite,
     margin: 0,
     flexShrink: 0,
     width: "100%",
@@ -35,11 +36,37 @@ const useStyles = makeStyles({
     },
     border: 0,
     borderRadius: 3,
-    color: "#ffffff",
+    color: colors.almostWhite,
     height: 48,
     padding: "0 30px",
   },
-});
+  logoText: {
+    color: colors.almostWhite,
+    marginLeft: "20px",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.0em",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "1.5em",
+    },
+  },
+  title: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "2.0em",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "3.0em",
+    },
+  },
+  subtitle: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.5em",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "2.0em",
+    },
+  },
+}));
 
 function Landing(props) {
   const classes = useStyles();
@@ -58,7 +85,7 @@ function Landing(props) {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          background: "#191919",
+          background: colors.almostBlack,
           height: "60px",
           width: "100vw",
         }}
@@ -66,25 +93,14 @@ function Landing(props) {
         <div
           style={{
             display: "flex",
+            flex: 1,
             alignItems: "center",
             justifyContent: "flex-start",
-            margin: "20px",
+            margin: "10px",
           }}
         >
           <Logo />
-          <Typography
-            variant="h5"
-            style={{ color: "#ffffff", marginLeft: "20px" }}
-          >
-            Step It Up
-          </Typography>
         </div>
-
-        <div
-          style={{
-            display: "flex",
-          }}
-        />
 
         <div
           style={{
@@ -92,27 +108,39 @@ function Landing(props) {
             flexDirection: "row",
             justifyContent: "flex-end",
             margin: "10px",
-            flex: 1,
+            flex: 3,
           }}
         >
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#ffffff",
+              color: colors.almostWhite,
             }}
             to="/signin"
           >
-            <Button className={classes.root}>Sign In</Button>
+            <Button className={classes.root} style={{ width: "100%" }}>
+              <Typography
+                style={{ color: colors.almostWhite, width: "max-content" }}
+              >
+                Sign In
+              </Typography>
+            </Button>
           </NavLink>
 
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#ffffff",
+              color: colors.almostWhite,
             }}
             to="/signup"
           >
-            <Button className={classes.root}>Sign Up</Button>
+            <Button className={classes.root} style={{ width: "100%" }}>
+              <Typography
+                style={{ color: colors.almostWhite, width: "max-content" }}
+              >
+                Sign In
+              </Typography>
+            </Button>
           </NavLink>
         </div>
       </div>
@@ -146,54 +174,68 @@ function Landing(props) {
             flexDirection: "column",
           }}
         >
-          <Typography variant="h3" style={{ color: "#ffffff" }}>
+          <Typography
+            className={classes.title}
+            style={{ color: colors.stepitip_vibrantGreen }}
+          >
+            Step It Up
+          </Typography>
+
+          <Typography
+            className={classes.subtitle}
+            style={{ color: colors.almostWhite }}
+          >
             Your team's fitness tracking solution
           </Typography>
+
+          <Divider />
 
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              marginTop: "5vh",
+              padding: "5px",
             }}
           >
             <TeamIcon />
             <Typography
               variant="body1"
-              style={{ color: "#ffffff", marginLeft: "10px" }}
+              style={{ color: colors.almostBlack, marginLeft: "10px" }}
             >
               Tools to record your fitness activities with friends, family, and
               coworkers
             </Typography>
           </div>
+
+          <Divider />
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              marginTop: "5vh",
+              padding: "5px",
             }}
           >
             <ChartIcon />
-
             <Typography
               variant="body1"
-              style={{ color: "#ffffff", marginLeft: "10px" }}
+              style={{ color: colors.almostBlack, marginLeft: "10px" }}
             >
               Track organization, team, and individual activities over time
             </Typography>
           </div>
+          <Divider />
+
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              marginTop: "5vh",
+              padding: "5px",
             }}
           >
             <TargetIcon />
-
             <Typography
               variant="body1"
-              style={{ color: "#ffffff", marginLeft: "10px" }}
+              style={{ color: colors.almostBlack, marginLeft: "10px" }}
             >
               Set goals and encourage team members to increase physical wellness
               together
