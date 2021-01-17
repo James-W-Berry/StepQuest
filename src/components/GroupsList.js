@@ -12,7 +12,6 @@ import {
   Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import TotalSteps from "./TotalSteps";
 import GroupIcon from "@material-ui/icons/Group";
 import AverageMemberSteps from "./AverageMemberSteps";

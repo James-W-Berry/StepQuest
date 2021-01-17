@@ -1,52 +1,49 @@
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import firebase from "../firebase";
 import "firebase/auth";
 import Calendar from "react-calendar";
 import DaySteps from "./DaySteps";
-import { Button, TextField } from "@material-ui/core";
+import { Button, Grid, TextField } from "@material-ui/core";
+import colors from "../assets/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
   button: {
-    background: "#171820",
+    background: colors.almostWhite,
     border: 0,
     borderRadius: 3,
-    color: "white",
+    color: colors.almostBlack,
     height: 48,
     padding: "0 30px",
-  },
-  appBarSpacer: theme.mixins.toolbar,
-
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
   },
   paper: {
     padding: theme.spacing(2),
     display: "flex",
-    alignItems: "center",
-    justifyContent: "flexEnd",
     flexDirection: "column",
-    backgroundColor: "#E7E5DF",
-  },
-
-  textInput: {
-    width: "20vw",
-    marginBottom: "20px",
-    "& label.Mui-focused": {
-      color: "#171820",
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "#171820",
-    },
+    backgroundColor: colors.stepitup_teal,
+    justifyContent: "center",
+    alignItems: "center",
   },
   calendar: {
-    width: "450px",
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "20px",
+  },
+  textInput: {
+    marginBottom: "20px",
+    "& label.Mui-focused": {
+      color: colors.almostBlack,
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: colors.almostWhite,
+    },
   },
 }));
 
@@ -216,26 +213,10 @@ const EditSteps = (props) => {
   });
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "40px",
-        }}
-      >
-        <Paper className={classes.paper}>
+    <Grid container spacing={4}>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <div className={classes.calendar}>
           <Calendar
-            className={classes.calendar}
             onChange={(newDate) => setDate(newDate)}
             value={date}
             onClickDay={(selectedDate) => {
@@ -243,79 +224,73 @@ const EditSteps = (props) => {
               setSelectedDate(selectedDate);
             }}
           />
-        </Paper>
-      </div>
+        </div>
+      </Grid>
 
-      <div
+      <Grid
+        container
+        spacing={6}
         style={{
           display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <div
-          style={{
-            flex: 2,
-            display: "flex",
-          }}
-        />
         {selectedDate && (
+          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Paper className={classes.paper} style={{ width: "80%" }}>
+                <TextField
+                  className={classes.textInput}
+                  label="enter # of steps"
+                  type="number"
+                  inputProps={{ min: "0" }}
+                  onChange={(event) => {
+                    setSteps(parseInt(event.target.value));
+                  }}
+                />
+
+                <Button
+                  onClick={(e) => {
+                    onEditSteps(userId, date, steps);
+                    onEditDailyTotals(date, steps, dayStepCount);
+                  }}
+                  className={classes.button}
+                >
+                  Update Steps
+                </Button>
+              </Paper>
+            </div>
+          </Grid>
+        )}
+
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <div
             style={{
               flex: 1,
               display: "flex",
               alignItems: "center",
-              marginTop: "40px",
               justifyContent: "center",
             }}
           >
-            <Paper className={classes.paper}>
-              <TextField
-                className={classes.textInput}
-                label="enter # of steps"
-                type="number"
-                inputProps={{ min: "0" }}
-                onChange={(event) => {
-                  setSteps(parseInt(event.target.value));
-                }}
+            <Paper className={classes.paper} style={{ width: "80%" }}>
+              <DaySteps
+                totalDaySteps={dayStepCount}
+                selectedDate={selectedDate}
               />
-              <Button
-                onClick={(e) => {
-                  onEditSteps(userId, date, steps);
-                  onEditDailyTotals(date, steps, dayStepCount);
-                }}
-                className={classes.button}
-              >
-                Update Steps
-              </Button>
             </Paper>
           </div>
-        )}
-
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            marginTop: "40px",
-            justifyContent: "center",
-          }}
-        >
-          <Paper className={classes.paper}>
-            <DaySteps
-              totalDaySteps={dayStepCount}
-              selectedDate={selectedDate}
-            />
-          </Paper>
-        </div>
-
-        <div
-          style={{
-            flex: 2,
-            display: "flex",
-          }}
-        />
-      </div>
-    </div>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 
