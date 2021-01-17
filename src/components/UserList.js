@@ -91,7 +91,6 @@ const useStyles = makeStyles((theme) => ({
       height: "80vh",
     },
     width: "100%",
-    marginTop: "10px",
     backgroundColor: colors.stepitup_blueishGray,
     overflow: "scroll",
   },
@@ -245,7 +244,6 @@ export default function UserList() {
         <Grid
           key="list"
           container
-          spacing={4}
           style={{
             display: "flex",
             justifyContent: "center",
