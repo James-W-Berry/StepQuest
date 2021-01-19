@@ -500,7 +500,6 @@ const Profile = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              marginTop: "100px",
             }}
           >
             <Grid key="picture" item>

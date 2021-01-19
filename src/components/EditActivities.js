@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import firebase from "../firebase";
 import "firebase/auth";
 import Calendar from "react-calendar";
-import DaySteps from "./DaySteps";
+import DaySummary from "./DaySummary";
 import {
   Button,
   Dialog,
   Grid,
   TextField,
   Typography,
-  List,
   IconButton,
   FormControl,
   InputLabel,
   Select,
+  FormHelperText,
 } from "@material-ui/core";
 import colors from "../assets/colors";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
 import { useTheme } from "@material-ui/core/styles";
-import Emoji from "react-emoji-render";
-import Scrollbar from "react-scrollbars-custom";
-import CloseIcon from "@material-ui/icons/Close";
-import { withStyles } from "@material-ui/core/styles";
 import activityList from "../assets/activityList.json";
 import CalendarIcon from "@material-ui/icons/TodayOutlined";
+
 const styles = (theme) => ({
   closeButton: {
     position: "absolute",
@@ -73,9 +67,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   formControl: {
-    marginTop: "10px",
-    display: "flex",
-    alignItems: "center",
+    margin: theme.spacing(1),
+    minWidth: 120,
+    width: "max-content",
     justifyContent: "center",
   },
 }));
@@ -220,16 +214,6 @@ function useUser(userId) {
   return user;
 }
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-    color: colors.almostWhite,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-}))(MuiDialogContent);
-
 function createActivityOption(activityOption) {
   if (activityOption !== undefined) {
     return <option value={activityOption[0]}>{activityOption[0]}</option>;
@@ -246,7 +230,7 @@ const EditActivities = (props) => {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedDate, setSelectedDate] = useState("");
   const user = useUser(userId);
-  //const savedSteps = useSteps(sortBy, userId, user);
+  const savedSteps = useSteps(sortBy, userId, user);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [open, setOpen] = useState(false);
   const [activity, setActivity] = useState(activityList[0]);
@@ -264,26 +248,22 @@ const EditActivities = (props) => {
 
   let dayStepCount = "0";
 
-  // savedSteps.map((step) => {
-  //   if (step.id === selectedDate.toString()) {
-  //     dayStepCount = step.steps;
-  //   }
-  // });
+  savedSteps.map((step) => {
+    if (step.id === selectedDate.toString()) {
+      dayStepCount = step.steps;
+    }
+  });
 
   return (
     <Grid
       container
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: "40px",
-      }}
+      spacing={4}
+      style={{ display: "flex", justifyContent: "center" }}
     >
       <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
         <div
           style={{
-            border: `1px ${colors.almostBlack} solid`,
+            //border: `1px ${colors.almostBlack} solid`,
             borderRadius: "10px",
           }}
         >
@@ -302,107 +282,130 @@ const EditActivities = (props) => {
             </Typography>
           </div>
 
-          <FormControl
-            variant="outlined"
-            className={classes.formControl}
-            style={{ padding: "10px" }}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              borderBottomLeftRadius: "10px",
+              borderBottomRightRadius: "10px",
+              backgroundColor: colors.stepitup_blueishGray,
+            }}
           >
-            <InputLabel htmlFor="outlined-age-native-simple">
-              Activity type
-            </InputLabel>
-            <Select
-              native
-              value={activity}
-              onChange={() => setActivity(activity)}
-              label="Activity type"
-              inputProps={{
-                name: "activity",
-                id: "outlined-age-native-simple",
-              }}
-            >
-              <option aria-label="None" value="" />
-              {Object.entries(activityList).map((activityOption) =>
-                createActivityOption(activityOption)
-              )}
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
+            <FormControl required className={classes.formControl}>
+              <InputLabel id="simple-select-required-label">
+                Activity type
+              </InputLabel>
+              <Select
+                native
+                value={activity}
+                onChange={() => setActivity(activity)}
+                labelId="simple-select-required-label"
+                id="simple-select-required"
+              >
+                <option aria-label="None" value="" />
+                {Object.entries(activityList).map((activityOption) =>
+                  createActivityOption(activityOption)
+                )}
+              </Select>
+              <FormHelperText>Required</FormHelperText>
+            </FormControl>
             <div
               style={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "flex-start",
                 alignItems: "center",
+                justifyContent: "space-evenly",
                 width: "100%",
               }}
             >
-              <IconButton
-                aria-label="close"
-                className={classes.closeButton}
-                onClick={() => setCalendarOpen(true)}
+              <FormControl
+                required
+                variant="outlined"
+                className={classes.formControl}
               >
-                <CalendarIcon />
-              </IconButton>
-              <Typography>{datePrompt}</Typography>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <IconButton
+                    aria-label="close"
+                    className={classes.closeButton}
+                    onClick={() => setCalendarOpen(true)}
+                  >
+                    <CalendarIcon />
+                  </IconButton>
+                  <Typography>{datePrompt}</Typography>
+                </div>
+              </FormControl>
+              <FormControl
+                required
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <TextField
+                  className={classes.textInput}
+                  style={{ width: "90%" }}
+                  label="Enter duration (min)"
+                  type="number"
+                  inputProps={{ min: "0" }}
+                  onChange={(event) => {
+                    setSteps(parseInt(event.target.value));
+                  }}
+                />
+              </FormControl>
             </div>
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <TextField
-              className={classes.textInput}
-              style={{ width: "90%" }}
-              label="Enter duration (min)"
-              type="number"
-              inputProps={{ min: "0" }}
-              onChange={(event) => {
-                setSteps(parseInt(event.target.value));
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                marginTop: "30px",
               }}
-            />
-          </FormControl>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              marginTop: "30px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Button
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: colors.stepitup_teal,
-                  color: colors.almostWhite,
-                }}
-                onClick={(e) => {
-                  onEditSteps(userId, date, steps);
-                  onEditDailyTotals(date, steps, dayStepCount);
-                }}
-                color="primary"
-              >
-                <Typography>Save</Typography>
-              </Button>
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Button
+                  style={{
+                    marginBottom: "10px",
+                    backgroundColor: colors.stepitup_teal,
+                    color: colors.almostWhite,
+                  }}
+                  onClick={(e) => {
+                    onEditSteps(userId, date, steps);
+                    onEditDailyTotals(date, steps, dayStepCount);
+                  }}
+                  color="primary"
+                >
+                  <Typography>Save</Typography>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </Grid>
 
-      <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Paper className={classes.paper} style={{ width: "80%" }}>
-            <DaySteps
+      {selectedDate !== "" && (
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <DaySummary
               totalDaySteps={dayStepCount}
               selectedDate={selectedDate}
             />
-          </Paper>
-        </div>
-      </Grid>
+          </div>
+        </Grid>
+      )}
 
       <Dialog
         fullScreen={fullScreen}

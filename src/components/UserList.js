@@ -57,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     backgroundColor: colors.stepitup_teal,
     fixedHeight: 240,
-    maxWidth: 300,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -88,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
       height: "30vh",
     },
     [theme.breakpoints.up("md")]: {
-      height: "80vh",
+      height: "70vh",
     },
     width: "100%",
     backgroundColor: colors.stepitup_blueishGray,
@@ -255,6 +254,11 @@ export default function UserList() {
                 <Button
                   Button
                   className={classes.button}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
                   onClick={() => handleStepperClicked(user)}
                 >
                   <div
@@ -262,7 +266,6 @@ export default function UserList() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      width: "100%",
                     }}
                   >
                     <Avatar

@@ -83,10 +83,9 @@ const useStyles = makeStyles((theme) => ({
       height: "30vh",
     },
     [theme.breakpoints.up("md")]: {
-      height: "80vh",
+      height: "70vh",
     },
     width: "100%",
-    marginTop: "20px",
     backgroundColor: colors.stepitup_blueishGray,
     overflow: "scroll",
   },
@@ -229,7 +228,6 @@ export default function TeamsList() {
         <Grid
           key="list"
           container
-          spacing={4}
           style={{
             display: "flex",
             justifyContent: "center",
@@ -247,6 +245,7 @@ export default function TeamsList() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      width: "100%",
                     }}
                   >
                     {group.profilePictureUrl ? (

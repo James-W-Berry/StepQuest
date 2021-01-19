@@ -1,11 +1,12 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Title from "./Title";
 import moment from "moment";
 import colors from "../assets/colors";
+import clsx from "clsx";
+import Paper from "@material-ui/core/Paper";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   stepContext: {
     flex: 1,
   },
@@ -16,14 +17,25 @@ const useStyles = makeStyles({
     lineHeight: "1.6",
     letterSpacing: "0.0075em",
   },
-});
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+    backgroundColor: colors.stepitup_teal,
+  },
+  fixedHeight: {
+    height: 240,
+  },
+}));
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const DaySteps = (props) => {
+const DaySummary = (props) => {
   const classes = useStyles();
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   let formattedDate;
   let totalDaySteps;
@@ -36,15 +48,16 @@ const DaySteps = (props) => {
       console.log("invalid date");
     }
   } else {
-    formattedDate = "Pick a day to record your steps";
+    formattedDate = "No date selected yet";
     totalDaySteps = "";
   }
 
   return (
-    <React.Fragment>
+    <Paper className={fixedHeightPaper}>
       <Typography h1 className={classes.lightTextTitle}>
-        Step Count
+        Activity Summary
       </Typography>
+      <Typography h3>{formattedDate}</Typography>
       <Typography
         style={{ marginTop: "20px", color: colors.almostWhite }}
         component="p"
@@ -52,15 +65,8 @@ const DaySteps = (props) => {
       >
         {numberWithCommas(totalDaySteps)}
       </Typography>
-      <Typography
-        style={{ marginTop: "10px", color: colors.almostBlack }}
-        variant="subtitle1"
-        className={classes.stepContext}
-      >
-        {formattedDate}
-      </Typography>
-    </React.Fragment>
+    </Paper>
   );
 };
 
-export default DaySteps;
+export default DaySummary;

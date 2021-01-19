@@ -36,6 +36,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Img from "react-image";
 import colors from "./assets/colors";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
 
 const drawerWidth = 250;
 
@@ -67,11 +69,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-  menuButton: {
-    position: "absolute",
-    height: 80,
-    width: 80,
-  },
   hide: {
     display: "none",
   },
@@ -91,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     padding: theme.spacing(3),
+    marginTop: theme.spacing(8),
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -149,7 +147,6 @@ function App() {
       style={{
         display: "flex",
         flex: 1,
-        color: "#E7E5DF",
       }}
     >
       <UserList />
@@ -160,7 +157,6 @@ function App() {
       style={{
         display: "flex",
         flex: 1,
-        color: "#E7E5DF",
       }}
     >
       <TeamsList />
@@ -252,15 +248,20 @@ function App() {
       >
         <BrowserRouter>
           <CssBaseline />
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            className={classes.menuButton}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon style={{ fontSize: 40 }} color="#ffffff" />
-          </IconButton>
+          <AppBar style={{ backgroundColor: colors.stepitup_teal }}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={toggleDrawer(true)}
+              >
+                <MenuIcon style={{ fontSize: 40 }} color="#ffffff" />
+              </IconButton>
+              <Typography variant="h6">Step It Up</Typography>
+            </Toolbar>
+          </AppBar>
+
           <Drawer
             className={classes.drawer}
             anchor="left"

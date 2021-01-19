@@ -75,7 +75,7 @@ export default function Dashboard() {
   const totalGroupSteps = useUsers();
 
   return (
-    <Grid container spacing={4} style={{ marginTop: "20px" }}>
+    <Grid container spacing={4}>
       <Grid item xs={12} md={8} lg={9}>
         <Paper className={fixedHeightPaper}>
           <Chart />
