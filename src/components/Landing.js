@@ -167,7 +167,7 @@ function Landing(props) {
         >
           <Typography
             className={classes.title}
-            style={{ color: colors.stepitip_vibrantGreen }}
+            style={{ color: colors.stepitup_vibrantGreen }}
           >
             Step It Up
           </Typography>
