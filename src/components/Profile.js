@@ -14,8 +14,6 @@ import {
   List,
   Tooltip,
   ListItemIcon,
-  Container,
-  CssBaseline,
   Grid,
 } from "@material-ui/core";
 import SettingsIcon from "@material-ui/icons/Settings";

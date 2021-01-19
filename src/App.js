@@ -18,22 +18,24 @@ import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EditIcon from "@material-ui/icons/Edit";
 import ProfileIcon from "@material-ui/icons/AccountCircle";
-import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
-import GroupIcon from "@material-ui/icons/Group";
+import TeamIcon from "@material-ui/icons/Group";
+import MemberIcon from "@material-ui/icons/DirectionsWalk";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
 import firebase from "./firebase";
 import "firebase/auth";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
-import EditSteps from "./components/EditSteps";
+import EditActivities from "./components/EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
 import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
 import Profile from "./components/Profile";
-import GroupsList from "./components/GroupsList";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import TeamsList from "./components/TeamsList";
+import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import Img from "react-image";
+import colors from "./assets/colors";
 
 const drawerWidth = 250;
 
@@ -142,7 +144,7 @@ function App() {
   const classes = useStyles();
 
   const DashboardPage = () => <Dashboard />;
-  const SteppersPage = () => (
+  const MembersPage = () => (
     <div
       style={{
         display: "flex",
@@ -153,7 +155,7 @@ function App() {
       <UserList />
     </div>
   );
-  const GroupsPage = () => (
+  const TeamsPage = () => (
     <div
       style={{
         display: "flex",
@@ -161,10 +163,10 @@ function App() {
         color: "#E7E5DF",
       }}
     >
-      <GroupsList />
+      <TeamsList />
     </div>
   );
-  const EditPage = () => <EditSteps userId={user.userId} />;
+  const EditPage = () => <EditActivities userId={user.userId} />;
   const ProfilePage = () => <Profile userId={user.userId} />;
 
   useEffect(() => {
@@ -200,8 +202,8 @@ function App() {
         >
           <Switch location={location}>
             <Route path="/dashboard" component={DashboardPage} />
-            <Route path="/steppers" component={SteppersPage} />
-            <Route path="/groups" component={GroupsPage} />
+            <Route path="/members" component={MembersPage} />
+            <Route path="/teams" component={TeamsPage} />
             <Route path="/edit" component={EditPage} />
             <Route path="/profile" component={ProfilePage} />
             <Redirect to="/dashboard" />
@@ -219,7 +221,7 @@ function App() {
     return (
       <div
         style={{
-          backgroundColor: "#191919",
+          backgroundColor: colors.almostBlack,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -227,14 +229,14 @@ function App() {
           width: "100vw",
         }}
       >
-        <SyncLoader color={"#93f9b9"} />
+        <SyncLoader color={colors.stepitup_teal} />
       </div>
     );
   }
 
   if (!user.loggedIn) {
     return (
-      <div style={{ backgroundColor: "#f7f7f5" }}>
+      <div style={{ backgroundColor: colors.almostWhite }}>
         <BrowserRouter>{AuthRoutes()}</BrowserRouter>
       </div>
     );
@@ -288,24 +290,24 @@ function App() {
                 </NavLink>
                 <NavLink
                   style={{ textDecoration: "none", color: "#ffffff" }}
-                  to="/steppers"
+                  to="/members"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <DirectionsWalkIcon style={{ color: "#ffffff" }} />
+                      <MemberIcon style={{ color: "#ffffff" }} />
                     </ListItemIcon>
-                    <ListItemText primary="Steppers" />
+                    <ListItemText primary="Members" />
                   </ListItem>
                 </NavLink>
                 <NavLink
                   style={{ textDecoration: "none", color: "#ffffff" }}
-                  to="/groups"
+                  to="/teams"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <GroupIcon style={{ color: "#ffffff" }} />
+                      <TeamIcon style={{ color: "#ffffff" }} />
                     </ListItemIcon>
-                    <ListItemText primary="Groups" />
+                    <ListItemText primary="Teams" />
                   </ListItem>
                 </NavLink>
               </List>
@@ -323,7 +325,7 @@ function App() {
                     <ListItemIcon>
                       <EditIcon style={{ color: "#ffffff" }} />
                     </ListItemIcon>
-                    <ListItemText primary="Edit your steps" />
+                    <ListItemText primary="Enter Activities" />
                   </ListItem>
                 </NavLink>
                 <NavLink

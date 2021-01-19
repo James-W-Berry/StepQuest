@@ -159,7 +159,7 @@ async function calculateGroupInfo(group) {
     });
 }
 
-export default function GroupsList() {
+export default function TeamsList() {
   const classes = useStyles();
 
   const [sortBy, setSortBy] = useState("STEPS_DESC");
