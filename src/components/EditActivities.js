@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -16,11 +16,14 @@ import {
   Select,
   FormHelperText,
 } from "@material-ui/core";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import colors from "../assets/colors";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import activityList from "../assets/activityList.json";
 import CalendarIcon from "@material-ui/icons/TodayOutlined";
+import CloseIcon from "@material-ui/icons/Close";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
   closeButton: {
@@ -74,184 +77,138 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function onEditSteps(userId, date, steps) {
-  if (date !== "") {
-    const docRef = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .collection("steps")
-      .doc(date.toString());
-
-    return docRef
-      .set({
-        steps: steps,
-      })
-      .then(function () {
-        console.log("successfully added steps document");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-}
-
-function onEditDailyTotals(date, steps, dayStepCount) {
-  if (date !== "") {
-    const decrement = -1 * dayStepCount;
-
-    const docRef = firebase
-      .firestore()
-      .collection("dailyTotals")
-      .doc(date.toString());
-
-    docRef
-      .set(
-        {
-          totalSteps: firebase.firestore.FieldValue.increment(decrement),
-        },
-        { merge: true }
-      )
-      .then(function () {
-        console.log("removed old day count from daily total steps");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    return docRef
-      .set(
-        {
-          totalSteps: firebase.firestore.FieldValue.increment(steps),
-        },
-        { merge: true }
-      )
-      .then(function () {
-        console.log("successfully incremented daily total steps");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-}
-
-function calculateTotal(userId, docs, user) {
-  let totalSteps = 0;
-
-  docs.map((doc) => {
-    totalSteps += doc.steps;
-  });
-
-  const docRef = firebase.firestore().collection("users").doc(userId);
-
-  console.log(`updating user total steps: ${totalSteps}`);
-  docRef
-    .set(
-      {
-        totalSteps: totalSteps,
-      },
-      { merge: true }
-    )
-    .then(function () {
-      console.log("successfully updated total steps");
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
-
-const SORT_OPTIONS = {
-  STEPS_ASC: { column: "steps", direction: "asc" },
-  STEPS_DESC: { column: "steps", direction: "desc" },
-};
-
-function useSteps(sortBy = "STEPS_DESC", userId, user) {
-  const [steps, setSteps] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .collection("steps")
-      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot((snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setSteps(docs);
-        calculateTotal(userId, docs, user);
-      });
-
-    return () => unsubscribe();
-  }, [sortBy, userId, user]);
-
-  return steps;
-}
-
-function showStepCount(date) {}
-
-function useUser(userId) {
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .onSnapshot((snapshot) => {
-        const doc = {
-          ...snapshot.data(),
-        };
-        setUser(doc);
-      });
-
-    return () => unsubscribe();
-  }, [userId]);
-
-  return user;
-}
-
-function createActivityOption(activityOption) {
-  if (activityOption !== undefined) {
-    return <option value={activityOption[0]}>{activityOption[0]}</option>;
-  }
-}
-
 const EditActivities = (props) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [userId, setUserId] = useState(props.userId);
+  const userId = props.userId;
   const [date, setDate] = useState("");
   const [datePrompt, setDatePrompt] = useState("Select date");
-  const [steps, setSteps] = useState(0);
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
+  const [duration, setDuration] = useState();
   const [selectedDate, setSelectedDate] = useState("");
-  const user = useUser(userId);
-  const savedSteps = useSteps(sortBy, userId, user);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [open, setOpen] = useState(false);
-  const [activity, setActivity] = useState(activityList[0]);
+  const [activity, setActivity] = useState();
   const [calendarOpen, setCalendarOpen] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      console.log("EditSteps UNMOUNTED");
-    };
-  }, []);
+  const [dayTotalDuration, setDayTotalDuration] = useState(0);
+  const [selectedDateContent, setSelectedDateContent] = useState();
 
   const handleClose = () => {
     setCalendarOpen(false);
   };
 
-  let dayStepCount = "0";
-
-  savedSteps.map((step) => {
-    if (step.id === selectedDate.toString()) {
-      dayStepCount = step.steps;
+  function createActivityOption(activityOption) {
+    if (activityOption !== undefined) {
+      return <option value={activityOption[0]}>{activityOption[0]}</option>;
     }
+  }
+
+  function getDayActivities(day) {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .collection("activities")
+      .doc(day)
+      .get()
+      .then((retrievedDay) => {
+        let data = retrievedDay.data();
+        setSelectedDateContent(data);
+        setDayTotalDuration(0);
+        let total = 0;
+        if (data) {
+          Object.values(data).forEach((activityDuration) => {
+            total += activityDuration;
+          });
+        }
+        setDayTotalDuration(total);
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+        return [];
+      });
+  }
+
+  function updateUserTotalDuration(updatedDuration, previousDuration) {
+    let currentTotal;
+    let updatedTotal;
+    const docRef = firebase.firestore().collection("users").doc(userId);
+
+    docRef
+      .get()
+      .then((retrievedUser) => {
+        currentTotal = parseInt(retrievedUser.data().totalDuration);
+        updatedTotal = currentTotal - previousDuration + updatedDuration;
+
+        docRef
+          .set(
+            {
+              totalDuration: updatedTotal,
+            },
+            { merge: true }
+          )
+          .then(function () {
+            console.log("successfully updated user's total duration");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      })
+      .catch(function (error) {
+        console.log(error);
+        return [];
+      });
+  }
+
+  function recordActivity(date, activity, duration) {
+    let oldDuration;
+    if (selectedDateContent[activity]) {
+      oldDuration = selectedDateContent[activity];
+    } else {
+      oldDuration = 0;
+    }
+
+    if (date !== "" || activity || duration) {
+      const docRef = firebase
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .collection("activities")
+        .doc(date.toString());
+
+      return docRef
+        .set(
+          {
+            [activity]: duration,
+          },
+          { merge: true }
+        )
+        .then(function () {
+          updateUserTotalDuration(duration, oldDuration);
+          getDayActivities(selectedDate.toString());
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }
+
+  const DialogTitle = withStyles(styles)((props) => {
+    const { children, classes, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography style={{ color: "#f7f7f5" }} variant="h6">
+          {children}
+        </Typography>
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
   });
 
   return (
@@ -263,8 +220,7 @@ const EditActivities = (props) => {
       <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
         <div
           style={{
-            //border: `1px ${colors.almostBlack} solid`,
-            borderRadius: "10px",
+            borderRadius: "3px",
           }}
         >
           <div
@@ -273,8 +229,8 @@ const EditActivities = (props) => {
               padding: "15px",
               display: "flex",
               justifyContent: "center",
-              borderTopLeftRadius: "10px",
-              borderTopRightRadius: "10px",
+              borderTopLeftRadius: "3px",
+              borderTopRightRadius: "3px",
             }}
           >
             <Typography variant="h6" style={{ color: colors.almostWhite }}>
@@ -287,8 +243,8 @@ const EditActivities = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              borderBottomLeftRadius: "10px",
-              borderBottomRightRadius: "10px",
+              borderBottomLeftRadius: "3px",
+              borderBottomRightRadius: "3px",
               backgroundColor: colors.stepitup_blueishGray,
             }}
           >
@@ -299,7 +255,9 @@ const EditActivities = (props) => {
               <Select
                 native
                 value={activity}
-                onChange={() => setActivity(activity)}
+                onChange={(event) => {
+                  setActivity(event.target.value);
+                }}
                 labelId="simple-select-required-label"
                 id="simple-select-required"
               >
@@ -355,7 +313,7 @@ const EditActivities = (props) => {
                   type="number"
                   inputProps={{ min: "0" }}
                   onChange={(event) => {
-                    setSteps(parseInt(event.target.value));
+                    setDuration(parseInt(event.target.value));
                   }}
                 />
               </FormControl>
@@ -376,8 +334,7 @@ const EditActivities = (props) => {
                     color: colors.almostWhite,
                   }}
                   onClick={(e) => {
-                    onEditSteps(userId, date, steps);
-                    onEditDailyTotals(date, steps, dayStepCount);
+                    recordActivity(date, activity, duration);
                   }}
                   color="primary"
                 >
@@ -400,7 +357,8 @@ const EditActivities = (props) => {
             }}
           >
             <DaySummary
-              totalDaySteps={dayStepCount}
+              total={dayTotalDuration}
+              content={selectedDateContent}
               selectedDate={selectedDate}
             />
           </div>
@@ -414,6 +372,18 @@ const EditActivities = (props) => {
         aria-labelledby="customized-dialog-title"
         open={calendarOpen}
       >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.almostBlack,
+          }}
+        >
+          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Select a date
+          </DialogTitle>
+        </div>
         <div className={classes.calendar}>
           <Calendar
             onChange={(newDate) => {
@@ -431,8 +401,8 @@ const EditActivities = (props) => {
             }}
             value={date}
             onClickDay={(selectedDate) => {
-              showStepCount(selectedDate);
               setSelectedDate(selectedDate);
+              getDayActivities(selectedDate.toString());
               handleClose();
             }}
           />
