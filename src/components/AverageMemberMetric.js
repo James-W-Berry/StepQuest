@@ -1,7 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import moment from "moment";
+import { makeStyles } from "@material-ui/core/styles";
 import colors from "../assets/colors";
 
 const useStyles = makeStyles({
@@ -18,35 +17,32 @@ const useStyles = makeStyles({
 });
 
 function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else {
+    return "";
+  }
 }
 
-const TotalSteps = (props) => {
+const AverageMemberMetric = (props) => {
   const classes = useStyles();
-
-  const today = moment().format("MMMM Do, YYYY");
 
   return (
     <React.Fragment>
       <Typography h1 className={classes.lightTextTitle}>
-        {props.title}
+        {`Average Total Activity Duration for a ${props.groupName} member`}
       </Typography>
       <Typography
         style={{ marginTop: "20px", color: colors.almostWhite }}
         component="p"
         variant="h3"
       >
-        {numberWithCommas(props.totalGroupSteps)}
-      </Typography>
-      <Typography
-        style={{ marginTop: "10px", color: "#171820" }}
-        variant="subtitle1"
-        className={classes.stepContext}
-      >
-        as of {today}
+        {props.numberOfMembers === 0
+          ? null
+          : numberWithCommas(Math.round(props.total / props.numberOfMembers))}
       </Typography>
     </React.Fragment>
   );
 };
 
-export default TotalSteps;
+export default AverageMemberMetric;

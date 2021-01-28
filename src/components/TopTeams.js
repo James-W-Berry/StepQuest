@@ -12,36 +12,32 @@ import firebase from "../firebase";
 import colors from "../assets/colors";
 
 const SORT_OPTIONS = {
-  STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" },
+  DURATION_ASC: { column: "totalDuration", direction: "asc" },
+  DURATION_DESC: { column: "totalDuration", direction: "desc" },
 };
 
-function useUsers(sortBy = "STEPS_DESC") {
-  const [users, setUsers] = useState([]);
+function useGroups(sortBy = "DURATION_DESC") {
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
-      .collection("users")
+      .collection("groups")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
       .limit(5)
       .onSnapshot((snapshot) => {
-        const newUsers = snapshot.docs.map((doc) => ({
+        const retrievedGroups = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        setUsers(newUsers);
+        setGroups(retrievedGroups);
       });
 
     return () => unsubscribe();
   }, [sortBy]);
 
-  return users;
-}
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return groups;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -57,36 +53,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopSteppers() {
+function numberWithCommas(x) {
+  if (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else {
+    return "";
+  }
+}
+
+export default function TopTeams() {
   const classes = useStyles();
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
-  const users = useUsers(sortBy);
+  const sortBy = "DURATION_DESC";
+  const groups = useGroups(sortBy);
 
   return (
     <React.Fragment>
       <Typography h1 className={classes.lightTextTitle}>
-        Top Steppers
+        Top Teams
       </Typography>
+
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Total Steps</TableCell>
+            <TableCell>Total Duration</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.displayName}</TableCell>
-              <TableCell>{numberWithCommas(user.totalSteps)}</TableCell>
+          {groups.map((group) => (
+            <TableRow key={group.id}>
+              <TableCell>{group.name}</TableCell>
+              <TableCell>{numberWithCommas(group.totalDuration)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
       <div className={classes.seeMore}>
-        <NavLink to="/steppers">
-          <Link color="primary">See more steppers</Link>
+        <NavLink to="/teams">
+          <Link color="primary">See more Groups</Link>
         </NavLink>
       </div>
     </React.Fragment>

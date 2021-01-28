@@ -30,28 +30,27 @@ const useStyles = makeStyles({
 });
 
 const SORT_OPTIONS = {
-  STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" },
+  DURATION_ASC: { column: "totalDuration", direction: "asc" },
+  DURATION_DESC: { column: "totalDuration", direction: "desc" },
 };
 
-function useDailyTotals(sortBy = "STEPS_DESC") {
+function useDailyTotals(sortBy = "DURATION_DESC") {
   const [dailyTotals, setDailyTotals] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .firestore()
       .collection("dailyTotals")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot((snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
+      .get()
+      .then((totals) => {
+        const docs = totals.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
         setDailyTotals(docs);
       });
-
-    return () => unsubscribe();
   }, []);
 
   return dailyTotals;
@@ -64,7 +63,7 @@ function createData(day, steps) {
 function generateDailyTotals(dailyTotals) {
   let data = [];
 
-  dailyTotals.map((day) => {
+  dailyTotals.forEach((day) => {
     const formattedDay = moment(day.id).format("MMM D");
     const checkForDate = checkIfDateIsPresent(data, formattedDay);
     if (checkForDate.isPresent) {
@@ -121,7 +120,7 @@ const CustomInput = ({ value, onClick, classes }) => (
   </Button>
 );
 
-export default function Chart() {
+export default function Chart(props) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -132,7 +131,7 @@ export default function Chart() {
 
   const [startDate, setStartDate] = useState(start);
   const [endDate, setEndDate] = useState(new Date());
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
+  const sortBy = "DURATION_DESC";
 
   const dailyTotals = useDailyTotals(sortBy);
   const filteredDailyTotals = applyRangeFilter(dailyTotals, startDate, endDate);
@@ -148,7 +147,7 @@ export default function Chart() {
           }}
         >
           <Typography h1 className={classes.lightTextHeading}>
-            Daily Step Totals
+            {props.title}
           </Typography>
 
           <div

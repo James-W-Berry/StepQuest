@@ -5,10 +5,11 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Chart from "./Chart";
 import firebase from "../firebase";
-import TotalSteps from "./TotalSteps";
-import TopSteppers from "./TopSteppers";
-import TopGroups from "./TopGroups";
+import TotalMetricCard from "./TotalMetricCard";
+import TopUsers from "./TopUsers";
+import TopTeams from "./TopTeams";
 import colors from "../assets/colors";
+import Announcement from "./Announcement";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,55 +46,56 @@ function useUsers() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .firestore()
       .collection("users")
-      .onSnapshot((snapshot) => {
-        const newUsers = snapshot.docs.map((doc) => ({
+      .get()
+      .then((users) => {
+        const newUsers = users.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
         setUsers(newUsers);
       });
-
-    return () => unsubscribe();
   }, []);
 
-  let totalGroupSteps = 0;
-  users.map((user) => {
-    if (user.totalSteps) {
-      totalGroupSteps += user.totalSteps;
+  let totalDuration = 0;
+  users.forEach((user) => {
+    if (user.totalDuration) {
+      totalDuration += user.totalDuration;
     }
   });
-  return totalGroupSteps;
+  return totalDuration;
 }
 
 export default function Dashboard() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const totalGroupSteps = useUsers();
+  const totalActivityDuration = useUsers();
 
   return (
     <Grid container spacing={4}>
-      <Grid item xs={12} md={8} lg={9}>
+      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+        <Announcement />
+      </Grid>
+      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
         <Paper className={fixedHeightPaper}>
-          <Chart />
+          <TotalMetricCard
+            title={"Total Arriver Activity Duration"}
+            total={totalActivityDuration}
+            unit="minutes"
+          />
         </Paper>
       </Grid>
-      <Grid item xs={12} md={4} lg={3}>
-        <Paper className={fixedHeightPaper}>
-          <TotalSteps title={"Total Steps"} totalGroupSteps={totalGroupSteps} />
-        </Paper>
-      </Grid>
-      <Grid item xs={12} md={6} lg={6}>
+      <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
         <Paper className={classes.paper}>
-          <TopSteppers />
+          <TopUsers />
         </Paper>
       </Grid>
-      <Grid item xs={12} md={6} lg={6}>
+      <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
         <Paper className={classes.paper}>
-          <TopGroups />
+          <TopTeams />
         </Paper>
       </Grid>
     </Grid>

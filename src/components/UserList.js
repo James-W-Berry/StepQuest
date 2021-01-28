@@ -16,9 +16,9 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import TotalSteps from "./TotalSteps";
+import TotalMetricCard from "./TotalMetricCard";
 import moment from "moment";
-import AverageSteps from "./AverageSteps";
+import AverageMetricCard from "./AverageMetricCard";
 import colors from "../assets/colors";
 
 const useStyles = makeStyles((theme) => ({
@@ -117,28 +117,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SORT_OPTIONS = {
-  STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" },
+  DURATION_ASC: { column: "totalDuration", direction: "asc" },
+  DURATION_DESC: { column: "totalDuration", direction: "desc" },
 };
 
-function useUsers(sortBy = "STEPS_DESC") {
+function useUsers(sortBy = "DURATION_DESC") {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .firestore()
       .collection("users")
       .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot((snapshot) => {
-        const newUsers = snapshot.docs.map((doc) => ({
+      .get()
+      .then((retrievedUsers) => {
+        const newUsers = retrievedUsers.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
         setUsers(newUsers);
+      })
+      .catch(function (error) {
+        console.log(error);
+        return [];
       });
-
-    return () => unsubscribe();
   }, [sortBy]);
 
   return users;
@@ -149,21 +152,57 @@ async function calculateDailyTotals(user) {
     .firestore()
     .collection("users")
     .doc(user.id)
-    .collection("steps")
-    .orderBy("steps", "desc")
+    .collection("activities")
     .get()
-    .then(function (docs) {
-      const userSteps = docs.docs.map((doc) => ({
+    .then((days) => {
+      const daysData = days.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      return userSteps;
+      return daysData;
     });
-  let top5 = response.slice(0, 5);
-  let values = {
-    top5: top5,
-    allDays: response,
-  };
+
+  let daySums = [];
+
+  response.forEach((day) => {
+    let sum = 0;
+
+    Object.entries(day).forEach((activity) => {
+      if (activity[0] !== "id") {
+        sum += activity[1];
+      }
+    });
+
+    let result = {
+      day: day.id.toString(),
+      sum: sum,
+    };
+
+    daySums.push(result);
+  });
+
+  daySums.sort((a, b) => (a.sum < b.sum ? 1 : -1));
+
+  let top5 = daySums.slice(0, 5);
+  let values = {};
+  values.top5 = top5;
+  values.allDays = daySums;
+  return values;
+}
+
+async function calculateTopUserActivities(user) {
+  let activities = [];
+  let top5 = [];
+  let values = {};
+  Object.entries(user).forEach((field) => {
+    if (field[0].toString().includes("activity_total_")) {
+      activities.push(field);
+    }
+  });
+  activities.sort((a, b) => (a[1] < b[1] ? 1 : -1));
+  top5 = activities.slice(0, 5);
+  values.allActivities = activities;
+  values.top5 = top5;
   return values;
 }
 
@@ -171,21 +210,24 @@ export default function UserList() {
   const classes = useStyles();
   const selectStyle = clsx(classes.root, classes.select);
 
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
-  const [selectedStepper, setSelectedStepper] = useState("");
-  const [userDailyTotals, setUserDailyTotals] = useState([]);
-  const [top5UserDailyTotals, setTop5UserDailyTotals] = useState([]);
+  const [sortBy, setSortBy] = useState("DURATION_DESC");
+  const [selectedUser, setSelectedUser] = useState("");
+  const [totals, setTotals] = useState();
+  const [topActivities, setTopActivities] = useState();
   const users = useUsers(sortBy);
 
   const handleFilterChange = (event) => {
     setSortBy(event.target.value);
   };
 
-  async function handleStepperClicked(user) {
-    setSelectedStepper(user);
-    let totals = await calculateDailyTotals(user);
-    setUserDailyTotals(totals.allDays);
-    setTop5UserDailyTotals(totals.top5);
+  async function handleUserClicked(user) {
+    setSelectedUser(user);
+    await calculateDailyTotals(user).then((totals) => {
+      setTotals(totals);
+    });
+    await calculateTopUserActivities(user).then((activities) => {
+      setTopActivities(activities);
+    });
   }
 
   return (
@@ -227,14 +269,14 @@ export default function UserList() {
               value={sortBy}
               onChange={handleFilterChange}
             >
-              <MenuItem value={"STEPS_DESC"}>
+              <MenuItem value={"DURATION_DESC"}>
                 <Typography style={{ color: colors.almostBlack }}>
-                  Steps (most first)
+                  Activity Duration (most first)
                 </Typography>
               </MenuItem>
-              <MenuItem value={"STEPS_ASC"}>
+              <MenuItem value={"DURATION_ASC"}>
                 <Typography style={{ color: colors.almostBlack }}>
-                  Steps (least first)
+                  Activity Duration (least first)
                 </Typography>
               </MenuItem>
             </Select>
@@ -259,7 +301,7 @@ export default function UserList() {
                     display: "flex",
                     justifyContent: "flex-start",
                   }}
-                  onClick={() => handleStepperClicked(user)}
+                  onClick={() => handleUserClicked(user)}
                 >
                   <div
                     style={{
@@ -286,7 +328,7 @@ export default function UserList() {
       </Grid>
 
       <Grid key="focusedUser" item xs={12} sm={12} md={8} lg={8} xl={8}>
-        {selectedStepper !== "" ? (
+        {selectedUser !== "" ? (
           <div
             className={classes.focusedUser}
             style={{
@@ -306,7 +348,7 @@ export default function UserList() {
               }}
             >
               <Avatar
-                src={selectedStepper.profilePictureUrl}
+                src={selectedUser.profilePictureUrl}
                 style={{
                   height: "120px",
                   width: "120px",
@@ -318,7 +360,7 @@ export default function UserList() {
                 style={{ color: colors.almostBlack }}
                 className={classes.name}
               >
-                {selectedStepper.displayName}
+                {selectedUser.displayName}
               </Typography>
             </div>
 
@@ -333,9 +375,10 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <Paper className={classes.paper} style={{ width: "80%" }}>
-                  <TotalSteps
-                    title={"Total Steps"}
-                    totalGroupSteps={selectedStepper.totalSteps}
+                  <TotalMetricCard
+                    title={"Total Activity Duration"}
+                    total={selectedUser.totalDuration}
+                    unit="minutes"
                   />
                 </Paper>
               </Grid>
@@ -350,10 +393,14 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <Paper className={classes.paper} style={{ width: "80%" }}>
-                  <AverageSteps
-                    totalGroupSteps={selectedStepper.totalSteps}
-                    numberOfDays={userDailyTotals.length}
-                  />
+                  {totals?.allDays && (
+                    <AverageMetricCard
+                      title="Average Daily Duration"
+                      total={selectedUser.totalDuration}
+                      numberOfDays={totals.allDays.length}
+                      unit="minutes"
+                    />
+                  )}
                 </Paper>
               </Grid>
 
@@ -375,17 +422,54 @@ export default function UserList() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Day</TableCell>
-                          <TableCell>Total Steps</TableCell>
+                          <TableCell>Total Duration</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {top5UserDailyTotals &&
-                          top5UserDailyTotals.map((day) => (
-                            <TableRow key={day.id}>
+                        {totals?.top5 &&
+                          totals.top5.map((day) => (
+                            <TableRow key={day.day}>
                               <TableCell>
-                                {moment(day.id).format("MMMM Do, YYYY")}
+                                {moment(day.day).format("MMMM Do, YYYY")}
                               </TableCell>
-                              <TableCell>{day.steps}</TableCell>
+                              <TableCell>{day.sum} minutes</TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </TableRow>
+                  </Paper>
+                </React.Fragment>
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
+                xl={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <React.Fragment>
+                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                    <Typography h1 className={classes.lightTextTitle}>
+                      Tops Activities
+                    </Typography>
+                    <TableRow size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Activity</TableCell>
+                          <TableCell>Total Duration</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {topActivities?.top5 &&
+                          topActivities.top5.map((activity) => (
+                            <TableRow key={activity[0]}>
+                              <TableCell>
+                                {activity[0].replace("activity_total_", "")}
+                              </TableCell>
+                              <TableCell>{activity[1]} minutes</TableCell>
                             </TableRow>
                           ))}
                       </TableBody>

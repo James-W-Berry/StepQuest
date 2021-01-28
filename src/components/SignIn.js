@@ -80,12 +80,29 @@ function SignIn(props) {
       .signInWithEmailAndPassword(email, password)
       .then(function () {
         console.log("Sign in successful");
+        //TODO: explore what happens if doc is not present and user exists. maybe try: ensureUserExists();
       })
       .catch(function (error) {
         alert("Incorrect email or password, please try again");
         setIsLoading(false);
       });
   }
+
+  // function ensureUserExists(username, email, password) {
+  //   setIsLoading(true);
+  //   const db = firebase.firestore();
+
+  //       db.collection("users")
+  //         .doc(userId)
+  //         .set({
+  //           displayName: username,
+  //           totalSteps: 0,
+  //         })
+  //         .catch(function (error) {
+  //           console.log(error);
+  //         });
+
+  // }
 
   const classes = useStyles();
 

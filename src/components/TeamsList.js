@@ -12,9 +12,9 @@ import {
   Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TotalSteps from "./TotalSteps";
+import TotalMetricCard from "./TotalMetricCard";
 import GroupIcon from "@material-ui/icons/Group";
-import AverageMemberSteps from "./AverageMemberSteps";
+import AverageMemberMetric from "./AverageMemberMetric";
 import colors from "../assets/colors";
 
 const useStyles = makeStyles((theme) => ({
@@ -164,7 +164,7 @@ export default function TeamsList() {
   const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedGroup, setSelectedGroup] = useState("");
   const groups = useGroups(sortBy);
-  const [totalGroupSteps, setTotalGroupSteps] = useState();
+  const [totalGroupDuration, setTotalDuration] = useState();
   const [groupInfo, setGroupInfo] = useState();
 
   // const handleFilterChange = (event) => {
@@ -176,20 +176,28 @@ export default function TeamsList() {
     const groupInfo = await calculateGroupInfo(group);
     let total = 0;
     Object.entries(groupInfo).forEach((member) => {
-      total += member[1].totalSteps;
+      if (member[1].totalDuration) total += member[1].totalDuration;
     });
 
     firebase
       .firestore()
       .collection("groups")
       .doc(group.id)
-      .set({ totalSteps: total }, { merge: true })
+      .set({ totalDuration: total }, { merge: true })
       .catch(function (error) {
         console.log(error);
       });
 
-    setTotalGroupSteps(total);
+    setTotalDuration(total);
     setGroupInfo(groupInfo);
+  }
+
+  function numberWithCommas(x) {
+    if (x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return "";
+    }
   }
 
   return (
@@ -324,7 +332,7 @@ export default function TeamsList() {
               </Typography>
             </div>
 
-            {groupInfo && totalGroupSteps !== 0 && (
+            {groupInfo && totalGroupDuration !== 0 && (
               <Grid container spacing={4}>
                 <Grid
                   item
@@ -336,9 +344,10 @@ export default function TeamsList() {
                   style={{ display: "flex", justifyContent: "center" }}
                 >
                   <Paper className={classes.paper} style={{ width: "80%" }}>
-                    <TotalSteps
-                      title="Total Steps"
-                      totalGroupSteps={totalGroupSteps}
+                    <TotalMetricCard
+                      title="Total Activity Duration"
+                      total={totalGroupDuration}
+                      unit=""
                     />
                   </Paper>
                 </Grid>
@@ -353,9 +362,9 @@ export default function TeamsList() {
                   style={{ display: "flex", justifyContent: "center" }}
                 >
                   <Paper className={classes.paper} style={{ width: "80%" }}>
-                    <AverageMemberSteps
+                    <AverageMemberMetric
                       groupName={selectedGroup.name}
-                      totalGroupSteps={totalGroupSteps}
+                      total={totalGroupDuration}
                       numberOfMembers={Object.entries(groupInfo).length}
                     />
                   </Paper>
@@ -380,7 +389,7 @@ export default function TeamsList() {
                             <TableHead>
                               <TableRow>
                                 <TableCell>Name</TableCell>
-                                <TableCell>Total Steps</TableCell>
+                                <TableCell>Total Activity Duration</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -391,7 +400,9 @@ export default function TeamsList() {
                                       {member[1].displayName}
                                     </TableCell>
                                     <TableCell>
-                                      {member[1].totalSteps}
+                                      {numberWithCommas(
+                                        member[1].totalDuration
+                                      )}
                                     </TableCell>
                                   </TableRow>
                                 ))}

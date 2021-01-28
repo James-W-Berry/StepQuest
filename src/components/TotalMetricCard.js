@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import moment from "moment";
 import colors from "../assets/colors";
 
 const useStyles = makeStyles({
@@ -17,37 +18,38 @@ const useStyles = makeStyles({
 });
 
 function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else {
+    return "";
+  }
 }
 
-const AverageSteps = (props) => {
+const TotalMetricCard = (props) => {
   const classes = useStyles();
+
+  const today = moment().format("MMMM Do, YYYY");
 
   return (
     <React.Fragment>
       <Typography h1 className={classes.lightTextTitle}>
-        Average Daily Steps
+        {props.title}
       </Typography>
       <Typography
         style={{ marginTop: "20px", color: colors.almostWhite }}
         component="p"
         variant="h3"
       >
-        {props.numberOfDays === 0
-          ? 0
-          : numberWithCommas(
-              Math.round(props.totalGroupSteps / props.numberOfDays)
-            )}
+        {`${numberWithCommas(props.total)} ${props.unit ? props.unit : ""}`}
       </Typography>
       <Typography
-        style={{ marginTop: "10px", color: colors.almostBlack }}
+        style={{ marginTop: "10px", color: "#171820" }}
         variant="subtitle1"
-        className={classes.stepContext}
       >
-        Goal: 7,000
+        as of {today}
       </Typography>
     </React.Fragment>
   );
 };
 
-export default AverageSteps;
+export default TotalMetricCard;

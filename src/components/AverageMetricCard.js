@@ -1,7 +1,6 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
-import Title from "./Title";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import colors from "../assets/colors";
 
 const useStyles = makeStyles({
@@ -18,30 +17,34 @@ const useStyles = makeStyles({
 });
 
 function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } else {
+    return "";
+  }
 }
 
-const AverageMemberSteps = (props) => {
+const AverageMetricCard = (props) => {
   const classes = useStyles();
 
   return (
     <React.Fragment>
       <Typography h1 className={classes.lightTextTitle}>
-        {`Average Steps for a ${props.groupName} member`}
+        {props.title}
       </Typography>
       <Typography
         style={{ marginTop: "20px", color: colors.almostWhite }}
         component="p"
         variant="h3"
       >
-        {props.numberOfMembers === 0
-          ? null
-          : numberWithCommas(
-              Math.round(props.totalGroupSteps / props.numberOfMembers)
-            )}
+        {props.numberOfDays === 0
+          ? 0
+          : `${numberWithCommas(
+              Math.round(props.total / props.numberOfDays)
+            )} ${props.unit}`}
       </Typography>
     </React.Fragment>
   );
 };
 
-export default AverageMemberSteps;
+export default AverageMetricCard;

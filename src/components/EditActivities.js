@@ -89,7 +89,7 @@ const EditActivities = (props) => {
   const [activity, setActivity] = useState();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [dayTotalDuration, setDayTotalDuration] = useState(0);
-  const [selectedDateContent, setSelectedDateContent] = useState();
+  const [selectedDateContent, setSelectedDateContent] = useState({});
 
   const handleClose = () => {
     setCalendarOpen(false);
@@ -111,7 +111,11 @@ const EditActivities = (props) => {
       .get()
       .then((retrievedDay) => {
         let data = retrievedDay.data();
-        setSelectedDateContent(data);
+        if (data) {
+          setSelectedDateContent(data);
+        } else {
+          setSelectedDateContent({});
+        }
         setDayTotalDuration(0);
         let total = 0;
         if (data) {
@@ -158,6 +162,46 @@ const EditActivities = (props) => {
       });
   }
 
+  function updateUserActivityTotalDuration(
+    activity,
+    updatedDuration,
+    previousDuration
+  ) {
+    let currentTotal;
+    let updatedTotal;
+    const docRef = firebase.firestore().collection("users").doc(userId);
+
+    docRef
+      .get()
+      .then((retrievedUser) => {
+        let field = `activity_total_${activity}`;
+
+        currentTotal = parseInt(retrievedUser.data()[field]);
+        if (!currentTotal) currentTotal = 0;
+        updatedTotal = currentTotal - previousDuration + updatedDuration;
+
+        docRef
+          .set(
+            {
+              [field]: updatedTotal,
+            },
+            { merge: true }
+          )
+          .then(function () {
+            console.log(
+              `successfully updated user's total duration for ${activity}`
+            );
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      })
+      .catch(function (error) {
+        console.log(error);
+        return [];
+      });
+  }
+
   function recordActivity(date, activity, duration) {
     let oldDuration;
     if (selectedDateContent[activity]) {
@@ -165,6 +209,8 @@ const EditActivities = (props) => {
     } else {
       oldDuration = 0;
     }
+
+    console.log(oldDuration);
 
     if (date !== "" || activity || duration) {
       const docRef = firebase
@@ -183,6 +229,7 @@ const EditActivities = (props) => {
         )
         .then(function () {
           updateUserTotalDuration(duration, oldDuration);
+          updateUserActivityTotalDuration(activity, duration, oldDuration);
           getDayActivities(selectedDate.toString());
         })
         .catch(function (error) {
