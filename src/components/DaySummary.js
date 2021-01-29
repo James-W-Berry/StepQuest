@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     backgroundColor: colors.stepitup_teal,
+    borderRadius: "10px",
   },
 }));
 
