@@ -34,7 +34,6 @@ import Profile from "./components/Profile";
 import TeamsList from "./components/TeamsList";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import Img from "react-image";
 import colors from "./assets/colors";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
