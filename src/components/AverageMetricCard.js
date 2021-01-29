@@ -38,7 +38,7 @@ const AverageMetricCard = (props) => {
         variant="h3"
       >
         {props.numberOfDays === 0
-          ? 0
+          ? `0 ${props.unit}`
           : `${numberWithCommas(
               Math.round(props.total / props.numberOfDays)
             )} ${props.unit}`}

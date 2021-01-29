@@ -74,7 +74,7 @@ export default function TopUsers() {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Total Duration</TableCell>
+            <TableCell>Total Duration (minutes)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

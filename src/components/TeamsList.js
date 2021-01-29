@@ -234,6 +234,11 @@ export default function TeamsList() {
               <div>
                 <Button
                   className={classes.button}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
                   onClick={() => handleGroupClicked(group)}
                 >
                   <div
@@ -241,7 +246,6 @@ export default function TeamsList() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      width: "100%",
                     }}
                   >
                     {group.profilePictureUrl ? (
@@ -329,13 +333,16 @@ export default function TeamsList() {
                   md={6}
                   lg={6}
                   xl={6}
-                  style={{ display: "flex", justifyContent: "center" }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
                 >
-                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                  <Paper className={classes.paper} style={{ width: "100%" }}>
                     <TotalMetricCard
                       title="Total Activity Duration"
                       total={totalGroupDuration}
-                      unit=""
+                      unit="minutes"
                     />
                   </Paper>
                 </Grid>
@@ -349,7 +356,7 @@ export default function TeamsList() {
                   xl={6}
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                  <Paper className={classes.paper} style={{ width: "100%" }}>
                     <AverageMemberMetric
                       groupName={selectedGroup.name}
                       total={totalGroupDuration}
@@ -367,7 +374,7 @@ export default function TeamsList() {
                   style={{ display: "flex", justifyContent: "center" }}
                 >
                   <React.Fragment>
-                    <Paper className={classes.paper} style={{ width: "80%" }}>
+                    <Paper className={classes.paper} style={{ width: "100%" }}>
                       {groupInfo ? (
                         <div>
                           <Typography h1 className={classes.lightTextTitle}>
@@ -377,7 +384,7 @@ export default function TeamsList() {
                             <TableHead>
                               <TableRow>
                                 <TableCell>Name</TableCell>
-                                <TableCell>Total Activity Duration</TableCell>
+                                <TableCell>Total Duration (minutes)</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>

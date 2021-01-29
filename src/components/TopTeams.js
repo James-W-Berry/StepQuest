@@ -76,7 +76,7 @@ export default function TopTeams() {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Total Duration</TableCell>
+            <TableCell>Total Duration (minutes)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

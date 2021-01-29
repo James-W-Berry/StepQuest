@@ -222,6 +222,14 @@ export default function UserList() {
     setSortBy(event.target.value);
   };
 
+  function numberWithCommas(x) {
+    if (x !== undefined) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return "";
+    }
+  }
+
   async function handleUserClicked(user) {
     setSelectedUser(user);
     await calculateDailyTotals(user).then((totals) => {
@@ -376,7 +384,7 @@ export default function UserList() {
                 xl={6}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Paper className={classes.paper} style={{ width: "80%" }}>
+                <Paper className={classes.paper} style={{ width: "100%" }}>
                   <TotalMetricCard
                     title={"Total Activity Duration"}
                     total={selectedUser.totalDuration}
@@ -394,7 +402,7 @@ export default function UserList() {
                 xl={6}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Paper className={classes.paper} style={{ width: "80%" }}>
+                <Paper className={classes.paper} style={{ width: "100%" }}>
                   {totals?.allDays && (
                     <AverageMetricCard
                       title="Average Daily Duration"
@@ -416,15 +424,15 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <React.Fragment>
-                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                  <Paper className={classes.paper} style={{ width: "100%" }}>
                     <Typography h1 className={classes.lightTextTitle}>
-                      Tops Days
+                      Top Days
                     </Typography>
                     <TableRow size="small">
                       <TableHead>
                         <TableRow>
                           <TableCell>Day</TableCell>
-                          <TableCell>Total Duration</TableCell>
+                          <TableCell>Total Duration (minutes)</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -434,7 +442,7 @@ export default function UserList() {
                               <TableCell>
                                 {moment(day.day).format("MMMM Do, YYYY")}
                               </TableCell>
-                              <TableCell>{day.sum} minutes</TableCell>
+                              <TableCell>{numberWithCommas(day.sum)}</TableCell>
                             </TableRow>
                           ))}
                       </TableBody>
@@ -453,15 +461,15 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <React.Fragment>
-                  <Paper className={classes.paper} style={{ width: "80%" }}>
+                  <Paper className={classes.paper} style={{ width: "100%" }}>
                     <Typography h1 className={classes.lightTextTitle}>
-                      Tops Activities
+                      Top Activities
                     </Typography>
                     <TableRow size="small">
                       <TableHead>
                         <TableRow>
                           <TableCell>Activity</TableCell>
-                          <TableCell>Total Duration</TableCell>
+                          <TableCell>Total Duration (minutes)</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -471,7 +479,9 @@ export default function UserList() {
                               <TableCell>
                                 {activity[0].replace("activity_total_", "")}
                               </TableCell>
-                              <TableCell>{activity[1]} minutes</TableCell>
+                              <TableCell>
+                                {numberWithCommas(activity[1])}
+                              </TableCell>
                             </TableRow>
                           ))}
                       </TableBody>

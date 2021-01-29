@@ -27,9 +27,9 @@ export default function Announcement() {
       </Typography>
       <br />
       <Typography style={{ color: colors.almostBlack }}>
-        Join your team and enter your daily physical activity duration to count
-        them towards your team's total. The team with the highest average member
-        activity total for the month wins!
+        Join a team and enter your daily physical activities to increase your
+        team's total activity time. The team with the highest average member
+        total wins!
       </Typography>
 
       <div

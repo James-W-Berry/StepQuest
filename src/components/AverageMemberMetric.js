@@ -39,7 +39,9 @@ const AverageMemberMetric = (props) => {
       >
         {props.numberOfMembers === 0
           ? null
-          : numberWithCommas(Math.round(props.total / props.numberOfMembers))}
+          : `${numberWithCommas(
+              Math.round(props.total / props.numberOfMembers)
+            )} minutes`}
       </Typography>
     </React.Fragment>
   );
