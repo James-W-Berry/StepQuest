@@ -16,7 +16,7 @@ import colors from "../assets/colors";
 
 import "../App.css";
 
-const Logo = () => <Img src={logo} height={50} width={50} />;
+const Logo = () => <Img src={logo} height={40} width={40} />;
 const TeamIcon = () => <Img src={team} height={60} width={60} />;
 const TargetIcon = () => <Img src={target} height={60} width={60} />;
 const ChartIcon = () => <Img src={chart} height={60} width={60} />;

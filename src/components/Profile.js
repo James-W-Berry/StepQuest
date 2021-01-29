@@ -40,11 +40,6 @@ const styles = (theme) => ({
   },
 });
 
-const SORT_OPTIONS = {
-  STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" },
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     "&:hover": {
@@ -73,18 +68,18 @@ const useStyles = makeStyles((theme) => ({
     color: colors.almostBlack,
   },
   dialogInput: {
-    color: "#f7f7f5",
+    color: colors.almostBlack,
   },
   dialogTextInput: {
     width: "100%",
     "& label ": {
-      color: "#f7f7f5",
+      color: colors.almostBlack,
     },
     "& label.Mui-focused": {
-      color: "#f7f7f5",
+      color: colors.almostBlack,
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#f7f7f5",
+      borderBottomColor: colors.stepitup_teal,
     },
   },
   fileUpload: {
@@ -276,14 +271,13 @@ function addNewGroup(groupName, userId) {
   }
 }
 
-function useGroups(sortBy = "STEPS_DESC") {
+function useGroups() {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .collection("groups")
-      // .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
       .onSnapshot((snapshot) => {
         const retrievedGroups = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -294,7 +288,7 @@ function useGroups(sortBy = "STEPS_DESC") {
       });
 
     return () => unsubscribe();
-  }, [sortBy]);
+  }, []);
   return groups;
 }
 
@@ -342,8 +336,8 @@ const DialogTitle = withStyles(styles)((props) => {
 const DialogContent = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
-    backgroundColor: "#252a2e",
-    color: colors.almostWhite,
+    backgroundColor: colors.stepitup_blueishGray,
+    color: colors.almostBlack,
   },
 }))(MuiDialogContent);
 
@@ -358,9 +352,8 @@ const Profile = (props) => {
   const [isUploading, setIsUploading] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
-  const groups = useGroups(sortBy);
-  const [userId, setUserId] = useState(props.userId);
+  const groups = useGroups();
+  const userId = props.userId;
   const user = useUser(userId);
 
   function uploadProfilePic(picture) {
@@ -432,7 +425,7 @@ const Profile = (props) => {
             <ListItemText
               disableTypography
               primary={
-                group.id === user.groupId ? (
+                group.id === user?.groupId ? (
                   <Tooltip title="Leave group" placement="bottom-start">
                     <Typography
                       variant="h6"
@@ -647,7 +640,11 @@ const Profile = (props) => {
               }}
             >
               <div className={classes.fileUpload}>
-                <Typography>{user?.groupName}</Typography>
+                {user?.groupName ? (
+                  <Typography>{user?.groupName}</Typography>
+                ) : (
+                  <Typography>Join a team</Typography>
+                )}
                 <IconButton
                   color="inherit"
                   aria-label="manage group"

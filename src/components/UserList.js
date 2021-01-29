@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: 240,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: "10px",
   },
   grid: {
     display: "flex",
@@ -92,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: colors.stepitup_blueishGray,
     overflow: "scroll",
+    borderRadius: "10px",
   },
   userList: {
     display: "flex",

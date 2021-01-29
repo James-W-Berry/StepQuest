@@ -14,7 +14,7 @@ import { withStyles } from "@material-ui/core/styles";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../assets/colors";
 
-const Logo = () => <Img src={logo} height={50} width={50} />;
+const Logo = () => <Img src={logo} height={40} width={40} />;
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -78,9 +78,9 @@ function SignIn(props) {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(function () {
+      .then((doc) => {
         console.log("Sign in successful");
-        //TODO: explore what happens if doc is not present and user exists. maybe try: ensureUserExists();
+        ensureUserExists(doc.user.uid);
       })
       .catch(function (error) {
         alert("Incorrect email or password, please try again");
@@ -88,21 +88,22 @@ function SignIn(props) {
       });
   }
 
-  // function ensureUserExists(username, email, password) {
-  //   setIsLoading(true);
-  //   const db = firebase.firestore();
+  function ensureUserExists(id) {
+    setIsLoading(true);
+    const userDoc = firebase.firestore().collection("users").doc(id);
 
-  //       db.collection("users")
-  //         .doc(userId)
-  //         .set({
-  //           displayName: username,
-  //           totalSteps: 0,
-  //         })
-  //         .catch(function (error) {
-  //           console.log(error);
-  //         });
+    userDoc.get().then((doc) => {
+      if (doc.data().totalDuration) {
+        console.log("user already initialized");
+      } else {
+        userDoc.set({ totalDuration: 0 }).catch(function (error) {
+          console.log(error);
+        });
 
-  // }
+        setIsLoading(false);
+      }
+    });
+  }
 
   const classes = useStyles();
 

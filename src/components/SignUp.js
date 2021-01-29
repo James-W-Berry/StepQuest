@@ -14,7 +14,7 @@ import { withStyles } from "@material-ui/core/styles";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../assets/colors";
 
-const Logo = () => <Img src={logo} height={50} width={50} />;
+const Logo = () => <Img src={logo} height={40} width={40} />;
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -89,7 +89,7 @@ function SignUp() {
           .doc(userId)
           .set({
             displayName: username,
-            totalSteps: 0,
+            totalDuration: 0,
           })
           .catch(function (error) {
             console.log(error);

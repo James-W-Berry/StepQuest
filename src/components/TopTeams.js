@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function numberWithCommas(x) {
-  if (x) {
+  if (x !== undefined) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   } else {
     return "";
@@ -91,7 +91,7 @@ export default function TopTeams() {
 
       <div className={classes.seeMore}>
         <NavLink to="/teams">
-          <Link color="primary">See more Groups</Link>
+          <Link color="primary">See more teams</Link>
         </NavLink>
       </div>
     </React.Fragment>

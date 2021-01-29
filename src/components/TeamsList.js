@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: 240,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: "10px",
   },
   grid: {
     display: "flex",
@@ -88,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: colors.stepitup_blueishGray,
     overflow: "scroll",
+    borderRadius: "10px",
   },
   userList: {
     display: "flex",
@@ -112,30 +114,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SORT_OPTIONS = {
-  STEPS_ASC: { column: "totalSteps", direction: "asc" },
-  STEPS_DESC: { column: "totalSteps", direction: "desc" },
-};
-
-function useGroups(sortBy = "STEPS_DESC") {
+function useGroups() {
   const [groups, setGroups] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("groups")
-      // .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .onSnapshot((snapshot) => {
-        const retrievedGroups = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+  firebase
+    .firestore()
+    .collection("groups")
+    .get()
+    .then((groups) => {
+      const retrievedGroups = groups.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-        setGroups(retrievedGroups);
-      });
-
-    return () => unsubscribe();
-  }, [sortBy]);
+      setGroups(retrievedGroups);
+    });
 
   return groups;
 }
@@ -161,15 +154,10 @@ async function calculateGroupInfo(group) {
 export default function TeamsList() {
   const classes = useStyles();
 
-  const [sortBy, setSortBy] = useState("STEPS_DESC");
   const [selectedGroup, setSelectedGroup] = useState("");
-  const groups = useGroups(sortBy);
+  const groups = useGroups();
   const [totalGroupDuration, setTotalDuration] = useState();
   const [groupInfo, setGroupInfo] = useState();
-
-  // const handleFilterChange = (event) => {
-  //   setSortBy(event.target.value);
-  // };
 
   async function handleGroupClicked(group) {
     setSelectedGroup(group);
@@ -193,7 +181,7 @@ export default function TeamsList() {
   }
 
   function numberWithCommas(x) {
-    if (x) {
+    if (x !== undefined) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else {
       return "";

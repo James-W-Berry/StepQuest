@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: "10px",
   },
   calendar: {
     padding: theme.spacing(2),
@@ -276,8 +277,8 @@ const EditActivities = (props) => {
               padding: "15px",
               display: "flex",
               justifyContent: "center",
-              borderTopLeftRadius: "3px",
-              borderTopRightRadius: "3px",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
             }}
           >
             <Typography variant="h6" style={{ color: colors.almostWhite }}>
@@ -290,8 +291,8 @@ const EditActivities = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              borderBottomLeftRadius: "3px",
-              borderBottomRightRadius: "3px",
+              borderBottomLeftRadius: "10px",
+              borderBottomRightRadius: "10px",
               backgroundColor: colors.stepitup_blueishGray,
             }}
           >

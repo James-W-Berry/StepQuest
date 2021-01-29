@@ -11,58 +11,63 @@ import { withStyles } from "@material-ui/core/styles";
 import { Typography, Divider } from "@material-ui/core";
 import Img from "react-image";
 import logo from "../assets/logo.png";
+import colors from "../assets/colors";
 
-const Logo = () => <Img src={logo} height={50} width={50} />;
+const Logo = () => <Img src={logo} height={40} width={40} />;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   divider: {
     border: "none",
     height: "1px",
-    backgroundColor: "#ffffff",
+    color: colors.almostWhite,
     margin: 0,
     flexShrink: 0,
     width: "100%",
   },
   textInput: {
-    width: "20vw",
     "& label ": {
-      color: "#ffffff",
+      color: colors.almostWhite,
     },
     "& label.Mui-focused": {
-      color: "#ffffff",
+      color: colors.almostWhite,
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: "#ffffff",
+      color: colors.almostWhite,
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "80%",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "40%",
     },
   },
   root: {
     "&:hover": {
-      color: "#ffffff90",
+      color: "#ffffff80",
     },
     border: 0,
     borderRadius: 3,
-    color: "#ffffff",
+    color: colors.almostWhite,
     height: 48,
     padding: "0 30px",
   },
   input: {
-    color: "#ffffff",
+    color: colors.almostWhite,
   },
-  forgotButton: {
+  button: {
+    background: colors.almostWhite,
     "&:hover": {
-      color: "#ffffff",
+      color: colors.stepitup_vibrantGreen,
     },
     border: 0,
     borderRadius: 3,
-    color: "#ffffff80",
+    color: colors.almostBlack,
     height: 48,
     padding: "0 30px",
   },
-});
+}));
 
 function onResetPassword(email) {
-  console.log("resettingpassword ");
-  console.log(email);
   firebase
     .auth()
     .sendPasswordResetEmail(email)
@@ -96,43 +101,32 @@ function ForgottenPassword(props) {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          background: "#191919",
+          background: colors.almostBlack,
           height: "60px",
           width: "100vw",
         }}
       >
-        <div
+        <NavLink
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
-            margin: "20px",
+            textDecoration: "none",
           }}
+          to="/home"
         >
-          <NavLink
+          <div
             style={{
               display: "flex",
+              flex: 1,
               alignItems: "center",
               justifyContent: "flex-start",
-              textDecoration: "none",
+              margin: "10px",
             }}
-            to="/home"
           >
             <Logo />
-            <Typography
-              variant="h5"
-              style={{ color: "#ffffff", marginLeft: "20px" }}
-            >
-              Step It Up
-            </Typography>
-          </NavLink>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-          }}
-        />
+          </div>
+        </NavLink>
 
         <div
           style={{
@@ -140,27 +134,39 @@ function ForgottenPassword(props) {
             flexDirection: "row",
             justifyContent: "flex-end",
             margin: "10px",
-            flex: 1,
+            flex: 3,
           }}
         >
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#ffffff",
+              color: colors.almostWhite,
             }}
             to="/signin"
           >
-            <Button className={classes.root}>Sign In</Button>
+            <Button className={classes.root} style={{ width: "100%" }}>
+              <Typography
+                style={{ color: colors.almostWhite, width: "max-content" }}
+              >
+                Sign In
+              </Typography>
+            </Button>
           </NavLink>
 
           <NavLink
             style={{
               textDecoration: "none",
-              color: "#ffffff",
+              color: colors.almostWhite,
             }}
             to="/signup"
           >
-            <Button className={classes.root}>Sign Up</Button>
+            <Button className={classes.root} style={{ width: "100%" }}>
+              <Typography
+                style={{ color: colors.almostWhite, width: "max-content" }}
+              >
+                Sign Up
+              </Typography>
+            </Button>
           </NavLink>
         </div>
       </div>

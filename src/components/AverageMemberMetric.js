@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 });
 
 function numberWithCommas(x) {
-  if (x) {
+  if (x !== undefined) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   } else {
     return "";
@@ -30,7 +30,7 @@ const AverageMemberMetric = (props) => {
   return (
     <React.Fragment>
       <Typography h1 className={classes.lightTextTitle}>
-        {`Average Total Activity Duration for a ${props.groupName} member`}
+        {`Team Average Total Activity Duration`}
       </Typography>
       <Typography
         style={{ marginTop: "20px", color: colors.almostWhite }}

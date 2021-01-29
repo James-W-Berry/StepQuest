@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Chart from "./Chart";
 import firebase from "../firebase";
 import TotalMetricCard from "./TotalMetricCard";
 import TopUsers from "./TopUsers";
@@ -36,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     backgroundColor: colors.stepitup_teal,
+    borderRadius: "10px",
   },
   fixedHeight: {
     height: 240,
