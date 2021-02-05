@@ -16,10 +16,6 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
 }));
 
@@ -40,8 +36,8 @@ export default function TopTeams(props) {
   }, [props.teams]);
 
   return (
-    <React.Fragment>
-      <Typography h1 className={classes.lightTextTitle}>
+    <div>
+      <Typography variant="h5" className={classes.lightTextTitle}>
         Top Teams
       </Typography>
 
@@ -67,6 +63,6 @@ export default function TopTeams(props) {
           <Link color="primary">See more teams</Link>
         </NavLink>
       </div>
-    </React.Fragment>
+    </div>
   );
 }

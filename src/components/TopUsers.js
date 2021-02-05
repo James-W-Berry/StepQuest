@@ -53,10 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
 }));
 
@@ -66,8 +62,8 @@ export default function TopUsers() {
   const users = useUsers(sortBy);
 
   return (
-    <React.Fragment>
-      <Typography h1 className={classes.lightTextTitle}>
+    <div>
+      <Typography variant="h5" className={classes.lightTextTitle}>
         Top Users
       </Typography>
       <Table size="small">
@@ -92,6 +88,6 @@ export default function TopUsers() {
           <Link color="primary">See more users</Link>
         </NavLink>
       </div>
-    </React.Fragment>
+    </div>
   );
 }

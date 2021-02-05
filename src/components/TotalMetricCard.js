@@ -13,10 +13,6 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   paper: {
     padding: theme.spacing(2),
@@ -55,11 +51,10 @@ const TotalMetricCard = (props) => {
       md={12}
       sm={12}
       xs={12}
-      spacing={4}
       style={{ display: "flex", justifyContent: "center" }}
     >
       <Paper className={fixedHeightPaper}>
-        <Typography h1 className={classes.lightTextTitle}>
+        <Typography variant="h5" className={classes.lightTextTitle}>
           {props.title}
         </Typography>
         <Typography

@@ -140,30 +140,6 @@ function App() {
 
   const classes = useStyles();
 
-  const DashboardPage = () => <Dashboard />;
-  const MembersPage = () => (
-    <div
-      style={{
-        display: "flex",
-        flex: 1,
-      }}
-    >
-      <UserList />
-    </div>
-  );
-  const TeamsPage = () => (
-    <div
-      style={{
-        display: "flex",
-        flex: 1,
-      }}
-    >
-      <TeamsList />
-    </div>
-  );
-  const EditPage = () => <EditActivities userId={user.userId} />;
-  const ProfilePage = () => <Profile userId={user.userId} />;
-
   useEffect(() => {
     const unsubscribe = onAuthStateChange(setUser);
     return () => {
@@ -181,27 +157,6 @@ function App() {
             <Route path="/signup" component={SignUp} />
             <Route path="/forgotpassword" component={ForgottenPassword} />
             <Redirect to="/home" />
-          </Switch>
-        </div>
-      )}
-    />
-  );
-
-  const FeatureRoutes = () => (
-    <Route
-      render={({ location }) => (
-        <div
-          id="content"
-          key={location.pathname}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <Switch location={location}>
-            <Route path="/dashboard" component={DashboardPage} />
-            <Route path="/members" component={MembersPage} />
-            <Route path="/teams" component={TeamsPage} />
-            <Route path="/edit" component={EditPage} />
-            <Route path="/profile" component={ProfilePage} />
-            <Redirect to="/dashboard" />
           </Switch>
         </div>
       )}
@@ -245,21 +200,105 @@ function App() {
           flexDirection: "column",
         }}
       >
+        <AppBar style={{ backgroundColor: colors.stepitup_teal }}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon style={{ fontSize: 40, color: colors.white }} />
+            </IconButton>
+            <Typography variant="h6">Step It Up</Typography>
+          </Toolbar>
+        </AppBar>
+
         <BrowserRouter>
           <CssBaseline />
-          <AppBar style={{ backgroundColor: colors.stepitup_teal }}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={toggleDrawer(true)}
-              >
-                <MenuIcon style={{ fontSize: 40, color: colors.white }} />
-              </IconButton>
-              <Typography variant="h6">Step It Up</Typography>
-            </Toolbar>
-          </AppBar>
+
+          <div className={classes.content}>
+            <Switch>
+              <Route
+                path="/dashboard"
+                render={() => (
+                  <div
+                    id="content"
+                    key="dashboard"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <Dashboard />
+                  </div>
+                )}
+              />
+
+              <Route
+                path="/members"
+                render={() => (
+                  <div
+                    id="content"
+                    key="members"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flex: 1,
+                      }}
+                    >
+                      <UserList />
+                    </div>
+                  </div>
+                )}
+              />
+
+              <Route
+                path="/teams"
+                render={() => (
+                  <div
+                    id="content"
+                    key="teams"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flex: 1,
+                      }}
+                    >
+                      <TeamsList />
+                    </div>
+                  </div>
+                )}
+              />
+
+              <Route
+                path="/edit"
+                render={() => (
+                  <div
+                    id="content"
+                    key="edit"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <EditActivities userId={user.userId} />
+                  </div>
+                )}
+              />
+              <Route
+                path="/profile"
+                render={() => (
+                  <div
+                    id="content"
+                    key="profile"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <Profile userId={user.userId} />
+                  </div>
+                )}
+              />
+              <Redirect to="/dashboard" />
+            </Switch>
+          </div>
 
           <Drawer
             className={classes.drawer}
@@ -360,7 +399,6 @@ function App() {
               </div>
             </div>
           </Drawer>
-          <div className={classes.content}>{FeatureRoutes()}</div>
         </BrowserRouter>
       </div>
     </UserProvider>
