@@ -123,32 +123,6 @@ const SORT_OPTIONS = {
   DURATION_DESC: { column: "totalDuration", direction: "desc" },
 };
 
-function useUsers(sortBy = "DURATION_DESC") {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    firebase
-      .firestore()
-      .collection("users")
-      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .get()
-      .then((retrievedUsers) => {
-        const newUsers = retrievedUsers.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setUsers(newUsers);
-      })
-      .catch(function (error) {
-        console.log(error);
-        return [];
-      });
-  }, [sortBy]);
-
-  return users;
-}
-
 async function calculateDailyTotals(user) {
   let response = await firebase
     .firestore()
@@ -211,16 +185,40 @@ async function calculateTopUserActivities(user) {
 export default function UserList() {
   const classes = useStyles();
   const selectStyle = clsx(classes.root, classes.select);
-
   const [sortBy, setSortBy] = useState("DURATION_DESC");
   const [selectedUser, setSelectedUser] = useState("");
   const [totals, setTotals] = useState();
   const [topActivities, setTopActivities] = useState();
-  const users = useUsers(sortBy);
+  const [users, setUsers] = useState([]);
 
   const handleFilterChange = (event) => {
     setSortBy(event.target.value);
   };
+
+  useEffect(() => {
+    console.log("fetching users");
+    firebase
+      .firestore()
+      .collection("users")
+      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
+      .get()
+      .then((retrievedUsers) => {
+        const newUsers = retrievedUsers.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setUsers(newUsers);
+      })
+      .catch(function (error) {
+        console.log(error);
+        return [];
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log("changed sort order");
+  }, [sortBy]);
 
   function numberWithCommas(x) {
     if (x !== undefined) {
@@ -384,13 +382,12 @@ export default function UserList() {
                 xl={6}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Paper className={classes.paper} style={{ width: "100%" }}>
-                  <TotalMetricCard
-                    title={"Total Activity Duration"}
-                    total={selectedUser.totalDuration}
-                    unit="minutes"
-                  />
-                </Paper>
+                <TotalMetricCard
+                  style={{ width: "100%" }}
+                  title={"Total Activity Duration"}
+                  total={selectedUser.totalDuration}
+                  unit="minutes"
+                />
               </Grid>
 
               <Grid
@@ -402,16 +399,15 @@ export default function UserList() {
                 xl={6}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Paper className={classes.paper} style={{ width: "100%" }}>
-                  {totals?.allDays && (
-                    <AverageMetricCard
-                      title="Average Daily Duration"
-                      total={selectedUser.totalDuration}
-                      numberOfDays={totals.allDays.length}
-                      unit="minutes"
-                    />
-                  )}
-                </Paper>
+                {totals?.allDays && (
+                  <AverageMetricCard
+                    style={{ width: "100%" }}
+                    title="Average Daily Duration"
+                    total={selectedUser.totalDuration}
+                    numberOfDays={totals.allDays.length}
+                    unit="minutes"
+                  />
+                )}
               </Grid>
 
               <Grid
@@ -424,8 +420,8 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <React.Fragment>
-                  <Paper className={classes.paper} style={{ width: "100%" }}>
-                    <Typography h1 className={classes.lightTextTitle}>
+                  <Paper className={classes.paper}>
+                    <Typography variant="h5" className={classes.lightTextTitle}>
                       Top Days
                     </Typography>
                     <TableRow size="small">
@@ -461,7 +457,7 @@ export default function UserList() {
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <React.Fragment>
-                  <Paper className={classes.paper} style={{ width: "100%" }}>
+                  <Paper className={classes.paper}>
                     <Typography h1 className={classes.lightTextTitle}>
                       Top Activities
                     </Typography>

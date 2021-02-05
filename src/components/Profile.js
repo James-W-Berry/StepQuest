@@ -103,26 +103,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function useDisplayName() {
-  const [displayName, setDisplayName] = useState([]);
-  const userId = firebase.auth().currentUser.uid;
-
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .onSnapshot((doc) => {
-        const user = doc.data();
-        setDisplayName(user.displayName);
-      });
-
-    return () => unsubscribe();
-  }, []);
-
-  return displayName;
-}
-
 function useDownloadProfilePic() {
   const userId = firebase.auth().currentUser.uid;
   const [downloadUrl, setDownloadUrl] = useState("");
@@ -271,27 +251,6 @@ function addNewGroup(groupName, userId) {
   }
 }
 
-function useGroups() {
-  const [groups, setGroups] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("groups")
-      .onSnapshot((snapshot) => {
-        const retrievedGroups = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setGroups(retrievedGroups);
-      });
-
-    return () => unsubscribe();
-  }, []);
-  return groups;
-}
-
 function useUser(userId) {
   const [user, setUser] = useState();
 
@@ -344,17 +303,16 @@ const DialogContent = withStyles((theme) => ({
 const Profile = (props) => {
   const classes = useStyles();
   const theme = useTheme();
+  const userId = props.userId;
+  const user = useUser(userId);
   const [open, setOpen] = useState(false);
-  const currentDisplayName = useDisplayName();
   const [displayName, setDisplayName] = useState("");
   const currentProfilePicUrl = useDownloadProfilePic();
   const [profilePic, setProfilePic] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
-  const groups = useGroups();
-  const userId = props.userId;
-  const user = useUser(userId);
+  const [groups, setGroups] = useState([]);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -456,6 +414,21 @@ const Profile = (props) => {
     }
   }
 
+  function getGroups() {
+    firebase
+      .firestore()
+      .collection("groups")
+      .get()
+      .then((retrievedDocs) => {
+        const retrievedGroups = retrievedDocs.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setGroups(retrievedGroups);
+      });
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -520,7 +493,7 @@ const Profile = (props) => {
 
             <Grid key="name" item>
               <Typography variant="h5" style={{ color: colors.almostBlack }}>
-                {currentDisplayName}
+                {user?.displayName}
               </Typography>
             </Grid>
           </Grid>
@@ -650,6 +623,7 @@ const Profile = (props) => {
                   aria-label="manage group"
                   edge="start"
                   onClick={() => {
+                    setGroups(getGroups);
                     setOpen(true);
                   }}
                 >
@@ -703,7 +677,7 @@ const Profile = (props) => {
                 {user?.groupName ? (
                   `Currently a member of ${user?.groupName}`
                 ) : (
-                  <Emoji text="Currently you're steppin' solo :(" />
+                  <Emoji text="Currently you're ridin' solo :(" />
                 )}
               </Typography>
               <Typography gutterBottom>Pick a group to join</Typography>
@@ -711,7 +685,7 @@ const Profile = (props) => {
             <div style={{ backgroundColor: colors.stepitup_blueishGray }}>
               <Scrollbar style={{ height: "50vh", width: "100%" }}>
                 <List style={{ borderRadius: "10px" }}>
-                  {groups.map((group) => createGroupItem(group))}
+                  {groups?.map((group) => createGroupItem(group))}
                 </List>
               </Scrollbar>
             </div>

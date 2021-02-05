@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import {
   Button,
@@ -68,10 +68,6 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   title: {
     color: colors.almostBlack,
@@ -114,25 +110,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function useGroups() {
-  const [groups, setGroups] = useState([]);
-
-  firebase
-    .firestore()
-    .collection("groups")
-    .get()
-    .then((groups) => {
-      const retrievedGroups = groups.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setGroups(retrievedGroups);
-    });
-
-  return groups;
-}
-
 async function calculateGroupInfo(group) {
   return await firebase
     .firestore()
@@ -153,13 +130,27 @@ async function calculateGroupInfo(group) {
 
 export default function TeamsList() {
   const classes = useStyles();
-
   const [selectedGroup, setSelectedGroup] = useState("");
-  const groups = useGroups();
+  const [groups, setGroups] = useState([]);
   const [totalGroupDuration, setTotalDuration] = useState();
   const [groupInfo, setGroupInfo] = useState();
 
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("groups")
+      .get()
+      .then((groups) => {
+        const retrievedGroups = groups.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setGroups(retrievedGroups);
+      });
+  }, []);
+
   async function handleGroupClicked(group) {
+    console.log("group clicked");
     setSelectedGroup(group);
     const groupInfo = await calculateGroupInfo(group);
     let total = 0;
@@ -167,14 +158,17 @@ export default function TeamsList() {
       if (member[1].totalDuration) total += member[1].totalDuration;
     });
 
-    firebase
-      .firestore()
-      .collection("groups")
-      .doc(group.id)
-      .set({ totalDuration: total }, { merge: true })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if (group.totalDuration !== total) {
+      console.log("updating group total");
+      firebase
+        .firestore()
+        .collection("groups")
+        .doc(group.id)
+        .set({ totalDuration: total }, { merge: true })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
 
     setTotalDuration(total);
     setGroupInfo(groupInfo);
@@ -338,13 +332,12 @@ export default function TeamsList() {
                     justifyContent: "center",
                   }}
                 >
-                  <Paper className={classes.paper} style={{ width: "100%" }}>
-                    <TotalMetricCard
-                      title="Total Activity Duration"
-                      total={totalGroupDuration}
-                      unit="minutes"
-                    />
-                  </Paper>
+                  <TotalMetricCard
+                    style={{ width: "100%" }}
+                    title="Total Activity Duration"
+                    total={totalGroupDuration}
+                    unit="minutes"
+                  />
                 </Grid>
 
                 <Grid
@@ -356,13 +349,12 @@ export default function TeamsList() {
                   xl={6}
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                  <Paper className={classes.paper} style={{ width: "100%" }}>
-                    <AverageMemberMetric
-                      groupName={selectedGroup.name}
-                      total={totalGroupDuration}
-                      numberOfMembers={Object.entries(groupInfo).length}
-                    />
-                  </Paper>
+                  <AverageMemberMetric
+                    style={{ width: "100%" }}
+                    groupName={selectedGroup.name}
+                    total={totalGroupDuration}
+                    numberOfMembers={Object.entries(groupInfo).length}
+                  />
                 </Grid>
                 <Grid
                   item
@@ -373,11 +365,14 @@ export default function TeamsList() {
                   xl={12}
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                  <React.Fragment>
+                  <div>
                     <Paper className={classes.paper} style={{ width: "100%" }}>
                       {groupInfo ? (
                         <div>
-                          <Typography h1 className={classes.lightTextTitle}>
+                          <Typography
+                            variant="h5"
+                            className={classes.lightTextTitle}
+                          >
                             Members
                           </Typography>
                           <TableRow size="small">
@@ -410,7 +405,7 @@ export default function TeamsList() {
                         </Typography>
                       )}
                     </Paper>
-                  </React.Fragment>
+                  </div>
                 </Grid>
               </Grid>
             )}
