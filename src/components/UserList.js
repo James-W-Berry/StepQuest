@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import {
-  FormControl,
-  Select,
-  MenuItem,
   Button,
   Paper,
   TableHead,
@@ -15,7 +12,6 @@ import {
   Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import TotalMetricCard from "./TotalMetricCard";
 import moment from "moment";
 import AverageMetricCard from "./AverageMetricCard";
@@ -184,16 +180,11 @@ async function calculateTopUserActivities(user) {
 
 export default function UserList() {
   const classes = useStyles();
-  const selectStyle = clsx(classes.root, classes.select);
-  const [sortBy, setSortBy] = useState("DURATION_DESC");
+  const sortBy = "DURATION_DESC";
   const [selectedUser, setSelectedUser] = useState("");
   const [totals, setTotals] = useState();
   const [topActivities, setTopActivities] = useState();
   const [users, setUsers] = useState([]);
-
-  const handleFilterChange = (event) => {
-    setSortBy(event.target.value);
-  };
 
   useEffect(() => {
     console.log("fetching users");
@@ -215,10 +206,6 @@ export default function UserList() {
         return [];
       });
   }, []);
-
-  useEffect(() => {
-    console.log("changed sort order");
-  }, [sortBy]);
 
   function numberWithCommas(x) {
     if (x !== undefined) {
@@ -266,29 +253,9 @@ export default function UserList() {
             justifyContent: "center",
           }}
         >
-          <Typography h1 className={classes.title}>
+          <Typography variant="h5" className={classes.title}>
             Leaderboard
           </Typography>
-          <FormControl className={classes.formControl}>
-            <Select
-              className={selectStyle}
-              labelId="sortSelectLabel"
-              id="sortSelect"
-              value={sortBy}
-              onChange={handleFilterChange}
-            >
-              <MenuItem value={"DURATION_DESC"}>
-                <Typography style={{ color: colors.almostBlack }}>
-                  Activity Duration (most first)
-                </Typography>
-              </MenuItem>
-              <MenuItem value={"DURATION_ASC"}>
-                <Typography style={{ color: colors.almostBlack }}>
-                  Activity Duration (least first)
-                </Typography>
-              </MenuItem>
-            </Select>
-          </FormControl>
         </div>
         <Grid
           key="list"

@@ -67,7 +67,6 @@ function useTeams() {
 
 export default function Dashboard() {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const teams = useTeams();
   const [totalOrgDuration, setTotalOrgDuration] = useState(0);
 
