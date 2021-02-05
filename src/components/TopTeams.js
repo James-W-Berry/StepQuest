@@ -8,37 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { Typography } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
-import firebase from "../firebase";
 import colors from "../assets/colors";
-
-const SORT_OPTIONS = {
-  DURATION_ASC: { column: "totalDuration", direction: "asc" },
-  DURATION_DESC: { column: "totalDuration", direction: "desc" },
-};
-
-function useGroups(sortBy = "DURATION_DESC") {
-  const [groups, setGroups] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("groups")
-      .orderBy(SORT_OPTIONS[sortBy].column, SORT_OPTIONS[sortBy].direction)
-      .limit(5)
-      .onSnapshot((snapshot) => {
-        const retrievedGroups = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setGroups(retrievedGroups);
-      });
-
-    return () => unsubscribe();
-  }, [sortBy]);
-
-  return groups;
-}
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -61,10 +31,13 @@ function numberWithCommas(x) {
   }
 }
 
-export default function TopTeams() {
+export default function TopTeams(props) {
   const classes = useStyles();
-  const sortBy = "DURATION_DESC";
-  const groups = useGroups(sortBy);
+  const [teams, setTeams] = useState([]);
+
+  useEffect(() => {
+    setTeams(props.teams.slice(0, 5));
+  }, [props.teams]);
 
   return (
     <React.Fragment>
@@ -80,10 +53,10 @@ export default function TopTeams() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {groups.map((group) => (
-            <TableRow key={group.id}>
-              <TableCell>{group.name}</TableCell>
-              <TableCell>{numberWithCommas(group.totalDuration)}</TableCell>
+          {teams.map((team) => (
+            <TableRow key={team.id}>
+              <TableCell>{team.name}</TableCell>
+              <TableCell>{numberWithCommas(team.totalDuration)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

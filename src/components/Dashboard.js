@@ -42,37 +42,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function useUsers() {
-  const [users, setUsers] = useState([]);
+function useTeams() {
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     firebase
       .firestore()
-      .collection("users")
+      .collection("groups")
       .get()
-      .then((users) => {
-        const newUsers = users.docs.map((doc) => ({
+      .then((teams) => {
+        const retrievedTeams = teams.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
-        setUsers(newUsers);
+        retrievedTeams.sort((a, b) =>
+          a.totalDuration < b.totalDuration ? 1 : -1
+        );
+        setTeams(retrievedTeams);
       });
   }, []);
 
-  let totalDuration = 0;
-  users.forEach((user) => {
-    if (user.totalDuration) {
-      totalDuration += user.totalDuration;
-    }
-  });
-  return totalDuration;
+  return teams;
 }
 
 export default function Dashboard() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const totalActivityDuration = useUsers();
+  const teams = useTeams();
+  const [totalOrgDuration, setTotalOrgDuration] = useState(0);
+
+  useEffect(() => {
+    let totalDuration = 0;
+    teams.forEach((team) => {
+      if (team.totalDuration) {
+        totalDuration += team.totalDuration;
+      }
+    });
+    setTotalOrgDuration(totalDuration);
+  }, [teams]);
 
   return (
     <Grid container spacing={4}>
@@ -80,13 +87,11 @@ export default function Dashboard() {
         <Announcement />
       </Grid>
       <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-        <Paper className={fixedHeightPaper}>
-          <TotalMetricCard
-            title={"Total Arriver Activity Duration"}
-            total={totalActivityDuration}
-            unit="minutes"
-          />
-        </Paper>
+        <TotalMetricCard
+          title={"Total Arriver Activity Duration"}
+          total={totalOrgDuration}
+          unit="minutes"
+        />
       </Grid>
       <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
         <Paper className={classes.paper}>
@@ -95,7 +100,7 @@ export default function Dashboard() {
       </Grid>
       <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
         <Paper className={classes.paper}>
-          <TopTeams />
+          <TopTeams teams={teams} />
         </Paper>
       </Grid>
     </Grid>

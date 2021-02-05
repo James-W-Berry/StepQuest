@@ -255,7 +255,7 @@ function App() {
                 edge="start"
                 onClick={toggleDrawer(true)}
               >
-                <MenuIcon style={{ fontSize: 40 }} color="#ffffff" />
+                <MenuIcon style={{ fontSize: 40, color: colors.white }} />
               </IconButton>
               <Typography variant="h6">Step It Up</Typography>
             </Toolbar>
@@ -278,34 +278,34 @@ function App() {
             >
               <List component="nav">
                 <NavLink
-                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  style={{ textDecoration: "none", color: colors.white }}
                   to="/dashboard"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <DashboardIcon style={{ color: "#ffffff" }} />
+                      <DashboardIcon style={{ color: colors.white }} />
                     </ListItemIcon>
                     <ListItemText primary="Dashboard" />
                   </ListItem>
                 </NavLink>
                 <NavLink
-                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  style={{ textDecoration: "none", color: colors.white }}
                   to="/members"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <MemberIcon style={{ color: "#ffffff" }} />
+                      <MemberIcon style={{ color: colors.white }} />
                     </ListItemIcon>
                     <ListItemText primary="Members" />
                   </ListItem>
                 </NavLink>
                 <NavLink
-                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  style={{ textDecoration: "none", color: colors.white }}
                   to="/teams"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <TeamIcon style={{ color: "#ffffff" }} />
+                      <TeamIcon style={{ color: colors.white }} />
                     </ListItemIcon>
                     <ListItemText primary="Teams" />
                   </ListItem>
@@ -318,23 +318,23 @@ function App() {
               />
               <List component="nav">
                 <NavLink
-                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  style={{ textDecoration: "none", color: colors.white }}
                   to="/edit"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <EditIcon style={{ color: "#ffffff" }} />
+                      <EditIcon style={{ color: colors.white }} />
                     </ListItemIcon>
                     <ListItemText primary="Enter Activities" />
                   </ListItem>
                 </NavLink>
                 <NavLink
-                  style={{ textDecoration: "none", color: "#ffffff" }}
+                  style={{ textDecoration: "none", color: colors.white }}
                   to="/profile"
                 >
                   <ListItem button>
                     <ListItemIcon>
-                      <ProfileIcon style={{ color: "#ffffff" }} />
+                      <ProfileIcon style={{ color: colors.white }} />
                     </ListItemIcon>
                     <ListItemText primary="Profile" />
                   </ListItem>
@@ -351,10 +351,12 @@ function App() {
                   width: "100%",
                 }}
               >
-                <Typography style={{ marginRight: "10px", color: "#ffffff" }}>
+                <Typography
+                  style={{ marginRight: "10px", color: colors.white }}
+                >
                   Logout
                 </Typography>
-                <LogoutIcon style={{ color: "#ffffff" }} />
+                <LogoutIcon style={{ color: colors.white }} />
               </div>
             </div>
           </Drawer>
