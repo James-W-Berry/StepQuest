@@ -11,10 +11,6 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   paper: {
     padding: theme.spacing(2),
@@ -39,10 +35,10 @@ const DaySummary = (props) => {
 
   return (
     <Paper className={classes.paper}>
-      <Typography h1 className={classes.lightTextTitle}>
+      <Typography variant="h5" className={classes.lightTextTitle}>
         Activity Summary
       </Typography>
-      <Typography h3>
+      <Typography variant="h5">
         {moment(props.selectedDate).format("MMMM Do, YYYY")}
       </Typography>
       <Typography

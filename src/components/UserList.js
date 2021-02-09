@@ -3,6 +3,7 @@ import firebase from "../firebase";
 import {
   Button,
   Paper,
+  Table,
   TableHead,
   TableRow,
   TableCell,
@@ -68,16 +69,9 @@ const useStyles = makeStyles((theme) => ({
   },
   lightTextTitle: {
     color: colors.almostWhite,
-    fontSize: "1.25rem",
-    fontWeight: "500",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   title: {
     color: colors.almostBlack,
-    fontSize: "1.25rem",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   scrollbar: {
     [theme.breakpoints.down("sm")]: {
@@ -187,7 +181,6 @@ export default function UserList() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    console.log("fetching users");
     firebase
       .firestore()
       .collection("users")
@@ -198,7 +191,6 @@ export default function UserList() {
           id: doc.id,
           ...doc.data(),
         }));
-
         setUsers(newUsers);
       })
       .catch(function (error) {
@@ -267,9 +259,8 @@ export default function UserList() {
         >
           <Paper className={classes.scrollbar}>
             {users.map((user) => (
-              <div>
+              <div key={user.id}>
                 <Button
-                  Button
                   className={classes.button}
                   style={{
                     width: "100%",
@@ -391,7 +382,7 @@ export default function UserList() {
                     <Typography variant="h5" className={classes.lightTextTitle}>
                       Top Days
                     </Typography>
-                    <TableRow size="small">
+                    <Table>
                       <TableHead>
                         <TableRow>
                           <TableCell>Day</TableCell>
@@ -409,7 +400,7 @@ export default function UserList() {
                             </TableRow>
                           ))}
                       </TableBody>
-                    </TableRow>
+                    </Table>
                   </Paper>
                 </React.Fragment>
               </Grid>
@@ -425,10 +416,10 @@ export default function UserList() {
               >
                 <React.Fragment>
                   <Paper className={classes.paper}>
-                    <Typography h1 className={classes.lightTextTitle}>
+                    <Typography variant="h5" className={classes.lightTextTitle}>
                       Top Activities
                     </Typography>
-                    <TableRow size="small">
+                    <Table>
                       <TableHead>
                         <TableRow>
                           <TableCell>Activity</TableCell>
@@ -448,7 +439,7 @@ export default function UserList() {
                             </TableRow>
                           ))}
                       </TableBody>
-                    </TableRow>
+                    </Table>
                   </Paper>
                 </React.Fragment>
               </Grid>
@@ -464,7 +455,7 @@ export default function UserList() {
               height: "100%",
             }}
           >
-            <Typography h1 className={classes.title}>
+            <Typography variant="h6" className={classes.title}>
               Select a user to see their stats
             </Typography>
           </div>

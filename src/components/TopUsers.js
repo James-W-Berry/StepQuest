@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -85,7 +84,9 @@ export default function TopUsers() {
 
       <div className={classes.seeMore}>
         <NavLink to="/members">
-          <Link color="primary">See more users</Link>
+          <Typography variant="overline" color="primary">
+            See more users
+          </Typography>
         </NavLink>
       </div>
     </div>

@@ -3,6 +3,7 @@ import firebase from "../firebase";
 import {
   Button,
   Paper,
+  Table,
   TableHead,
   TableRow,
   TableCell,
@@ -71,9 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     color: colors.almostBlack,
-    fontSize: "1.25rem",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
   },
   scrollbar: {
     [theme.breakpoints.down("sm")]: {
@@ -145,12 +143,14 @@ export default function TeamsList() {
           id: doc.id,
           ...doc.data(),
         }));
+
+        console.log(retrievedGroups);
+
         setGroups(retrievedGroups);
       });
   }, []);
 
   async function handleGroupClicked(group) {
-    console.log("group clicked");
     setSelectedGroup(group);
     const groupInfo = await calculateGroupInfo(group);
     let total = 0;
@@ -210,7 +210,7 @@ export default function TeamsList() {
             justifyContent: "center",
           }}
         >
-          <Typography h1 className={classes.title}>
+          <Typography variant="h5" className={classes.title}>
             Teams
           </Typography>
         </div>
@@ -225,7 +225,7 @@ export default function TeamsList() {
         >
           <Paper className={classes.scrollbar}>
             {groups.map((group) => (
-              <div>
+              <div key={group.name}>
                 <Button
                   className={classes.button}
                   style={{
@@ -375,7 +375,7 @@ export default function TeamsList() {
                           >
                             Members
                           </Typography>
-                          <TableRow size="small">
+                          <Table>
                             <TableHead>
                               <TableRow>
                                 <TableCell>Name</TableCell>
@@ -397,10 +397,13 @@ export default function TeamsList() {
                                   </TableRow>
                                 ))}
                             </TableBody>
-                          </TableRow>
+                          </Table>
                         </div>
                       ) : (
-                        <Typography h1 className={classes.lightTextTitle}>
+                        <Typography
+                          variant="h3"
+                          className={classes.lightTextTitle}
+                        >
                           No Members yet
                         </Typography>
                       )}
@@ -420,7 +423,7 @@ export default function TeamsList() {
               height: "100%",
             }}
           >
-            <Typography h1 className={classes.title}>
+            <Typography variant="h6" className={classes.title}>
               Select a group to see their stats
             </Typography>
           </div>

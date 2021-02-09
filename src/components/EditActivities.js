@@ -98,7 +98,11 @@ const EditActivities = (props) => {
 
   function createActivityOption(activityOption) {
     if (activityOption !== undefined) {
-      return <option value={activityOption[0]}>{activityOption[0]}</option>;
+      return (
+        <option key={activityOption[0]} value={activityOption[0]}>
+          {activityOption[0]}
+        </option>
+      );
     }
   }
 
@@ -124,6 +128,7 @@ const EditActivities = (props) => {
             total += activityDuration;
           });
         }
+        console.log(total);
         setDayTotalDuration(total);
       })
       .catch(function (error) {

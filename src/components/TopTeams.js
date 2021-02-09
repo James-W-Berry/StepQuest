@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -60,7 +59,9 @@ export default function TopTeams(props) {
 
       <div className={classes.seeMore}>
         <NavLink to="/teams">
-          <Link color="primary">See more teams</Link>
+          <Typography variant="overline" color="primary">
+            See more teams
+          </Typography>
         </NavLink>
       </div>
     </div>

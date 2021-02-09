@@ -29,7 +29,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import GroupIcon from "@material-ui/icons/Group";
 import Emoji from "react-emoji-render";
 import colors from "../assets/colors";
-import { AnimatePresence, motion } from "framer-motion";
 
 const styles = (theme) => ({
   closeButton: {
@@ -263,6 +262,7 @@ function useUser(userId) {
         const doc = {
           ...snapshot.data(),
         };
+
         setUser(doc);
       });
 
@@ -434,301 +434,290 @@ const Profile = (props) => {
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
+    <div>
+      <Grid
+        container
+        spacing={4}
         style={{
           display: "flex",
+          flexDirection: "row",
           justifyContent: "center",
         }}
-        key="success"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0.0, 1.0] }}
-        exit={{ opacity: 0 }}
       >
         <Grid
-          container
-          spacing={4}
+          key="summary"
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          item
           style={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
+          <Grid key="picture" item>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <label htmlFor="contained-button-file">
+                <IconButton>
+                  <Avatar
+                    src={currentProfilePicUrl}
+                    style={{
+                      height: "175px",
+                      width: "175px",
+                    }}
+                  />
+                </IconButton>
+              </label>
+            </div>
+          </Grid>
+
+          <Grid key="name" item>
+            <Typography variant="h5" style={{ color: colors.almostBlack }}>
+              {user?.displayName}
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Grid
+          key="settings"
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          className={classes.settingsGrid}
+        >
+          <Grid key="settings_name" item>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <TextField
+                className={classes.textInput}
+                id="standard-username-input"
+                label="update your display name"
+                type="username"
+                InputProps={{
+                  className: classes.input,
+                }}
+                onChange={(event) => {
+                  setDisplayName(event.target.value);
+                }}
+              />
+              <Button
+                className={classes.root}
+                onClick={() => {
+                  onEditDisplayName(displayName);
+                }}
+                style={{
+                  marginLeft: "10px",
+                  color: colors.almostWhite,
+                }}
+              >
+                Update
+              </Button>
+            </div>
+          </Grid>
+
           <Grid
-            key="summary"
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
+            key="settings_image"
             item
             style={{
               display: "flex",
-              flexDirection: "column",
+              justifyContent: "center",
               alignItems: "center",
+              flexDirection: "column",
+              marginTop: "10px",
             }}
           >
-            <Grid key="picture" item>
+            {isUploading ? (
               <div
                 style={{
                   display: "flex",
                   flex: 1,
-                  flexDirection: "column",
                   justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
                 }}
               >
+                <SyncLoader color={colors.stepitup_lightTeal} />
+              </div>
+            ) : (
+              <div className={classes.fileUpload}>
+                <Typography>Change Avatar</Typography>
+                <input
+                  accept="image/*"
+                  className={classes.fileUploadInput}
+                  id="contained-button-file"
+                  multiple={false}
+                  type="file"
+                  onChange={(e) => setProfilePic(e.target.files[0])}
+                />
                 <label htmlFor="contained-button-file">
-                  <IconButton>
-                    <Avatar
-                      src={currentProfilePicUrl}
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="span"
+                  >
+                    <PhotoCamera
                       style={{
-                        height: "175px",
-                        width: "175px",
+                        fontSize: 20,
+                        color: colors.stepitup_teal,
                       }}
                     />
                   </IconButton>
                 </label>
+                {profilePic !== "" && (
+                  <button
+                    onClick={() => {
+                      uploadProfilePic(profilePic);
+                    }}
+                  >
+                    Upload
+                  </button>
+                )}
               </div>
-            </Grid>
-
-            <Grid key="name" item>
-              <Typography variant="h5" style={{ color: colors.almostBlack }}>
-                {user?.displayName}
-              </Typography>
-            </Grid>
+            )}
           </Grid>
 
           <Grid
-            key="settings"
+            key="settings_group"
             item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
-            className={classes.settingsGrid}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            <Grid key="settings_name" item>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
+            <div className={classes.fileUpload}>
+              {user?.groupName ? (
+                <Typography>{user?.groupName}</Typography>
+              ) : (
+                <Typography>Join a team</Typography>
+              )}
+              <IconButton
+                color="inherit"
+                aria-label="manage group"
+                edge="start"
+                onClick={() => {
+                  setGroups(getGroups);
+                  setOpen(true);
                 }}
               >
-                <TextField
-                  className={classes.textInput}
-                  id="standard-username-input"
-                  label="update your display name"
-                  type="username"
-                  InputProps={{
-                    className: classes.input,
-                  }}
-                  onChange={(event) => {
-                    setDisplayName(event.target.value);
+                <SettingsIcon
+                  style={{
+                    fontSize: 20,
+                    color: colors.stepitup_teal,
                   }}
                 />
-                <Button
-                  className={classes.root}
-                  onClick={() => {
-                    onEditDisplayName(displayName);
-                  }}
-                  style={{
-                    marginLeft: "10px",
-                    color: colors.almostWhite,
-                  }}
-                >
-                  Update
-                </Button>
-              </div>
-            </Grid>
-
-            <Grid
-              key="settings_image"
-              item
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-                marginTop: "10px",
-              }}
-            >
-              {isUploading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <SyncLoader color={colors.stepitup_lightTeal} />
-                </div>
-              ) : (
-                <div className={classes.fileUpload}>
-                  <Typography>Change Avatar</Typography>
-                  <input
-                    accept="image/*"
-                    className={classes.fileUploadInput}
-                    id="contained-button-file"
-                    multiple={false}
-                    type="file"
-                    onChange={(e) => setProfilePic(e.target.files[0])}
-                  />
-                  <label htmlFor="contained-button-file">
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="span"
-                    >
-                      <PhotoCamera
-                        style={{
-                          fontSize: 20,
-                          color: colors.stepitup_teal,
-                        }}
-                      />
-                    </IconButton>
-                  </label>
-                  {profilePic !== "" && (
-                    <button
-                      onClick={() => {
-                        uploadProfilePic(profilePic);
-                      }}
-                    >
-                      Upload
-                    </button>
-                  )}
-                </div>
-              )}
-            </Grid>
-
-            <Grid
-              key="settings_group"
-              item
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <div className={classes.fileUpload}>
-                {user?.groupName ? (
-                  <Typography>{user?.groupName}</Typography>
-                ) : (
-                  <Typography>Join a team</Typography>
-                )}
-                <IconButton
-                  color="inherit"
-                  aria-label="manage group"
-                  edge="start"
-                  onClick={() => {
-                    setGroups(getGroups);
-                    setOpen(true);
-                  }}
-                >
-                  <SettingsIcon
-                    style={{
-                      fontSize: 20,
-                      color: colors.stepitup_teal,
-                    }}
-                  />
-                </IconButton>
-              </div>
-            </Grid>
+              </IconButton>
+            </div>
           </Grid>
         </Grid>
+      </Grid>
 
-        <Dialog
-          fullScreen={fullScreen}
-          fullWidth={true}
-          onClose={handleClose}
-          aria-labelledby="customized-dialog-title"
-          open={open}
+      <Dialog
+        fullScreen={fullScreen}
+        fullWidth={true}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.almostBlack,
+          }}
         >
+          <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Group Settings
+          </DialogTitle>
+        </div>
+
+        <DialogContent dividers>
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: colors.almostBlack,
+              flexDirection: "column",
             }}
           >
-            <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-              Group Settings
-            </DialogTitle>
+            <Typography
+              style={{
+                fontSize: "16px",
+                marginBottom: "10px",
+              }}
+              gutterBottom
+            >
+              {user?.groupName ? (
+                `Currently a member of ${user?.groupName}`
+              ) : (
+                <Emoji text="Currently you're ridin' solo :(" />
+              )}
+            </Typography>
+            <Typography gutterBottom>Pick a group to join</Typography>
           </div>
-
-          <DialogContent dividers>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "16px",
-                  marginBottom: "10px",
+          <div style={{ backgroundColor: colors.stepitup_blueishGray }}>
+            <Scrollbar style={{ height: "50vh", width: "100%" }}>
+              <List style={{ borderRadius: "10px" }}>
+                {groups?.map((group) => createGroupItem(group))}
+              </List>
+            </Scrollbar>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: "30px",
+            }}
+          >
+            <Typography>Or create a new group</Typography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <TextField
+                className={classes.dialogTextInput}
+                label="New group name"
+                InputProps={{
+                  className: classes.dialogInput,
                 }}
-                gutterBottom
-              >
-                {user?.groupName ? (
-                  `Currently a member of ${user?.groupName}`
-                ) : (
-                  <Emoji text="Currently you're ridin' solo :(" />
-                )}
-              </Typography>
-              <Typography gutterBottom>Pick a group to join</Typography>
-            </div>
-            <div style={{ backgroundColor: colors.stepitup_blueishGray }}>
-              <Scrollbar style={{ height: "50vh", width: "100%" }}>
-                <List style={{ borderRadius: "10px" }}>
-                  {groups?.map((group) => createGroupItem(group))}
-                </List>
-              </Scrollbar>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-                marginTop: "30px",
-              }}
-            >
-              <Typography>Or create a new group</Typography>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <TextField
-                  className={classes.dialogTextInput}
-                  label="New group name"
-                  InputProps={{
-                    className: classes.dialogInput,
-                  }}
-                  onChange={(event) => {
-                    setNewGroupName(event.target.value);
-                  }}
-                />
+                onChange={(event) => {
+                  setNewGroupName(event.target.value);
+                }}
+              />
 
-                <Button
-                  style={{
-                    marginLeft: "10px",
-                    backgroundColor: colors.stepitup_teal,
-                    color: colors.almostWhite,
-                  }}
-                  onClick={() => {
-                    addNewGroup(newGroupName, userId);
-                  }}
-                  color="primary"
-                >
-                  <Typography>Create</Typography>
-                </Button>
-              </div>
+              <Button
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: colors.stepitup_teal,
+                  color: colors.almostWhite,
+                }}
+                onClick={() => {
+                  addNewGroup(newGroupName, userId);
+                }}
+                color="primary"
+              >
+                <Typography>Create</Typography>
+              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-      </motion.div>
-    </AnimatePresence>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
