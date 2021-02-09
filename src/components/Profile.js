@@ -102,42 +102,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function useDownloadProfilePic() {
-  const userId = firebase.auth().currentUser.uid;
-  const [downloadUrl, setDownloadUrl] = useState("");
-
-  firebase
-    .storage()
-    .ref()
-    .child(`profilePics/${userId}`)
-    .getDownloadURL()
-    .then(function (url) {
-      setDownloadUrl(url);
-    })
-    .catch(function (error) {
-      switch (error.code) {
-        case "storage/object-not-found":
-          console.log("file does not exist");
-          break;
-        case "storage/unauthorized":
-          console.log("missing permissions");
-          break;
-
-        case "storage/canceled":
-          console.log("cancelled");
-          break;
-        case "storage/unknown":
-          console.log("unknown server response");
-          break;
-        default:
-          console.log("error retrieving profile picture download url");
-          break;
-      }
-    });
-
-  return downloadUrl;
-}
-
 function registerProfilePictureUrl(url) {
   const userId = firebase.auth().currentUser.uid;
 
@@ -307,12 +271,46 @@ const Profile = (props) => {
   const user = useUser(userId);
   const [open, setOpen] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  const currentProfilePicUrl = useDownloadProfilePic();
+  const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
   const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    const userId = firebase.auth().currentUser.uid;
+
+    firebase
+      .storage()
+      .ref()
+      .child(`profilePics/${userId}`)
+      .getDownloadURL()
+      .then(function (url) {
+        console.log(url);
+        setCurrentProfilePicUrl(url);
+      })
+      .catch(function (error) {
+        switch (error.code) {
+          case "storage/object-not-found":
+            console.log("file does not exist");
+            break;
+          case "storage/unauthorized":
+            console.log("missing permissions");
+            break;
+
+          case "storage/canceled":
+            console.log("cancelled");
+            break;
+          case "storage/unknown":
+            console.log("unknown server response");
+            break;
+          default:
+            console.log("error retrieving profile picture download url");
+            break;
+        }
+      });
+  }, []);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
