@@ -45,6 +45,7 @@ export default function TopTeams(props) {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Total Duration (minutes)</TableCell>
+            <TableCell>Average Duration per User</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -52,6 +53,7 @@ export default function TopTeams(props) {
             <TableRow key={team.id}>
               <TableCell>{team.name}</TableCell>
               <TableCell>{numberWithCommas(team.totalDuration)}</TableCell>
+              <TableCell>{numberWithCommas(team.groupAverage)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

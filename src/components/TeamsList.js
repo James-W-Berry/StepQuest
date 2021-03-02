@@ -126,6 +126,13 @@ async function calculateGroupInfo(group) {
     });
 }
 
+function calculateAvg(total, memberCount) {
+
+  let avg = Math.round(total/memberCount);
+
+  return avg
+}
+
 export default function TeamsList() {
   const classes = useStyles();
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -144,8 +151,6 @@ export default function TeamsList() {
           ...doc.data(),
         }));
 
-        console.log(retrievedGroups);
-
         setGroups(retrievedGroups);
       });
   }, []);
@@ -154,9 +159,12 @@ export default function TeamsList() {
     setSelectedGroup(group);
     const groupInfo = await calculateGroupInfo(group);
     let total = 0;
+    let avg = 0;
     Object.entries(groupInfo).forEach((member) => {
       if (member[1].totalDuration) total += member[1].totalDuration;
     });
+
+    avg = calculateAvg(total, Object.entries(groupInfo).length)
 
     if (group.totalDuration !== total) {
       console.log("updating group total");
@@ -164,7 +172,7 @@ export default function TeamsList() {
         .firestore()
         .collection("groups")
         .doc(group.id)
-        .set({ totalDuration: total }, { merge: true })
+        .set({ totalDuration: total, groupAverage: avg }, { merge: true })
         .catch(function (error) {
           console.log(error);
         });

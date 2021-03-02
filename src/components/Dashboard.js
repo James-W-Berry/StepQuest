@@ -41,6 +41,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+async function calculateTeamInfo(group) {
+  return await firebase
+    .firestore()
+    .collection("users")
+    .where("groupId", "==", group.id)
+    .get()
+    .then((docs) => {
+      let members = {};
+      docs.forEach((member) => {
+        members[member.id] = member.data();
+      });
+      return members;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 function useTeams() {
   const [teams, setTeams] = useState([]);
 
@@ -64,6 +82,11 @@ function useTeams() {
   return teams;
 }
 
+async function getTeamAverage(team) {
+  let avg = 0
+  const teamInfo = await calculateTeamInfo(team);
+}
+
 export default function Dashboard() {
   const classes = useStyles();
   const teams = useTeams();
@@ -71,6 +94,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     let totalDuration = 0;
+    let avgDuration = 0;
     teams.forEach((team) => {
       if (team.totalDuration) {
         totalDuration += team.totalDuration;
