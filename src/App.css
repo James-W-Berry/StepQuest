@@ -37,16 +37,43 @@
   }
 }
 
-.landing {
-  background: #1d976c; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to top,
-    #93f9b9,
-    #1d976c
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to top,
-    #93f9b9,
-    #1d976c
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.bg {
+  background-image: url("./assets/landing.jpg");
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  bottom: 0;
+  position: fixed;
+  top: 0;
+  z-index: -1;
+}
+
+.content {
+  background-color: #0099ff80;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  width: 80%;
+  position: fixed;
+  text-align: center;
+  bottom: 50%;
+  left: 10%;
+}
+
+.authbuttons {
+  position: fixed;
+  bottom: 20%;
+}
+
+h1 {
+  font-family: monospace;
 }
