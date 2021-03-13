@@ -47,6 +47,7 @@ body {
 
 .bg {
   background-image: url("./assets/landing.jpg");
+
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -58,20 +59,31 @@ body {
   z-index: -1;
 }
 
-.content {
-  background-color: #0099ff80;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
-  width: 80%;
+.overlay {
+  z-index: 1;
+  height: 100%;
+  width: 100%;
   position: fixed;
-  text-align: center;
-  bottom: 50%;
-  left: 10%;
+  overflow: auto;
+  top: 0px;
+  left: 0px;
+  background: #0099ff80;
 }
 
-.authbuttons {
-  position: fixed;
-  bottom: 20%;
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.carouselcontainer {
+  width: 80%;
+  height: fit-content;
+  background-color: #66cc3380;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
 }
 
 h1 {

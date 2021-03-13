@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 import Carousel from "react-bootstrap/Carousel";
-import { Typography, Divider, Dialog } from "@material-ui/core";
 
 import colors from "../assets/colors";
 import Img from "react-image";
@@ -21,70 +20,71 @@ export default function LandingCarousel(props) {
   };
 
   return (
-    <Carousel activeIndex={index} onSelect={handleSelect}>
-      <Carousel.Item interval={13800}>
-        <div
-          style={{
-            height: "175px",
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: "15px",
-          }}
-        >
-          <TeamIcon />
-        </div>
-
-        <Carousel.Caption>
-          <p style={{ color: colors.almostBlack }}>
-            Tools to record your fitness activities with friends, family, and
-            coworkers
-          </p>
-        </Carousel.Caption>
-      </Carousel.Item>
-
-      <Carousel.Item interval={13800}>
-        <div
-          style={{
-            height: "175px",
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: "15px",
-          }}
-        />
-
-        <Carousel.Caption>
-          <div>
-            <ChartIcon />
-            <p style={{ color: colors.almostBlack }}>
-              Track organization, team, and individual activities over time
-            </p>
+    <div className="carouselcontainer">
+      <Carousel activeIndex={index} onSelect={handleSelect}>
+        <Carousel.Item interval={13800}>
+          <div
+            style={{
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              padding: "15px",
+            }}
+          >
+            <TeamIcon />
           </div>
-        </Carousel.Caption>
-      </Carousel.Item>
 
-      <Carousel.Item interval={13800}>
-        <div
-          style={{
-            height: "175px",
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: "15px",
-          }}
-        />
-
-        <Carousel.Caption>
-          <div>
-            <TargetIcon />
-            <p style={{ color: colors.almostBlack }}>
-              Set goals and encourage team members to increase physical wellness
-              together
+          <Carousel.Caption>
+            <p style={{ color: colors.white }}>
+              Record your fitness activities with friends, family, and coworkers
             </p>
-          </div>
-        </Carousel.Caption>
-      </Carousel.Item>
-    </Carousel>
+          </Carousel.Caption>
+        </Carousel.Item>
+
+        <Carousel.Item interval={13800}>
+          <div
+            style={{
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              padding: "15px",
+            }}
+          />
+
+          <Carousel.Caption>
+            <div>
+              <ChartIcon />
+              <p style={{ color: colors.white }}>
+                Track team activities over time
+              </p>
+            </div>
+          </Carousel.Caption>
+        </Carousel.Item>
+
+        <Carousel.Item interval={13800}>
+          <div
+            style={{
+              minHeight: "200px",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              padding: "15px",
+            }}
+          />
+
+          <Carousel.Caption>
+            <div>
+              <TargetIcon />
+              <p style={{ color: colors.white }}>
+                Set goals and encourage team members to increase physical
+                wellness
+              </p>
+            </div>
+          </Carousel.Caption>
+        </Carousel.Item>
+      </Carousel>
+    </div>
   );
 }
