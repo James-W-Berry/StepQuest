@@ -165,7 +165,7 @@ function App() {
     return (
       <div
         style={{
-          backgroundColor: colors.almostBlack,
+          backgroundColor: colors.white,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -173,7 +173,7 @@ function App() {
           width: "100vw",
         }}
       >
-        <SyncLoader color={colors.stepitup_teal} />
+        <SyncLoader color={colors.stepitup_blue} />
       </div>
     );
   }
@@ -194,7 +194,7 @@ function App() {
           flexDirection: "column",
         }}
       >
-        <AppBar style={{ backgroundColor: colors.stepitup_teal }}>
+        <AppBar style={{ backgroundColor: colors.stepitup_blue }}>
           <Toolbar>
             <IconButton
               color="inherit"
@@ -278,6 +278,7 @@ function App() {
                   </div>
                 )}
               />
+
               <Route
                 path="/profile"
                 render={() => (
@@ -290,7 +291,8 @@ function App() {
                   </div>
                 )}
               />
-              <Redirect to="/dashboard" />
+
+              <Redirect to="/profile" />
             </Switch>
           </div>
 
