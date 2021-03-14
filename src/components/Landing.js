@@ -1,235 +1,594 @@
-import React from "react";
+import React, { useState } from "react";
+import "../App.css";
 import "firebase/auth";
-import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { Typography, Divider } from "@material-ui/core";
+import { Typography, IconButton, Dialog, TextField } from "@material-ui/core";
+import LandingCarousel from "./LandingCarousel";
+import CloseIcon from "@material-ui/icons/Close";
+import { useTheme } from "@material-ui/core/styles";
+import firebase from "../firebase";
+import "firebase/auth";
 import "typeface-roboto";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Img from "react-image";
-import logo from "../assets/logo.png";
-import team from "../assets/team.png";
-import target from "../assets/target.png";
-import chart from "../assets/chart.png";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
 import colors from "../assets/colors";
+import SyncLoader from "react-spinners/SyncLoader";
 
-import "../App.css";
-
-const Logo = () => <Img src={logo} height={40} width={40} />;
-const TeamIcon = () => <Img src={team} height={60} width={60} />;
-const TargetIcon = () => <Img src={target} height={60} width={60} />;
-const ChartIcon = () => <Img src={chart} height={60} width={60} />;
+const styles = (theme) => ({
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: colors.white,
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
-  divider: {
-    border: "none",
-    height: "1px",
-    color: colors.almostWhite,
-    margin: 0,
-    flexShrink: 0,
-    width: "100%",
-  },
-  root: {
+  button: {
     "&:hover": {
-      color: "#ffffff80",
+      backgroundColor: colors.almostWhite,
     },
     border: 0,
     borderRadius: 3,
-    color: colors.almostWhite,
+    backgroundColor: colors.white,
+    color: colors.stepitup_blue,
     height: 48,
     padding: "0 30px",
   },
   title: {
+    fontFamily: "Monoton",
+    textAlign: "center",
+    color: colors.white,
     [theme.breakpoints.down("sm")]: {
-      fontSize: "2.0em",
+      fontSize: "2.5em",
     },
     [theme.breakpoints.up("md")]: {
       fontSize: "3.0em",
     },
   },
   subtitle: {
+    color: colors.white,
+    textAlign: "center",
     [theme.breakpoints.down("sm")]: {
-      fontSize: "1.5em",
+      fontSize: "1em",
     },
     [theme.breakpoints.up("md")]: {
-      fontSize: "2.0em",
+      fontSize: "1.5em",
     },
-    marginBottom: "5vh",
+  },
+  textInput: {
+    "& label ": {
+      color: colors.stepitup_blue,
+    },
+    "& label.Mui-focused": {
+      color: colors.stepitup_blue,
+    },
+    "& .MuiInput-underline:after": {
+      color: colors.stepitup_blue,
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "80%",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "80%",
+    },
+  },
+  input: {
+    color: colors.almostBlack,
   },
 }));
 
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography style={{ color: colors.white }} variant="h6">
+        {children}
+      </Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    backgroundColor: colors.white,
+  },
+}))(MuiDialogContent);
+
 function Landing(props) {
+  const theme = useTheme();
   const classes = useStyles();
+  const [loginVisible, setLogInVisible] = useState(false);
+  const [signupVisible, setSignUpVisible] = useState(false);
+  const [forgottenPasswordVisible, setForgottenPasswordVisible] = useState(
+    false
+  );
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onSignIn(email, password) {
+    setIsLoading(true);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((doc) => {
+        console.log("Sign in successful");
+        ensureUserExists(doc.user.uid);
+      })
+      .catch(function (error) {
+        alert("Incorrect email or password, please try again");
+        setIsLoading(false);
+      });
+  }
+
+  function onSignUp(username, email, password) {
+    setIsLoading(true);
+    const db = firebase.firestore();
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(function () {
+        var userId = firebase.auth().currentUser.uid;
+
+        db.collection("users")
+          .doc(userId)
+          .set({
+            displayName: username,
+            totalDuration: 0,
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        console.log("sign up successful");
+      })
+      .catch(function (error) {
+        var errorMessage = error.message;
+        setIsLoading(false);
+        alert(errorMessage);
+      });
+  }
+
+  function onResetPassword(email) {
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(function () {
+        alert("Check your email to reset your password.");
+      })
+      .catch(function (error) {
+        console.log("error resetting password ");
+
+        alert(
+          "Could not send email, please enter your email address and try again."
+        );
+      });
+  }
+
+  function ensureUserExists(id) {
+    setIsLoading(true);
+    const userDoc = firebase.firestore().collection("users").doc(id);
+
+    userDoc.get().then((doc) => {
+      if (doc.data().totalDuration) {
+        console.log("user already initialized");
+      } else {
+        userDoc.set({ totalDuration: 0 }).catch(function (error) {
+          console.log(error);
+        });
+
+        setIsLoading(false);
+      }
+    });
+  }
 
   return (
-    <div
-      className="landing"
-      style={{
-        flex: 1,
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          background: colors.almostBlack,
-          height: "60px",
-          width: "100vw",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            margin: "10px",
-          }}
-        >
-          <Logo />
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            margin: "10px",
-            flex: 3,
-          }}
-        >
-          <NavLink
+    <div>
+      <div class="bg">
+        <div class="overlay">
+          <div
             style={{
-              textDecoration: "none",
-              color: colors.almostWhite,
+              display: "flex",
+              flex: "1",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              width: "100%",
+              height: "100%",
             }}
-            to="/signin"
           >
-            <Button className={classes.root} style={{ width: "100%" }}>
-              <Typography
-                style={{ color: colors.almostWhite, width: "max-content" }}
-              >
-                Sign In
+            <div>
+              <Typography className={classes.title}>Step It Up</Typography>
+
+              <Typography className={classes.subtitle}>
+                Fitness challenges for groups
               </Typography>
-            </Button>
-          </NavLink>
+            </div>
 
-          <NavLink
-            style={{
-              textDecoration: "none",
-              color: colors.almostWhite,
-            }}
-            to="/signup"
-          >
-            <Button className={classes.root} style={{ width: "100%" }}>
-              <Typography
-                style={{ color: colors.almostWhite, width: "max-content" }}
+            <div class="content">
+              <LandingCarousel />
+            </div>
+
+            <div
+              class="authbuttons"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                width: "100%",
+              }}
+            >
+              <div>
+                <Button
+                  className={classes.button}
+                  style={{ width: "100%" }}
+                  onClick={() => setLogInVisible(true)}
+                >
+                  <Typography>Log In</Typography>
+                </Button>
+              </div>
+
+              <div>
+                <Button
+                  className={classes.button}
+                  style={{ width: "100%" }}
+                  onClick={() => setSignUpVisible(true)}
+                >
+                  <Typography>Sign Up</Typography>
+                </Button>
+              </div>
+            </div>
+
+            <Dialog
+              fullScreen={fullScreen}
+              fullWidth={true}
+              onClose={() => setLogInVisible(false)}
+              aria-labelledby="customized-dialog-title"
+              open={loginVisible}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: colors.stepitup_blue,
+                }}
               >
-                Sign Up
-              </Typography>
-            </Button>
-          </NavLink>
-        </div>
-      </div>
+                <DialogTitle
+                  id="customized-dialog-title"
+                  onClose={() => setLogInVisible(false)}
+                >
+                  Login
+                </DialogTitle>
+              </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Divider
-          classes={{
-            root: classes.divider,
-          }}
-        />
-      </div>
+              <DialogContent className="dialog" style={{ padding: "0px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    background: "#ffffffcc",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: "20px",
+                      width: "80%",
+                    }}
+                  >
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-email-input"
+                      label="Email"
+                      type="email"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      autoComplete="email"
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                      }}
+                    />
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-password-input"
+                      label="Password"
+                      type="password"
+                      autoComplete="current-password"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                      }}
+                    />
+                  </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          margin: "5%",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flex: "1",
-            flexDirection: "column",
-          }}
-        >
-          <Typography
-            className={classes.title}
-            style={{ color: colors.stepitup_vibrantGreen }}
-          >
-            Step It Up
-          </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "30px",
+                      marginRight: "20px",
+                    }}
+                  >
+                    {isLoading ? (
+                      <SyncLoader color={colors.stepitup_blue} />
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          onSignIn(email, password);
+                        }}
+                        className={classes.button}
+                        style={{
+                          backgroundColor: colors.stepitup_blue,
+                          color: colors.white,
+                        }}
+                      >
+                        Log In
+                      </Button>
+                    )}
+                  </div>
 
-          <Typography
-            className={classes.subtitle}
-            style={{ color: colors.almostWhite }}
-          >
-            Your team's fitness tracking solution
-          </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "120px",
+                      padding: "20px",
+                    }}
+                  >
+                    <Button
+                      onClick={() => {
+                        setLogInVisible(false);
+                        setForgottenPasswordVisible(true);
+                      }}
+                      className={classes.button}
+                      style={{
+                        backgroundColor: colors.stepitup_blue,
+                        color: colors.white,
+                      }}
+                    >
+                      Forgot Password?
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <TeamIcon />
-            <Typography
-              variant="body1"
-              style={{ color: colors.almostBlack, marginLeft: "10px" }}
+            <Dialog
+              fullScreen={fullScreen}
+              fullWidth={true}
+              onClose={() => setSignUpVisible(false)}
+              aria-labelledby="customized-dialog-title"
+              open={signupVisible}
             >
-              Tools to record your fitness activities with friends, family, and
-              coworkers
-            </Typography>
-          </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: colors.stepitup_blue,
+                }}
+              >
+                <DialogTitle
+                  id="customized-dialog-title"
+                  onClose={() => setSignUpVisible(false)}
+                >
+                  Sign up
+                </DialogTitle>
+              </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <ChartIcon />
-            <Typography
-              variant="body1"
-              style={{ color: colors.almostBlack, marginLeft: "10px" }}
-            >
-              Track organization, team, and individual activities over time
-            </Typography>
-          </div>
+              <DialogContent className="dialog" style={{ padding: "0px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    background: "#ffffffcc",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: "20px",
+                      width: "80%",
+                    }}
+                  >
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-username-input"
+                      label="Display Name"
+                      type="username"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      onChange={(event) => {
+                        setUsername(event.target.value);
+                      }}
+                    />
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-email-input"
+                      label="Email"
+                      type="email"
+                      autoComplete="email"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                      }}
+                    />
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-password-input"
+                      label="Password"
+                      type="password"
+                      autoComplete="current-password"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                      }}
+                    />
+                  </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <TargetIcon />
-            <Typography
-              variant="body1"
-              style={{ color: colors.almostBlack, marginLeft: "10px" }}
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      marginTop: "30px",
+                      padding: "20px",
+                    }}
+                  >
+                    {isLoading ? (
+                      <SyncLoader color={colors.stepitup_blue} />
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          onSignUp(username, email, password);
+                        }}
+                        className={classes.button}
+                        style={{
+                          backgroundColor: colors.stepitup_blue,
+                          color: colors.white,
+                        }}
+                      >
+                        Sign Up
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog
+              fullScreen={fullScreen}
+              fullWidth={true}
+              onClose={() => setForgottenPasswordVisible(false)}
+              aria-labelledby="customized-dialog-title"
+              open={forgottenPasswordVisible}
             >
-              Set goals and encourage team members to increase physical wellness
-              together
-            </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: colors.stepitup_blue,
+                }}
+              >
+                <DialogTitle
+                  id="customized-dialog-title"
+                  onClose={() => setForgottenPasswordVisible(false)}
+                >
+                  Forgot Password
+                </DialogTitle>
+              </div>
+
+              <DialogContent className="dialog" style={{ padding: "0px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    background: "#ffffffcc",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: "20px",
+                      width: "80%",
+                    }}
+                  >
+                    <TextField
+                      className={classes.textInput}
+                      id="standard-email-input"
+                      label="Email"
+                      type="email"
+                      InputProps={{
+                        className: classes.input,
+                      }}
+                      autoComplete="email"
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: "1",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      marginTop: "30px",
+                      padding: "20px",
+                    }}
+                  >
+                    <Button
+                      onClick={() => {
+                        onResetPassword(email);
+                      }}
+                      className={classes.root}
+                      style={{
+                        backgroundColor: colors.stepitup_blue,
+                        color: colors.white,
+                      }}
+                    >
+                      Reset Password
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
