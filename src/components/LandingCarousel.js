@@ -9,9 +9,9 @@ import team from "../assets/team.png";
 import target from "../assets/target.png";
 import chart from "../assets/chart.png";
 
-const TeamIcon = () => <Img src={team} height={60} width={60} />;
-const TargetIcon = () => <Img src={target} height={60} width={60} />;
-const ChartIcon = () => <Img src={chart} height={60} width={60} />;
+const TeamIcon = () => <Img src={team} height={80} />;
+const TargetIcon = () => <Img src={target} height={80} width={80} />;
+const ChartIcon = () => <Img src={chart} height={80} width={80} />;
 
 export default function LandingCarousel(props) {
   const [index, setIndex] = useState(0);
@@ -25,7 +25,8 @@ export default function LandingCarousel(props) {
         <Carousel.Item interval={13800}>
           <div
             style={{
-              minHeight: "200px",
+              minHeight: "220px",
+              height: "25%",
               display: "flex",
               alignItems: "flex-start",
               justifyContent: "center",
@@ -45,19 +46,21 @@ export default function LandingCarousel(props) {
         <Carousel.Item interval={13800}>
           <div
             style={{
-              minHeight: "200px",
+              minHeight: "220px",
+              height: "25%",
               display: "flex",
               alignItems: "flex-start",
               justifyContent: "center",
               padding: "15px",
             }}
-          />
+          >
+            <ChartIcon />
+          </div>
 
           <Carousel.Caption>
             <div>
-              <ChartIcon />
               <p style={{ color: colors.white }}>
-                Track team activities over time
+                Track top performers and popular activities
               </p>
             </div>
           </Carousel.Caption>
@@ -66,20 +69,21 @@ export default function LandingCarousel(props) {
         <Carousel.Item interval={13800}>
           <div
             style={{
-              minHeight: "200px",
+              minHeight: "220px",
+              height: "25%",
               display: "flex",
               alignItems: "flex-start",
               justifyContent: "center",
               padding: "15px",
             }}
-          />
+          >
+            <TargetIcon />
+          </div>
 
           <Carousel.Caption>
             <div>
-              <TargetIcon />
               <p style={{ color: colors.white }}>
-                Set goals and encourage team members to increase physical
-                wellness
+                Achieve physical wellness through team encouragement
               </p>
             </div>
           </Carousel.Caption>

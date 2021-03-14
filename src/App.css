@@ -47,7 +47,6 @@ body {
 
 .bg {
   background-image: url("./assets/landing.jpg");
-
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -57,6 +56,13 @@ body {
   position: fixed;
   top: 0;
   z-index: -1;
+}
+
+.dialog {
+  background-image: url("./assets/landing.jpg");
+  background-size: cover;
+  height: 100%;
+  width: 100%;
 }
 
 .overlay {
@@ -80,7 +86,6 @@ body {
 
 .carouselcontainer {
   width: 80%;
-  height: fit-content;
   background-color: #66cc3380;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);

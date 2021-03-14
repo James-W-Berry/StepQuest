@@ -24,11 +24,8 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
 import firebase from "./firebase";
 import "firebase/auth";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
 import EditActivities from "./components/EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
-import ForgottenPassword from "./components/ForgottenPassword";
 import Landing from "./components/Landing";
 import Profile from "./components/Profile";
 import TeamsList from "./components/TeamsList";
@@ -153,9 +150,6 @@ function App() {
         <div key={location.pathname}>
           <Switch location={location}>
             <Route path="/home" exact component={Landing} />
-            <Route path="/signin" component={SignIn} />
-            <Route path="/signup" component={SignUp} />
-            <Route path="/forgotpassword" component={ForgottenPassword} />
             <Redirect to="/home" />
           </Switch>
         </div>
