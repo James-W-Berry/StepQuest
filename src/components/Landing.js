@@ -80,6 +80,17 @@ const useStyles = makeStyles((theme) => ({
   input: {
     color: colors.almostBlack,
   },
+  buttoncontainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    [theme.breakpoints.down("sm")]: {
+      width: "80%",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "50%",
+    },
+  },
 }));
 
 const DialogTitle = withStyles(styles)((props) => {
@@ -227,15 +238,7 @@ function Landing(props) {
               <LandingCarousel />
             </div>
 
-            <div
-              class="authbuttons"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                width: "100%",
-              }}
-            >
+            <div className={classes.buttoncontainer}>
               <div>
                 <Button
                   className={classes.button}
@@ -245,7 +248,6 @@ function Landing(props) {
                   <Typography>Log In</Typography>
                 </Button>
               </div>
-
               <div>
                 <Button
                   className={classes.button}
@@ -563,6 +565,7 @@ function Landing(props) {
                       }}
                     />
                   </div>
+
                   <div
                     style={{
                       display: "flex",
