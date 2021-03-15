@@ -92,13 +92,11 @@ const useStyles = makeStyles((theme) => ({
   fileUploadInput: {
     display: "none",
   },
-  settingsGrid: {
-    marginTop: "100px",
+  centerGrid: {
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
-    borderTop: "1px #19191930 solid",
     alignItems: "center",
+    flexDirection: "column",
   },
 }));
 
@@ -310,6 +308,36 @@ const Profile = (props) => {
             break;
         }
       });
+
+    // firebase
+    //   .storage()
+    //   .ref()
+    //   .child(`profilePics/${userId}`)
+    //   .getDownloadURL()
+    //   .then(function (url) {
+    //     console.log(url);
+    //     setCurrentProfilePicUrl(url);
+    //   })
+    //   .catch(function (error) {
+    //     switch (error.code) {
+    //       case "storage/object-not-found":
+    //         console.log("file does not exist");
+    //         break;
+    //       case "storage/unauthorized":
+    //         console.log("missing permissions");
+    //         break;
+
+    //       case "storage/canceled":
+    //         console.log("cancelled");
+    //         break;
+    //       case "storage/unknown":
+    //         console.log("unknown server response");
+    //         break;
+    //       default:
+    //         console.log("error retrieving profile picture download url");
+    //         break;
+    //     }
+    //   });
   }, []);
 
   function uploadProfilePic(picture) {
@@ -438,18 +466,19 @@ const Profile = (props) => {
         spacing={4}
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Grid
           key="summary"
+          item
           xs={12}
           sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          item
+          md={6}
+          lg={6}
+          xl={6}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -487,142 +516,72 @@ const Profile = (props) => {
         </Grid>
 
         <Grid
-          key="settings"
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          className={classes.settingsGrid}
+          container
+          style={{
+            height: "100%",
+          }}
         >
-          <Grid key="settings_name" item>
+          <Grid
+            key="settings"
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            lg={6}
+            xl={6}
+            className={classes.settingsGrid}
+          >
             <div
               style={{
+                height: "60px",
+                width: "100%",
                 display: "flex",
                 justifyContent: "center",
+                alignItems: "center",
+                borderTopLeftRadius: "20px",
+                borderBottomLeftRadius: "20px",
+                backgroundColor: colors.stepitup_fadedGreen,
               }}
             >
-              <TextField
-                className={classes.textInput}
-                id="standard-username-input"
-                label="update your display name"
-                type="username"
-                InputProps={{
-                  className: classes.input,
-                }}
-                onChange={(event) => {
-                  setDisplayName(event.target.value);
-                }}
-              />
-              <Button
-                className={classes.root}
-                onClick={() => {
-                  onEditDisplayName(displayName);
-                }}
-                style={{
-                  marginLeft: "10px",
-                  color: colors.almostWhite,
-                }}
-              >
-                Update
-              </Button>
+              <Typography h4 style={{ color: colors.white }}>
+                Stats
+              </Typography>
             </div>
           </Grid>
 
           <Grid
-            key="settings_image"
+            key="challenges"
             item
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              marginTop: "10px",
-            }}
+            xs={12}
+            sm={12}
+            md={6}
+            lg={6}
+            xl={6}
+            className={classes.centerGrid}
           >
-            {isUploading ? (
-              <div
-                style={{
-                  display: "flex",
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <SyncLoader color={colors.stepitup_lightTeal} />
-              </div>
+            <div
+              style={{
+                height: "60px",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderTopRightRadius: "20px",
+                borderBottomRightRadius: "20px",
+
+                backgroundColor: colors.stepitup_fadedGreen,
+              }}
+            >
+              <Typography h4 style={{ color: colors.white }}>
+                Challenges
+              </Typography>
+            </div>
+
+            {user?.activeChallenges ? (
+              <div>Active challenge info</div>
             ) : (
-              <div className={classes.fileUpload}>
-                <Typography>Change Avatar</Typography>
-                <input
-                  accept="image/*"
-                  className={classes.fileUploadInput}
-                  id="contained-button-file"
-                  multiple={false}
-                  type="file"
-                  onChange={(e) => setProfilePic(e.target.files[0])}
-                />
-                <label htmlFor="contained-button-file">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="span"
-                  >
-                    <PhotoCamera
-                      style={{
-                        fontSize: 20,
-                        color: colors.stepitup_teal,
-                      }}
-                    />
-                  </IconButton>
-                </label>
-                {profilePic !== "" && (
-                  <button
-                    onClick={() => {
-                      uploadProfilePic(profilePic);
-                    }}
-                  >
-                    Upload
-                  </button>
-                )}
-              </div>
+              <div>Create a new challenge +</div>
             )}
-          </Grid>
-
-          <Grid
-            key="settings_group"
-            item
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <div className={classes.fileUpload}>
-              {user?.groupName ? (
-                <Typography>{user?.groupName}</Typography>
-              ) : (
-                <Typography>Join a team</Typography>
-              )}
-              <IconButton
-                color="inherit"
-                aria-label="manage group"
-                edge="start"
-                onClick={() => {
-                  setGroups(getGroups);
-                  setOpen(true);
-                }}
-              >
-                <SettingsIcon
-                  style={{
-                    fontSize: 20,
-                    color: colors.stepitup_teal,
-                  }}
-                />
-              </IconButton>
-            </div>
           </Grid>
         </Grid>
       </Grid>

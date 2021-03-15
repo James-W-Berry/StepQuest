@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     width: "auto",
   },
   drawerPaper: {
-    background: `#50c9c3`,
+    background: colors.stepitup_blue,
     width: drawerWidth,
   },
   paperAnchorDockedLeft: {
@@ -76,7 +76,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   },
@@ -84,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     padding: theme.spacing(3),
-    //marginTop: theme.spacing(8),
+    marginTop: theme.spacing(8),
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -204,7 +203,6 @@ function App() {
             >
               <MenuIcon style={{ fontSize: 40, color: colors.white }} />
             </IconButton>
-            <Typography variant="h6">Step It Up</Typography>
           </Toolbar>
         </AppBar>
 
@@ -280,7 +278,7 @@ function App() {
               />
 
               <Route
-                path="/profile"
+                path="/user/:id"
                 render={() => (
                   <div
                     id="content"
@@ -292,7 +290,7 @@ function App() {
                 )}
               />
 
-              <Redirect to="/profile" />
+              {/* <Redirect to={`/user/${user.userId}`} /> */}
             </Switch>
           </div>
 
@@ -365,7 +363,7 @@ function App() {
                 </NavLink>
                 <NavLink
                   style={{ textDecoration: "none", color: colors.white }}
-                  to="/profile"
+                  to={`/user/${user.userId}`}
                 >
                   <ListItem button>
                     <ListItemIcon>
