@@ -34,6 +34,7 @@ import clsx from "clsx";
 import colors from "./assets/colors";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import NewChallenge from "./components/NewChallenge";
 
 const drawerWidth = 250;
 
@@ -278,6 +279,19 @@ function App() {
               />
 
               <Route
+                path="/create-challenge"
+                render={() => (
+                  <div
+                    id="content"
+                    key="edit"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <NewChallenge />
+                  </div>
+                )}
+              />
+
+              <Route
                 path="/user/:id"
                 render={() => (
                   <div
@@ -290,7 +304,7 @@ function App() {
                 )}
               />
 
-              {/* <Redirect to={`/user/${user.userId}`} /> */}
+              <Redirect to={`/user/${user.userId}`} />
             </Switch>
           </div>
 

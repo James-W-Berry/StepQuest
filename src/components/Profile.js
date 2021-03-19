@@ -29,6 +29,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import GroupIcon from "@material-ui/icons/Group";
 import Emoji from "react-emoji-render";
 import colors from "../assets/colors";
+import { NavLink } from "react-router-dom";
+import AddIcon from "@material-ui/icons/Add";
 
 const styles = (theme) => ({
   closeButton: {
@@ -543,7 +545,7 @@ const Profile = (props) => {
                 backgroundColor: colors.stepitup_fadedGreen,
               }}
             >
-              <Typography h4 style={{ color: colors.white }}>
+              <Typography h4 style={{ color: colors.almostBlack }}>
                 Stats
               </Typography>
             </div>
@@ -572,7 +574,7 @@ const Profile = (props) => {
                 backgroundColor: colors.stepitup_fadedGreen,
               }}
             >
-              <Typography h4 style={{ color: colors.white }}>
+              <Typography h4 style={{ color: colors.almostBlack }}>
                 Challenges
               </Typography>
             </div>
@@ -580,7 +582,34 @@ const Profile = (props) => {
             {user?.activeChallenges ? (
               <div>Active challenge info</div>
             ) : (
-              <div>Create a new challenge +</div>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography h4 style={{ color: colors.almostBlack }}>
+                  You have no active challenges.
+                </Typography>
+                <NavLink
+                  style={{ textDecoration: "none", color: colors.almostBlack }}
+                  to="/create-challenge"
+                >
+                  <Button
+                    style={{
+                      backgroundColor: colors.stepitup_blue,
+                      color: colors.white,
+                    }}
+                    startIcon={<AddIcon />}
+                  >
+                    Create new challenge
+                  </Button>
+                </NavLink>
+              </div>
             )}
           </Grid>
         </Grid>
