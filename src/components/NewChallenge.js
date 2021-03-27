@@ -12,6 +12,7 @@ import {
   IconButton,
   Input,
   InputAdornment,
+  Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import colors from "../assets/colors";
@@ -36,12 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    width: "50%",
-    minWidth: 120,
+    width: "100%",
   },
   field: {
     width: "100%",
-
     "& label ": {
       color: "#19191980",
     },
@@ -110,162 +109,200 @@ export default function NewChallenge() {
   };
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4">New Challenge</Typography>
-      <Typography variant="h5">Challenge Details</Typography>
-      <FormControl className={classes.formControl}>
-        <TextField
-          className={classes.field}
-          label={"What do you want to call this challenge?"}
-          placeholder={
-            "Example: Work Team Activity Challenge, Roommates Lifting Competition"
-          }
-          onChange={(input) => setTitle(input)}
-        />
-      </FormControl>
-
-      <FormControl className={classes.formControl}>
-        <TextareaAutosize
-          onChange={(input) => setDescription(input)}
-          label="Description (optional)"
-          placeholder="Provide any additional information to the challenge participants (goals, prizes, inspiration, etc)"
-          rowsMin={3}
-        >
-          {description}
-        </TextareaAutosize>
-      </FormControl>
-
-      <FormControl className={classes.formControl}>
-        <InputLabel id="select-activity" className={classes.field}>
-          What kind of activity challenge do you want?
-        </InputLabel>
-        <Select
-          label="Challenge activity"
-          native
-          className={classes.field}
-          value={activity}
-          onChange={(event) => {
-            setActivity(event.target.value);
-          }}
-          labelId="select-activity"
-          id="activity-select-required"
-        >
-          <option aria-label="None" value="" />
-          {Object.entries(activityList).map((activityOption) =>
-            createActivityOption(activityOption)
-          )}
-        </Select>
-      </FormControl>
-
-      <FormControl className={classes.formControl}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justify="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="start-date-picker"
-              label="Start date"
-              value={startDate}
-              onChange={handleStartDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-            />
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="end-date-picker"
-              label="End date"
-              value={endDate}
-              onChange={handleEndDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider>
-      </FormControl>
-
-      <Typography variant="h5">
-        Invite participants (via link or email)
-      </Typography>
-
-      <FormControl className={classes.formControl}>
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Typography>
-            Anyone with this link will be able to join your challenge:
-          </Typography>
-          <Typography>
-            <a href={challengeLink}>{challengeLink}</a>
-          </Typography>
-        </div>
-
-        <Typography>Enter participant emails</Typography>
-        <Input
-          type={"email"}
-          value={participantEmail}
-          onChange={(event) => handleParticipantEmailChange(event.target.value)}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                disabled={!isParticipantEmailValid}
-                onClick={() => handleAddParticipantEmail(participantEmail)}
-              >
-                <AddCircle />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-
-      {participantEmails.map((email) => {
-        return <div key={email}>{email}</div>;
-      })}
-
-      <Button
+    <Grid container className={classes.root}>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
         style={{
-          backgroundColor: colors.stepitup_blue,
-          color: colors.white,
-        }}
-        onClick={() => {
-          setForm({
-            title: title,
-            description: description,
-            activity: activity,
-          });
-          const isValid = validate(form);
-          setIsToastVisible(!isValid);
-          setIsFormValid(isValid);
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        Create
-      </Button>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        open={isToastVisible}
-        autoHideDuration={5000}
-        onClose={handleClose}
-        message="Please resolve invalid form fields"
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={handleClose}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
-    </div>
+        <Typography variant="h4">New Challenge</Typography>
+        <Divider />
+        <Typography variant="h5" style={{ marginTop: "40px" }}>
+          Challenge Details
+        </Typography>
+        <FormControl className={classes.formControl}>
+          <TextField
+            className={classes.field}
+            label={"What do you want to call this challenge?"}
+            placeholder={
+              "Example: Work Team Activity Challenge, Roommates Lifting Competition"
+            }
+            onChange={(input) => setTitle(input)}
+          />
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <TextareaAutosize
+            onChange={(input) => setDescription(input)}
+            label="Description (optional)"
+            placeholder="Provide any additional information to the challenge participants (goals, prizes, inspiration, etc)"
+            rowsMin={3}
+          >
+            {description}
+          </TextareaAutosize>
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id="select-activity" className={classes.field}>
+            What kind of activity challenge do you want?
+          </InputLabel>
+          <Select
+            label="Challenge activity"
+            native
+            className={classes.field}
+            value={activity}
+            onChange={(event) => {
+              setActivity(event.target.value);
+            }}
+            labelId="select-activity"
+            id="activity-select-required"
+          >
+            <option aria-label="None" value="" />
+            {Object.entries(activityList).map((activityOption) =>
+              createActivityOption(activityOption)
+            )}
+          </Select>
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify="space-around">
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="start-date-picker"
+                label="Start date"
+                value={startDate}
+                onChange={handleStartDateChange}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="end-date-picker"
+                label="End date"
+                value={endDate}
+                onChange={handleEndDateChange}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
+            </Grid>
+          </MuiPickersUtilsProvider>
+        </FormControl>
+
+        <Typography variant="h5" style={{ marginTop: "40px" }}>
+          Invite participants
+        </Typography>
+
+        <FormControl className={classes.formControl}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              flexDirection: "column",
+            }}
+          >
+            <Typography>
+              Share a link (anyone with this link will be able to join your
+              challenge):
+            </Typography>
+            <Typography>
+              <a href={challengeLink}>{challengeLink}</a>
+            </Typography>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              marginTop: "10px",
+              flexDirection: "column",
+            }}
+          >
+            <Typography>Or invite via email</Typography>
+            <Input
+              type={"email"}
+              value={participantEmail}
+              placeholder="Enter participant emails"
+              onChange={(event) =>
+                handleParticipantEmailChange(event.target.value)
+              }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    disabled={!isParticipantEmailValid}
+                    onClick={() => handleAddParticipantEmail(participantEmail)}
+                  >
+                    <AddCircle />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </div>
+        </FormControl>
+
+        {participantEmails.map((email) => {
+          return <div key={email}>{email}</div>;
+        })}
+
+        <Button
+          style={{
+            backgroundColor: colors.stepitup_blue,
+            color: colors.white,
+            marginTop: "20px",
+          }}
+          onClick={() => {
+            setForm({
+              title: title,
+              description: description,
+              activity: activity,
+            });
+            const isValid = validate(form);
+            setIsToastVisible(!isValid);
+            setIsFormValid(isValid);
+          }}
+        >
+          Create Challenge
+        </Button>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={isToastVisible}
+          autoHideDuration={5000}
+          onClose={handleClose}
+          message="Please resolve invalid form fields"
+          action={
+            <React.Fragment>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
+      </Grid>
+    </Grid>
   );
 }
