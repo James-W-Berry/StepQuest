@@ -17,6 +17,7 @@
     "framer-motion": "^3.2.1",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
+    "query-string": "^7.0.0",
     "react": "^16.13.0",
     "react-bootstrap": "^1.5.2",
     "react-calendar": "^2.19.2",

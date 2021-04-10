@@ -16,8 +16,6 @@ import {
   ListItemIcon,
   Grid,
 } from "@material-ui/core";
-import SettingsIcon from "@material-ui/icons/Settings";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { useTheme } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -32,6 +30,7 @@ import colors from "../assets/colors";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import Divider from "@material-ui/core/Divider";
+import EditableTextField from "./fields/EditableTextField";
 
 const styles = (theme) => ({
   closeButton: {
@@ -284,6 +283,7 @@ const Profile = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
   const [groups, setGroups] = useState([]);
+  const id = props.match.params.id;
 
   useEffect(() => {
     const userId = firebase.auth().currentUser.uid;
@@ -317,36 +317,6 @@ const Profile = (props) => {
             break;
         }
       });
-
-    // firebase
-    //   .storage()
-    //   .ref()
-    //   .child(`profilePics/${userId}`)
-    //   .getDownloadURL()
-    //   .then(function (url) {
-    //     console.log(url);
-    //     setCurrentProfilePicUrl(url);
-    //   })
-    //   .catch(function (error) {
-    //     switch (error.code) {
-    //       case "storage/object-not-found":
-    //         console.log("file does not exist");
-    //         break;
-    //       case "storage/unauthorized":
-    //         console.log("missing permissions");
-    //         break;
-
-    //       case "storage/canceled":
-    //         console.log("cancelled");
-    //         break;
-    //       case "storage/unknown":
-    //         console.log("unknown server response");
-    //         break;
-    //       default:
-    //         console.log("error retrieving profile picture download url");
-    //         break;
-    //     }
-    //   });
   }, []);
 
   function uploadProfilePic(picture) {
@@ -480,6 +450,58 @@ const Profile = (props) => {
           alignItems: "center",
         }}
       >
+        <Grid
+          key="summary"
+          item
+          xs={12}
+          sm={12}
+          md={6}
+          lg={6}
+          xl={6}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Grid key="picture" item>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <label htmlFor="contained-button-file">
+                <IconButton>
+                  <Avatar
+                    src={currentProfilePicUrl}
+                    style={{
+                      height: "175px",
+                      width: "175px",
+                    }}
+                  />
+                </IconButton>
+              </label>
+            </div>
+          </Grid>
+
+          <Grid key="name" item>
+            {userId === id ? (
+              <EditableTextField
+                field="displayName"
+                current={user?.displayName}
+              />
+            ) : (
+              <Typography variant="h5" style={{ color: colors.almostBlack }}>
+                {user?.displayName}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+
+        <Divider className={classes.divider} />
         <Grid
           container
           style={{

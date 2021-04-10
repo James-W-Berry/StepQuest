@@ -21,7 +21,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import colors from "./assets/colors";
 import NewChallenge from "./components/NewChallenge";
-import Settings from "./components/Settings";
 
 const drawerWidth = "100%";
 
@@ -248,13 +247,13 @@ function App() {
             <Switch>
               <Route
                 path="/user/:id"
-                render={() => (
+                render={(props) => (
                   <div
                     id="content"
                     key="profile"
                     style={{ height: "100%", width: "100%" }}
                   >
-                    <UserProfile userId={user.userId} />
+                    <UserProfile userId={user.userId} {...props} />
                   </div>
                 )}
               />
@@ -325,19 +324,6 @@ function App() {
                 )}
               />
 
-              <Route
-                path="/settings"
-                render={() => (
-                  <div
-                    id="content"
-                    key="profile"
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <Settings userId={user.userId} />
-                  </div>
-                )}
-              />
-
               <Redirect to={`/user/${user.userId}`} />
             </Switch>
           </div>
@@ -372,7 +358,7 @@ function App() {
                   <ListItem button className={classes.navLinkButton}>
                     <Typography style={{ fontSize: "2rem" }}>
                       Members
-                    </Typography>{" "}
+                    </Typography>
                   </ListItem>
                 </NavLink>
                 <NavLink className={classes.navLink} to="/teams">
@@ -384,13 +370,6 @@ function App() {
                   <ListItem button className={classes.navLinkButton}>
                     <Typography style={{ fontSize: "2rem" }}>
                       Enter Activities
-                    </Typography>{" "}
-                  </ListItem>
-                </NavLink>
-                <NavLink className={classes.navLink} to={"/settings"}>
-                  <ListItem button className={classes.navLinkButton}>
-                    <Typography style={{ fontSize: "2rem" }}>
-                      Settings
                     </Typography>{" "}
                   </ListItem>
                 </NavLink>
