@@ -31,6 +31,7 @@ import Emoji from "react-emoji-render";
 import colors from "../assets/colors";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
+import Divider from "@material-ui/core/Divider";
 
 const styles = (theme) => ({
   closeButton: {
@@ -42,6 +43,12 @@ const styles = (theme) => ({
 });
 
 const useStyles = makeStyles((theme) => ({
+  divider: {
+    backgroundColor: "#ffffff",
+    width: "90%",
+    display: "flex",
+    alignSelf: "center",
+  },
   root: {
     "&:hover": {
       backgroundColor: colors.stepitup_lightTeal,
@@ -473,50 +480,6 @@ const Profile = (props) => {
           alignItems: "center",
         }}
       >
-        <Grid
-          key="summary"
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          lg={6}
-          xl={6}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Grid key="picture" item>
-            <div
-              style={{
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <label htmlFor="contained-button-file">
-                <IconButton>
-                  <Avatar
-                    src={currentProfilePicUrl}
-                    style={{
-                      height: "175px",
-                      width: "175px",
-                    }}
-                  />
-                </IconButton>
-              </label>
-            </div>
-          </Grid>
-
-          <Grid key="name" item>
-            <Typography variant="h5" style={{ color: colors.almostBlack }}>
-              {user?.displayName}
-            </Typography>
-          </Grid>
-        </Grid>
-
         <Grid
           container
           style={{

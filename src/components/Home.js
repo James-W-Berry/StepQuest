@@ -83,11 +83,11 @@ function useTeams() {
 }
 
 async function getTeamAverage(team) {
-  let avg = 0
+  let avg = 0;
   const teamInfo = await calculateTeamInfo(team);
 }
 
-export default function Dashboard() {
+export default function Home() {
   const classes = useStyles();
   const teams = useTeams();
   const [totalOrgDuration, setTotalOrgDuration] = useState(0);

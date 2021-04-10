@@ -1,25 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
-import Dashboard from "./components/Dashboard";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@material-ui/core";
+import { ListItem, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import CancelIcon from "@material-ui/icons/Cancel";
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import EditIcon from "@material-ui/icons/Edit";
-import ProfileIcon from "@material-ui/icons/AccountCircle";
-import TeamIcon from "@material-ui/icons/Group";
-import MemberIcon from "@material-ui/icons/DirectionsWalk";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import UserList from "./components/UserList";
 import firebase from "./firebase";
@@ -27,26 +15,48 @@ import "firebase/auth";
 import EditActivities from "./components/EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
 import Landing from "./components/Landing";
-import Profile from "./components/Profile";
+import UserProfile from "./components/UserProfile";
 import TeamsList from "./components/TeamsList";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import colors from "./assets/colors";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import NewChallenge from "./components/NewChallenge";
+import Settings from "./components/Settings";
 
-const drawerWidth = 250;
+const drawerWidth = "100%";
 
 const useStyles = makeStyles((theme) => ({
+  logoHeading: {
+    position: "absolute",
+    left: "16px",
+    top: "16px",
+  },
+  menuButton: {
+    position: "absolute",
+    right: "16px",
+    top: "16px",
+    zIndex: 2000,
+  },
   list: {
-    width: 250,
+    marginTop: "20%",
+  },
+  navLink: {
+    textDecoration: "none",
+    color: colors.white,
+    "&:hover": {
+      textDecoration: "none",
+      color: colors.stepitup_blue,
+    },
+  },
+  navLinkButton: {
+    width: "95%",
+    marginLeft: "5%",
   },
   fullList: {
     width: "auto",
   },
   drawerPaper: {
-    background: colors.stepitup_blue,
+    background: colors.almostBlack,
     width: drawerWidth,
   },
   paperAnchorDockedLeft: {
@@ -125,14 +135,14 @@ function App() {
   });
   const [open, setOpen] = useState(false);
 
-  const toggleDrawer = (open) => (event) => {
+  const toggleDrawer = () => (event) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }
-    setOpen(open);
+    setOpen(!open);
   };
 
   const classes = useStyles();
@@ -194,33 +204,57 @@ function App() {
           flexDirection: "column",
         }}
       >
-        <AppBar style={{ backgroundColor: colors.stepitup_blue }}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon style={{ fontSize: 40, color: colors.white }} />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-
         <BrowserRouter>
-          <CssBaseline />
+          <NavLink
+            style={{ textDecoration: "none", color: colors.almostBlack }}
+            to="/home"
+          >
+            <Typography
+              variant="h4"
+              className={classes.logoHeading}
+              color="inherit"
+              aria-label="home"
+              edge="start"
+            >
+              Step It Up
+            </Typography>
+          </NavLink>
+
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={toggleDrawer(true)}
+          >
+            {open ? (
+              <CancelIcon
+                style={{
+                  fontSize: 40,
+                  color: colors.white,
+                }}
+              />
+            ) : (
+              <MenuIcon
+                style={{
+                  fontSize: 40,
+                  color: colors.almostBlack,
+                }}
+              />
+            )}
+          </IconButton>
 
           <div className={classes.content}>
             <Switch>
               <Route
-                path="/dashboard"
+                path="/user/:id"
                 render={() => (
                   <div
                     id="content"
-                    key="dashboard"
+                    key="profile"
                     style={{ height: "100%", width: "100%" }}
                   >
-                    <Dashboard />
+                    <UserProfile userId={user.userId} />
                   </div>
                 )}
               />
@@ -292,14 +326,14 @@ function App() {
               />
 
               <Route
-                path="/user/:id"
+                path="/settings"
                 render={() => (
                   <div
                     id="content"
                     key="profile"
                     style={{ height: "100%", width: "100%" }}
                   >
-                    <Profile userId={user.userId} />
+                    <Settings userId={user.userId} />
                   </div>
                 )}
               />
@@ -310,80 +344,54 @@ function App() {
 
           <Drawer
             className={classes.drawer}
-            anchor="left"
+            anchor="right"
             classes={{
               paper: classes.drawerPaper,
             }}
             open={open}
-            onClose={toggleDrawer(false)}
+            onClose={toggleDrawer()}
           >
             <div
               className={clsx(classes.list)}
               role="presentation"
-              onClick={toggleDrawer(false)}
-              onKeyDown={toggleDrawer(false)}
+              onClick={toggleDrawer()}
+              onKeyDown={toggleDrawer()}
             >
               <List component="nav">
                 <NavLink
-                  style={{ textDecoration: "none", color: colors.white }}
-                  to="/dashboard"
-                >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <DashboardIcon style={{ color: colors.white }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" />
-                  </ListItem>
-                </NavLink>
-                <NavLink
-                  style={{ textDecoration: "none", color: colors.white }}
-                  to="/members"
-                >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <MemberIcon style={{ color: colors.white }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Members" />
-                  </ListItem>
-                </NavLink>
-                <NavLink
-                  style={{ textDecoration: "none", color: colors.white }}
-                  to="/teams"
-                >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <TeamIcon style={{ color: colors.white }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Teams" />
-                  </ListItem>
-                </NavLink>
-              </List>
-              <Divider
-                classes={{
-                  root: classes.divider,
-                }}
-              />
-              <List component="nav">
-                <NavLink
-                  style={{ textDecoration: "none", color: colors.white }}
-                  to="/edit"
-                >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <EditIcon style={{ color: colors.white }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Enter Activities" />
-                  </ListItem>
-                </NavLink>
-                <NavLink
-                  style={{ textDecoration: "none", color: colors.white }}
+                  className={classes.navLink}
                   to={`/user/${user.userId}`}
                 >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <ProfileIcon style={{ color: colors.white }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Profile" />
+                  <ListItem button className={classes.navLinkButton}>
+                    <Typography style={{ fontSize: "2rem" }}>
+                      Profile
+                    </Typography>{" "}
+                  </ListItem>
+                </NavLink>
+                <NavLink className={classes.navLink} to="/members">
+                  <ListItem button className={classes.navLinkButton}>
+                    <Typography style={{ fontSize: "2rem" }}>
+                      Members
+                    </Typography>{" "}
+                  </ListItem>
+                </NavLink>
+                <NavLink className={classes.navLink} to="/teams">
+                  <ListItem button className={classes.navLinkButton}>
+                    <Typography style={{ fontSize: "2rem" }}>Teams</Typography>{" "}
+                  </ListItem>
+                </NavLink>
+                <NavLink className={classes.navLink} to="/edit">
+                  <ListItem button className={classes.navLinkButton}>
+                    <Typography style={{ fontSize: "2rem" }}>
+                      Enter Activities
+                    </Typography>{" "}
+                  </ListItem>
+                </NavLink>
+                <NavLink className={classes.navLink} to={"/settings"}>
+                  <ListItem button className={classes.navLinkButton}>
+                    <Typography style={{ fontSize: "2rem" }}>
+                      Settings
+                    </Typography>{" "}
                   </ListItem>
                 </NavLink>
               </List>
