@@ -276,7 +276,6 @@ const Profile = (props) => {
   const userId = props.userId;
   const user = useUser(userId);
   const [open, setOpen] = useState(false);
-  const [displayName, setDisplayName] = useState("");
   const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -490,8 +489,9 @@ const Profile = (props) => {
           <Grid key="name" item>
             {userId === id ? (
               <EditableTextField
-                field="displayName"
+                label="Display Name"
                 current={user?.displayName}
+                updateField={(name) => onEditDisplayName(name)}
               />
             ) : (
               <Typography variant="h5" style={{ color: colors.almostBlack }}>
