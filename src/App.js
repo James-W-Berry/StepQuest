@@ -9,18 +9,18 @@ import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { NavLink } from "react-router-dom/cjs/react-router-dom.min";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
-import UserList from "./components/UserList";
 import firebase from "./firebase";
 import "firebase/auth";
 import EditActivities from "./components/EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
 import Landing from "./components/Landing";
-import UserProfile from "./components/UserProfile";
-import TeamsList from "./components/TeamsList";
+import UserProfile from "./components/pages/user/UserProfile";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import colors from "./assets/colors";
-import NewChallenge from "./components/NewChallenge";
+import NewChallenge from "./components/pages/NewChallenge/NewChallenge";
+import About from "./components/pages/About/AboutPage";
+import ChallengeDetails from "./components/pages/Challenge/ChallengeDetails";
 
 const drawerWidth = "100%";
 
@@ -248,77 +248,39 @@ function App() {
               <Route
                 path="/user/:id"
                 render={(props) => (
-                  <div
-                    id="content"
-                    key="profile"
-                    style={{ height: "100%", width: "100%" }}
-                  >
+                  <div key="profile" style={{ height: "100%", width: "100%" }}>
                     <UserProfile userId={user.userId} {...props} />
                   </div>
                 )}
               />
-
               <Route
-                path="/members"
-                render={() => (
-                  <div
-                    id="content"
-                    key="members"
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flex: 1,
-                      }}
-                    >
-                      <UserList />
-                    </div>
+                path="/challenge/:id"
+                render={(props) => (
+                  <div key="profile" style={{ height: "100%", width: "100%" }}>
+                    <ChallengeDetails {...props} />
                   </div>
                 )}
               />
-
               <Route
-                path="/teams"
+                path="/about"
                 render={() => (
-                  <div
-                    id="content"
-                    key="teams"
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flex: 1,
-                      }}
-                    >
-                      <TeamsList />
-                    </div>
+                  <div key="about" style={{ height: "100%", width: "100%" }}>
+                    <About />
                   </div>
                 )}
               />
-
               <Route
                 path="/edit"
                 render={() => (
-                  <div
-                    id="content"
-                    key="edit"
-                    style={{ height: "100%", width: "100%" }}
-                  >
+                  <div key="edit" style={{ height: "100%", width: "100%" }}>
                     <EditActivities userId={user.userId} />
                   </div>
                 )}
               />
-
               <Route
                 path="/create-challenge"
                 render={() => (
-                  <div
-                    id="content"
-                    key="edit"
-                    style={{ height: "100%", width: "100%" }}
-                  >
+                  <div key="edit" style={{ height: "100%", width: "100%" }}>
                     <NewChallenge />
                   </div>
                 )}
@@ -354,23 +316,16 @@ function App() {
                     </Typography>{" "}
                   </ListItem>
                 </NavLink>
-                <NavLink className={classes.navLink} to="/members">
+                <NavLink className={classes.navLink} to="/create-challenge">
                   <ListItem button className={classes.navLinkButton}>
                     <Typography style={{ fontSize: "2rem" }}>
-                      Members
+                      Create a new challenge
                     </Typography>
                   </ListItem>
                 </NavLink>
-                <NavLink className={classes.navLink} to="/teams">
+                <NavLink className={classes.navLink} to="/about">
                   <ListItem button className={classes.navLinkButton}>
-                    <Typography style={{ fontSize: "2rem" }}>Teams</Typography>{" "}
-                  </ListItem>
-                </NavLink>
-                <NavLink className={classes.navLink} to="/edit">
-                  <ListItem button className={classes.navLinkButton}>
-                    <Typography style={{ fontSize: "2rem" }}>
-                      Enter Activities
-                    </Typography>{" "}
+                    <Typography style={{ fontSize: "2rem" }}>About</Typography>
                   </ListItem>
                 </NavLink>
               </List>

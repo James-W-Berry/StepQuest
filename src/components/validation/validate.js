@@ -1,6 +1,6 @@
 export function validate(form) {
-  console.log("validating form");
-  return false;
+  if (!(form.title && form.id && form.startDate && form.endDate)) return false;
+  return true;
 }
 
 export function validateEmail(email) {

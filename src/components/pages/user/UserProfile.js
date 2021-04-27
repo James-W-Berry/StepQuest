@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import firebase from "../firebase";
+import firebase from "../../../firebase";
 import {
   Button,
   TextField,
@@ -26,11 +26,11 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import CloseIcon from "@material-ui/icons/Close";
 import GroupIcon from "@material-ui/icons/Group";
 import Emoji from "react-emoji-render";
-import colors from "../assets/colors";
+import colors from "../../../assets/colors";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
-import Divider from "@material-ui/core/Divider";
-import EditableTextField from "./fields/EditableTextField";
+import EditableTextField from "../../fields/EditableTextField";
+import UserStats from "./UserStats";
 
 const styles = (theme) => ({
   closeButton: {
@@ -99,12 +99,6 @@ const useStyles = makeStyles((theme) => ({
   },
   fileUploadInput: {
     display: "none",
-  },
-  centerGrid: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
   },
 }));
 
@@ -501,23 +495,14 @@ const Profile = (props) => {
           </Grid>
         </Grid>
 
-        <Divider className={classes.divider} />
         <Grid
           container
+          spacing={12}
           style={{
             height: "100%",
           }}
         >
-          <Grid
-            key="settings"
-            item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            xl={6}
-            className={classes.settingsGrid}
-          >
+          <Grid key="settings" item xs={12} sm={12} md={6} lg={6} xl={6}>
             <div
               style={{
                 height: "60px",
@@ -525,27 +510,17 @@ const Profile = (props) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                borderTopLeftRadius: "20px",
-                borderBottomLeftRadius: "20px",
-                backgroundColor: colors.stepitup_fadedGreen,
+                backgroundColor: colors.almostBlack,
               }}
             >
-              <Typography h4 style={{ color: colors.almostBlack }}>
+              <Typography h4 style={{ color: colors.white }}>
                 Stats
               </Typography>
             </div>
+            <UserStats />
           </Grid>
 
-          <Grid
-            key="challenges"
-            item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            xl={6}
-            className={classes.centerGrid}
-          >
+          <Grid key="challenges" item xs={12} sm={12} md={6} lg={6} xl={6}>
             <div
               style={{
                 height: "60px",
@@ -553,13 +528,10 @@ const Profile = (props) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                borderTopRightRadius: "20px",
-                borderBottomRightRadius: "20px",
-
-                backgroundColor: colors.stepitup_fadedGreen,
+                backgroundColor: colors.almostBlack,
               }}
             >
-              <Typography h4 style={{ color: colors.almostBlack }}>
+              <Typography h4 style={{ color: colors.white }}>
                 Challenges
               </Typography>
             </div>

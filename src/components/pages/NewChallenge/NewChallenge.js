@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -15,9 +15,9 @@ import {
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import colors from "../assets/colors";
-import activityList from "../assets/activityList.json";
-import { validate, validateEmail } from "./validation/validate";
+import colors from "../../../assets/colors";
+import activityList from "../../../assets/activityList.json";
+import { validate, validateEmail } from "../../validation/validate";
 import CloseIcon from "@material-ui/icons/Close";
 import DateFnsUtils from "@date-io/date-fns";
 import add from "date-fns/add";
@@ -26,6 +26,9 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import AddCircle from "@material-ui/icons/AddCircle";
+import { v4 as uuidv4 } from "uuid";
+import { createNewChallenge } from "../../../api/challengeApi";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,18 +68,23 @@ function createActivityOption(activityOption) {
 
 export default function NewChallenge() {
   const classes = useStyles();
-  const [form, setForm] = useState({});
+  const [id, setId] = useState();
   const [title, setTitle] = useState();
-  const [activity, setActivity] = useState(0); // All Activities (General)
+  const [activity, setActivity] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(add(new Date(), { months: 1 }));
   const [description, setDescription] = useState();
   const [participantEmail, setParticipantEmail] = useState();
   const [isParticipantEmailValid, setIsParticipantEmailValid] = useState(false);
   const [participantEmails, setParticipantEmails] = useState([]);
-  const challengeLink = "https://google.com";
-  const [isFormValid, setIsFormValid] = useState();
+  const challengeLink = `https://stepitup.web.app/challenge/${id}`;
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const history = useHistory();
+
+  useEffect(() => {
+    setId(uuidv4());
+  }, []);
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -108,6 +116,30 @@ export default function NewChallenge() {
     setIsToastVisible(false);
   };
 
+  const onSubmit = () => {
+    const form = {
+      id,
+      title,
+      description,
+      activity,
+      startDate,
+      endDate,
+    };
+
+    const isValid = validate(form);
+    !isValid && setToastMessage("Please fix all invalid fields");
+    setIsToastVisible(!isValid);
+
+    isValid &&
+      createNewChallenge(form).then((response) => {
+        console.log(response);
+        setToastMessage(response.message);
+        setIsToastVisible(true);
+        response.success &&
+          setTimeout(() => history.push(`/challenge/${form.id}`), 20000);
+      });
+  };
+
   return (
     <Grid container className={classes.root}>
       <Grid
@@ -136,13 +168,13 @@ export default function NewChallenge() {
             placeholder={
               "Example: Work Team Activity Challenge, Roommates Lifting Competition"
             }
-            onChange={(input) => setTitle(input)}
+            onChange={(event) => setTitle(event.target.value)}
           />
         </FormControl>
 
         <FormControl className={classes.formControl}>
           <TextareaAutosize
-            onChange={(input) => setDescription(input)}
+            onChange={(event) => setDescription(event.target.value)}
             label="Description (optional)"
             placeholder="Provide any additional information to the challenge participants (goals, prizes, inspiration, etc)"
             rowsMin={3}
@@ -267,19 +299,11 @@ export default function NewChallenge() {
             color: colors.white,
             marginTop: "20px",
           }}
-          onClick={() => {
-            setForm({
-              title: title,
-              description: description,
-              activity: activity,
-            });
-            const isValid = validate(form);
-            setIsToastVisible(!isValid);
-            setIsFormValid(isValid);
-          }}
+          onClick={onSubmit}
         >
           Create Challenge
         </Button>
+
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
@@ -288,7 +312,7 @@ export default function NewChallenge() {
           open={isToastVisible}
           autoHideDuration={5000}
           onClose={handleClose}
-          message="Please resolve invalid form fields"
+          message={toastMessage}
           action={
             <React.Fragment>
               <IconButton
