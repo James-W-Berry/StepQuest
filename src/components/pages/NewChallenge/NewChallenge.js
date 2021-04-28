@@ -29,6 +29,8 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import { v4 as uuidv4 } from "uuid";
 import { createNewChallenge } from "../../../api/challengeApi";
 import { useHistory } from "react-router-dom";
+import { useUserContext } from "../../../auth/UserContext";
+import { joinChallenge, updateUser } from "../../../api/userApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +69,9 @@ function createActivityOption(activityOption) {
 }
 
 export default function NewChallenge() {
+  const {
+    user: { userId },
+  } = useUserContext();
   const classes = useStyles();
   const [id, setId] = useState();
   const [title, setTitle] = useState();
@@ -118,6 +123,7 @@ export default function NewChallenge() {
 
   const onSubmit = () => {
     const form = {
+      admin: userId,
       id,
       title,
       description,
@@ -136,7 +142,12 @@ export default function NewChallenge() {
         setToastMessage(response.message);
         setIsToastVisible(true);
         response.success &&
-          setTimeout(() => history.push(`/challenge/${form.id}`), 20000);
+          joinChallenge(userId, id).then((response) => {
+            console.log(response);
+            if (response.success) {
+              setTimeout(() => history.push(`/challenge/${form.id}`), 10000);
+            }
+          });
       });
   };
 

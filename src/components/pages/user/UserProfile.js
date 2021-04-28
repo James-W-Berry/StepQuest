@@ -32,6 +32,7 @@ import AddIcon from "@material-ui/icons/Add";
 import EditableTextField from "../../fields/EditableTextField";
 import UserStats from "./UserStats";
 import { useUserContext } from "../../../auth/UserContext";
+import { getChallenges, getUser } from "../../../api/userApi";
 
 const styles = (theme) => ({
   closeButton: {
@@ -215,29 +216,6 @@ function addNewGroup(groupName, userId) {
   }
 }
 
-function useUser(userId) {
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    if (userId) {
-      const unsubscribe = firebase
-        .firestore()
-        .collection("users")
-        .doc(userId)
-        .onSnapshot((snapshot) => {
-          const doc = {
-            ...snapshot.data(),
-          };
-
-          setUser(doc);
-        });
-      return () => unsubscribe();
-    }
-  }, [userId]);
-
-  return user;
-}
-
 const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
@@ -273,7 +251,6 @@ const Profile = (props) => {
   const {
     user: { userId },
   } = useUserContext();
-  const userDetails = useUser(userId);
 
   const [open, setOpen] = useState(false);
   const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
@@ -282,41 +259,29 @@ const Profile = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
   const [groups, setGroups] = useState([]);
+
   const id = props.match.params.id;
+  const [profileDetails, setProfileDetails] = useState({
+    isLoading: true,
+    success: null,
+    data: {},
+  });
+  const [activeChallenges, setActiveChallenges] = useState([]);
 
   useEffect(() => {
-    //const userId = firebase.auth().currentUser.uid;
+    getUser(id).then((response) => {
+      console.log(response);
+      setProfileDetails(response);
+    });
+  }, [id]);
 
-    firebase
-      .storage()
-      .ref()
-      .child(`profilePics/${userId}`)
-      .getDownloadURL()
-      .then(function (url) {
-        console.log(url);
-        setCurrentProfilePicUrl(url);
-      })
-      .catch(function (error) {
-        switch (error.code) {
-          case "storage/object-not-found":
-            console.log("file does not exist");
-            break;
-          case "storage/unauthorized":
-            console.log("missing permissions");
-            break;
-
-          case "storage/canceled":
-            console.log("cancelled");
-            break;
-          case "storage/unknown":
-            console.log("unknown server response");
-            break;
-          default:
-            console.log("error retrieving profile picture download url");
-            break;
-        }
+  useEffect(() => {
+    if (profileDetails.data.activeChallenges)
+      getChallenges(profileDetails.data.activeChallenges).then((response) => {
+        console.log(response);
+        setActiveChallenges(response);
       });
-  }, []);
+  }, [profileDetails]);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -368,18 +333,23 @@ const Profile = (props) => {
             }}
             button={true}
             onClick={() => {
-              group.id === userDetails.groupId
+              group.id === profileDetails.groupId
                 ? leaveGroup(group, user).then(
                     updateGroup({ id: null, name: null })
                   )
-                : userDetails.groupId !== null
+                : profileDetails.groupId !== null
                 ? leaveGroup(
-                    { id: userDetails.groupId, name: userDetails.groupName },
+                    {
+                      id: profileDetails.groupId,
+                      name: profileDetails.groupName,
+                    },
                     user
                   )
-                    .then(joinGroup(group, user, userDetails))
+                    .then(joinGroup(group, user, profileDetails))
                     .then(updateGroup(group))
-                : joinGroup(group, user, userDetails).then(updateGroup(group));
+                : joinGroup(group, user, profileDetails).then(
+                    updateGroup(group)
+                  );
             }}
           >
             <ListItemAvatar>
@@ -390,7 +360,7 @@ const Profile = (props) => {
             <ListItemText
               disableTypography
               primary={
-                group.id === userDetails?.groupId ? (
+                group.id === profileDetails?.groupId ? (
                   <Tooltip title="Leave group" placement="bottom-start">
                     <Typography
                       variant="h6"
@@ -440,6 +410,40 @@ const Profile = (props) => {
     setOpen(false);
   };
 
+  if (profileDetails.isLoading) {
+    return (
+      <div
+        style={{
+          backgroundColor: colors.almostWhite,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <SyncLoader color={colors.stepitup_blue} />
+      </div>
+    );
+  }
+
+  if (!profileDetails.success) {
+    return (
+      <div
+        style={{
+          backgroundColor: colors.almostWhite,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <div>User not found :(</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Grid
@@ -478,7 +482,7 @@ const Profile = (props) => {
               <label htmlFor="contained-button-file">
                 <IconButton>
                   <Avatar
-                    src={currentProfilePicUrl}
+                    src={profileDetails.data.profilePictureUrl}
                     style={{
                       height: "175px",
                       width: "175px",
@@ -490,15 +494,15 @@ const Profile = (props) => {
           </Grid>
 
           <Grid key="name" item>
-            {user === id ? (
+            {userId === id ? (
               <EditableTextField
                 label="Display Name"
-                current={userDetails?.displayName}
+                current={profileDetails.data.displayName}
                 updateField={(name) => onEditDisplayName(name)}
               />
             ) : (
               <Typography variant="h5" style={{ color: colors.almostBlack }}>
-                {userDetails?.displayName}
+                {profileDetails.data.displayName}
               </Typography>
             )}
           </Grid>
@@ -545,8 +549,15 @@ const Profile = (props) => {
               </Typography>
             </div>
 
-            {userDetails?.activeChallenges ? (
-              <div>Active challenge info</div>
+            {profileDetails.data.activeChallenges ? (
+              <div>
+                <div>Active challenges</div>
+                <div>
+                  {activeChallenges.map((challenge) => {
+                    return <div key={challenge.id}>{challenge.title}</div>;
+                  })}
+                </div>
+              </div>
             ) : (
               <div
                 style={{
@@ -561,22 +572,24 @@ const Profile = (props) => {
                 <Typography variant="h4" style={{ color: colors.almostBlack }}>
                   You have no active challenges.
                 </Typography>
-                <NavLink
-                  style={{ textDecoration: "none", color: colors.almostBlack }}
-                  to="/create-challenge"
-                >
-                  <Button
-                    style={{
-                      backgroundColor: colors.stepitup_blue,
-                      color: colors.white,
-                    }}
-                    startIcon={<AddIcon />}
-                  >
-                    Create new challenge
-                  </Button>
-                </NavLink>
               </div>
             )}
+            <div>
+              <NavLink
+                style={{ textDecoration: "none", color: colors.almostBlack }}
+                to="/create-challenge"
+              >
+                <Button
+                  style={{
+                    backgroundColor: colors.stepitup_blue,
+                    color: colors.white,
+                  }}
+                  startIcon={<AddIcon />}
+                >
+                  Create new challenge
+                </Button>
+              </NavLink>
+            </div>
           </Grid>
         </Grid>
       </Grid>
@@ -616,8 +629,8 @@ const Profile = (props) => {
               }}
               gutterBottom
             >
-              {userDetails?.groupName ? (
-                `Currently a member of ${userDetails?.groupName}`
+              {profileDetails?.groupName ? (
+                `Currently a member of ${profileDetails?.groupName}`
               ) : (
                 <Emoji text="Currently you're ridin' solo :(" />
               )}
