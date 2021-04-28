@@ -31,6 +31,7 @@ import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import EditableTextField from "../../fields/EditableTextField";
 import UserStats from "./UserStats";
+import { useUserContext } from "../../../auth/UserContext";
 
 const styles = (theme) => ({
   closeButton: {
@@ -218,19 +219,20 @@ function useUser(userId) {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .onSnapshot((snapshot) => {
-        const doc = {
-          ...snapshot.data(),
-        };
+    if (userId) {
+      const unsubscribe = firebase
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .onSnapshot((snapshot) => {
+          const doc = {
+            ...snapshot.data(),
+          };
 
-        setUser(doc);
-      });
-
-    return () => unsubscribe();
+          setUser(doc);
+        });
+      return () => unsubscribe();
+    }
   }, [userId]);
 
   return user;
@@ -267,8 +269,12 @@ const DialogContent = withStyles((theme) => ({
 const Profile = (props) => {
   const classes = useStyles();
   const theme = useTheme();
-  const userId = props.userId;
-  const user = useUser(userId);
+  const { user } = useUserContext();
+  const {
+    user: { userId },
+  } = useUserContext();
+  const userDetails = useUser(userId);
+
   const [open, setOpen] = useState(false);
   const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
   const [profilePic, setProfilePic] = useState("");
@@ -279,7 +285,7 @@ const Profile = (props) => {
   const id = props.match.params.id;
 
   useEffect(() => {
-    const userId = firebase.auth().currentUser.uid;
+    //const userId = firebase.auth().currentUser.uid;
 
     firebase
       .storage()
@@ -362,15 +368,18 @@ const Profile = (props) => {
             }}
             button={true}
             onClick={() => {
-              group.id === user.groupId
-                ? leaveGroup(group, userId).then(
+              group.id === userDetails.groupId
+                ? leaveGroup(group, user).then(
                     updateGroup({ id: null, name: null })
                   )
-                : user.groupId !== null
-                ? leaveGroup({ id: user.groupId, name: user.groupName }, userId)
-                    .then(joinGroup(group, userId, user))
+                : userDetails.groupId !== null
+                ? leaveGroup(
+                    { id: userDetails.groupId, name: userDetails.groupName },
+                    user
+                  )
+                    .then(joinGroup(group, user, userDetails))
                     .then(updateGroup(group))
-                : joinGroup(group, userId, user).then(updateGroup(group));
+                : joinGroup(group, user, userDetails).then(updateGroup(group));
             }}
           >
             <ListItemAvatar>
@@ -381,7 +390,7 @@ const Profile = (props) => {
             <ListItemText
               disableTypography
               primary={
-                group.id === user?.groupId ? (
+                group.id === userDetails?.groupId ? (
                   <Tooltip title="Leave group" placement="bottom-start">
                     <Typography
                       variant="h6"
@@ -481,15 +490,15 @@ const Profile = (props) => {
           </Grid>
 
           <Grid key="name" item>
-            {userId === id ? (
+            {user === id ? (
               <EditableTextField
                 label="Display Name"
-                current={user?.displayName}
+                current={userDetails?.displayName}
                 updateField={(name) => onEditDisplayName(name)}
               />
             ) : (
               <Typography variant="h5" style={{ color: colors.almostBlack }}>
-                {user?.displayName}
+                {userDetails?.displayName}
               </Typography>
             )}
           </Grid>
@@ -497,7 +506,7 @@ const Profile = (props) => {
 
         <Grid
           container
-          spacing={12}
+          spacing={10}
           style={{
             height: "100%",
           }}
@@ -513,7 +522,7 @@ const Profile = (props) => {
                 backgroundColor: colors.almostBlack,
               }}
             >
-              <Typography h4 style={{ color: colors.white }}>
+              <Typography variant="h4" style={{ color: colors.white }}>
                 Stats
               </Typography>
             </div>
@@ -531,12 +540,12 @@ const Profile = (props) => {
                 backgroundColor: colors.almostBlack,
               }}
             >
-              <Typography h4 style={{ color: colors.white }}>
+              <Typography variant="h4" style={{ color: colors.white }}>
                 Challenges
               </Typography>
             </div>
 
-            {user?.activeChallenges ? (
+            {userDetails?.activeChallenges ? (
               <div>Active challenge info</div>
             ) : (
               <div
@@ -549,7 +558,7 @@ const Profile = (props) => {
                   flexDirection: "column",
                 }}
               >
-                <Typography h4 style={{ color: colors.almostBlack }}>
+                <Typography variant="h4" style={{ color: colors.almostBlack }}>
                   You have no active challenges.
                 </Typography>
                 <NavLink
@@ -607,8 +616,8 @@ const Profile = (props) => {
               }}
               gutterBottom
             >
-              {user?.groupName ? (
-                `Currently a member of ${user?.groupName}`
+              {userDetails?.groupName ? (
+                `Currently a member of ${userDetails?.groupName}`
               ) : (
                 <Emoji text="Currently you're ridin' solo :(" />
               )}
@@ -650,7 +659,7 @@ const Profile = (props) => {
                   color: colors.almostWhite,
                 }}
                 onClick={() => {
-                  addNewGroup(newGroupName, userId);
+                  addNewGroup(newGroupName, user);
                 }}
                 color="primary"
               >

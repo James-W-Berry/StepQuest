@@ -242,8 +242,8 @@ function Landing(props) {
 
   return (
     <div>
-      <div class="bg">
-        <div class="overlay">
+      <div className="bg">
+        <div className="overlay">
           <div
             style={{
               display: "flex",
@@ -263,7 +263,7 @@ function Landing(props) {
               </Typography>
             </div>
 
-            <div class="content">
+            <div className="content">
               <LandingCarousel />
             </div>
 
