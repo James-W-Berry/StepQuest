@@ -51,7 +51,7 @@ export default function EditableTextField(props) {
         </div>
       ) : (
         <div style={{ display: "flex" }}>
-          <Typography>{value}</Typography>
+          <Typography variant={props.variant}>{value}</Typography>
           <EditIcon
             className={classes.icon}
             onClick={() => {

@@ -15,6 +15,7 @@ import {
   Tooltip,
   ListItemIcon,
   Grid,
+  Divider,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
@@ -276,7 +277,7 @@ const Profile = (props) => {
   }, [id]);
 
   useEffect(() => {
-    if (profileDetails.data.activeChallenges)
+    if (profileDetails.data && profileDetails.data.activeChallenges)
       getChallenges(profileDetails.data.activeChallenges).then((response) => {
         console.log(response);
         setActiveChallenges(response);
@@ -445,171 +446,139 @@ const Profile = (props) => {
   }
 
   return (
-    <div>
+    <div
+    // style={{
+    //   display: "flex",
+    //   flexDirection: "column",
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    // }}
+    >
       <Grid
-        container
-        spacing={4}
+        key="summary"
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <Grid
-          key="summary"
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          lg={6}
-          xl={6}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Grid key="picture" item>
-            <div
-              style={{
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <label htmlFor="contained-button-file">
-                <IconButton>
-                  <Avatar
-                    src={profileDetails.data.profilePictureUrl}
-                    style={{
-                      height: "175px",
-                      width: "175px",
-                    }}
-                  />
-                </IconButton>
-              </label>
-            </div>
-          </Grid>
-
-          <Grid key="name" item>
-            {userId === id ? (
-              <EditableTextField
-                label="Display Name"
-                current={profileDetails.data.displayName}
-                updateField={(name) => onEditDisplayName(name)}
-              />
-            ) : (
-              <Typography variant="h5" style={{ color: colors.almostBlack }}>
-                {profileDetails.data.displayName}
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
-
-        <Grid
-          container
-          spacing={2}
-          style={{
-            height: "100%",
-          }}
-        >
-          <Grid key="settings" item xs={12} sm={12} md={6} lg={6} xl={6}>
-            <div
-              style={{
-                height: "60px",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: colors.almostBlack,
-                borderRadius: "8px",
-              }}
-            >
-              <Typography variant="h4" style={{ color: colors.white }}>
-                Stats
-              </Typography>
-            </div>
-            <UserStats />
-          </Grid>
-
-          <Grid key="challenges" item xs={12} sm={12} md={6} lg={6} xl={6}>
-            <div
-              style={{
-                height: "60px",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: colors.almostBlack,
-                borderRadius: "8px",
-              }}
-            >
-              <Typography variant="h4" style={{ color: colors.white }}>
-                Challenges
-              </Typography>
-            </div>
-
-            {profileDetails.data.activeChallenges ? (
-              <div>
-                <div style={{ margin: "20px" }}>
-                  <Typography variant="h5">Active challenges</Typography>
-                  {activeChallenges.map((challenge) => {
-                    return (
-                      <div key={challenge.id}>
-                        <a href={`/challenge/${challenge.id}`}>
-                          {challenge.title}
-                        </a>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div style={{ margin: "20px" }}>
-                  <Typography variant="h5">Past challenges</Typography>
-                  <div></div>
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography variant="h4" style={{ color: colors.almostBlack }}>
-                  You have no active challenges.
-                </Typography>
-              </div>
-            )}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                margin: "40px",
-              }}
-            >
-              <NavLink
-                style={{ textDecoration: "none", color: colors.almostBlack }}
-                to="/create-challenge"
-              >
-                <Button
+        <Grid key="picture" item>
+          <div
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <label htmlFor="contained-button-file">
+              <IconButton>
+                <Avatar
+                  src={profileDetails.data.profilePictureUrl}
                   style={{
-                    backgroundColor: colors.stepitup_blue,
-                    color: colors.white,
+                    height: "175px",
+                    width: "175px",
                   }}
-                  startIcon={<AddIcon />}
-                >
-                  Create new challenge
-                </Button>
-              </NavLink>
-            </div>
-          </Grid>
+                />
+              </IconButton>
+            </label>
+          </div>
         </Grid>
+
+        <Grid key="name" item>
+          {userId === id ? (
+            <EditableTextField
+              label="Display Name"
+              variant="h4"
+              current={profileDetails.data.displayName}
+              updateField={(name) => onEditDisplayName(name)}
+            />
+          ) : (
+            <Typography variant="h4" style={{ color: colors.almostBlack }}>
+              {profileDetails.data.displayName}
+            </Typography>
+          )}
+        </Grid>
+      </Grid>
+
+      <Divider variant="fullWidth" />
+
+      <Grid
+        container
+        spacing={2}
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <UserStats user={profileDetails.data} />{" "}
+        {profileDetails.data.activeChallenges ? (
+          <div>
+            <div style={{ margin: "20px" }}>
+              <Typography variant="h5">Active challenges</Typography>
+              {activeChallenges.map((challenge) => {
+                return (
+                  <div key={challenge.id}>
+                    <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ margin: "20px" }}>
+              <Typography variant="h5">Past challenges</Typography>
+              <div></div>
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography variant="h4" style={{ color: colors.almostBlack }}>
+              You have no active challenges.
+            </Typography>
+          </div>
+        )}
+        {userId === id && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "40px",
+            }}
+          >
+            <NavLink
+              style={{ textDecoration: "none", color: colors.almostBlack }}
+              to="/create-challenge"
+            >
+              <Button
+                style={{
+                  backgroundColor: colors.stepitup_blue,
+                  color: colors.white,
+                }}
+                startIcon={<AddIcon />}
+              >
+                Create new challenge
+              </Button>
+            </NavLink>
+          </div>
+        )}
       </Grid>
 
       <Dialog
