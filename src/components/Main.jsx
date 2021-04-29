@@ -4,7 +4,7 @@ import "../App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import { ListItem, Typography } from "@material-ui/core";
+import { Box, ListItem, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -29,6 +29,13 @@ const drawerWidth = "100%";
 const useStyles = makeStyles((theme) => ({
   header: {
     height: theme.spacing(10),
+    width: "100%",
+    zIndex: 2000,
+  },
+  box: {
+    height: theme.spacing(10),
+    width: "100%",
+    backgroundColor: colors.stepitup_blueishGray,
   },
   logoHeading: {
     position: "absolute",
@@ -73,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(3),
     backgroundColor: colors.almostWhite,
+    height: "100%",
   },
 }));
 
@@ -171,47 +179,47 @@ export default function Main() {
         width: "100%",
         minHeight: "100%",
         height: "100%",
-        zIndex: "0",
         position: "absolute",
-        backgroundColor: colors.almostWhite,
       }}
     >
       <BrowserRouter>
-        <div id="header" className={classes.header}>
-          <NavLink className={classes.logoHeading} to="/home">
-            <img src={logo} alt="logo" height={40} width={40} />
-            <Typography
-              variant="h5"
-              style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
-            >
-              Step It Up
-            </Typography>
-          </NavLink>
+        <Box boxShadow={3} className={classes.box}>
+          <div id="header" className={classes.header}>
+            <NavLink className={classes.logoHeading} to="/home">
+              <img src={logo} alt="logo" height={40} width={40} />
+              <Typography
+                variant="h5"
+                style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
+              >
+                Step It Up
+              </Typography>
+            </NavLink>
 
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={toggleDrawer(true)}
-          >
-            {open ? (
-              <CancelIcon
-                style={{
-                  fontSize: 40,
-                  color: colors.white,
-                }}
-              />
-            ) : (
-              <MenuIcon
-                style={{
-                  fontSize: 40,
-                  color: colors.almostBlack,
-                }}
-              />
-            )}
-          </IconButton>
-        </div>
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={toggleDrawer(true)}
+            >
+              {open ? (
+                <CancelIcon
+                  style={{
+                    fontSize: 40,
+                    color: colors.white,
+                  }}
+                />
+              ) : (
+                <MenuIcon
+                  style={{
+                    fontSize: 40,
+                    color: colors.almostBlack,
+                  }}
+                />
+              )}
+            </IconButton>
+          </div>
+        </Box>
 
         <div className={classes.content}>
           <Switch>

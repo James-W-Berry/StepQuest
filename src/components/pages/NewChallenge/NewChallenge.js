@@ -30,7 +30,7 @@ import { v4 as uuidv4 } from "uuid";
 import { createNewChallenge } from "../../../api/challengeApi";
 import { useHistory } from "react-router-dom";
 import { useUserContext } from "../../../auth/UserContext";
-import { joinChallenge, updateUser } from "../../../api/userApi";
+import { getUser, joinChallenge, updateUser } from "../../../api/userApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {

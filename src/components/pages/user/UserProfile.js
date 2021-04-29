@@ -510,7 +510,7 @@ const Profile = (props) => {
 
         <Grid
           container
-          spacing={10}
+          spacing={2}
           style={{
             height: "100%",
           }}
@@ -524,6 +524,7 @@ const Profile = (props) => {
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: colors.almostBlack,
+                borderRadius: "8px",
               }}
             >
               <Typography variant="h4" style={{ color: colors.white }}>
@@ -542,6 +543,7 @@ const Profile = (props) => {
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: colors.almostBlack,
+                borderRadius: "8px",
               }}
             >
               <Typography variant="h4" style={{ color: colors.white }}>
@@ -551,11 +553,21 @@ const Profile = (props) => {
 
             {profileDetails.data.activeChallenges ? (
               <div>
-                <div>Active challenges</div>
-                <div>
+                <div style={{ margin: "20px" }}>
+                  <Typography variant="h5">Active challenges</Typography>
                   {activeChallenges.map((challenge) => {
-                    return <div key={challenge.id}>{challenge.title}</div>;
+                    return (
+                      <div key={challenge.id}>
+                        <a href={`/challenge/${challenge.id}`}>
+                          {challenge.title}
+                        </a>
+                      </div>
+                    );
                   })}
+                </div>
+                <div style={{ margin: "20px" }}>
+                  <Typography variant="h5">Past challenges</Typography>
+                  <div></div>
                 </div>
               </div>
             ) : (
@@ -574,7 +586,13 @@ const Profile = (props) => {
                 </Typography>
               </div>
             )}
-            <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                margin: "40px",
+              }}
+            >
               <NavLink
                 style={{ textDecoration: "none", color: colors.almostBlack }}
                 to="/create-challenge"
