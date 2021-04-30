@@ -30,7 +30,7 @@ import { v4 as uuidv4 } from "uuid";
 import { createNewChallenge } from "../../../api/challengeApi";
 import { useHistory } from "react-router-dom";
 import { useUserContext } from "../../../auth/UserContext";
-import { getUser, joinChallenge, updateUser } from "../../../api/userApi";
+import { addBadge, joinChallenge } from "../../../api/userApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -123,7 +123,8 @@ export default function NewChallenge() {
 
   const onSubmit = () => {
     const form = {
-      admin: userId,
+      creator: userId,
+      admin: [userId],
       id,
       title,
       description,
@@ -145,7 +146,13 @@ export default function NewChallenge() {
           joinChallenge(userId, id).then((response) => {
             console.log(response);
             if (response.success) {
-              setTimeout(() => history.push(`/challenge/${form.id}`), 10000);
+              addBadge(userId, {
+                type: "createChallenge",
+                title: "Challenge Creator",
+              }).then((response) => {
+                console.log(response);
+                setTimeout(() => history.push(`/challenge/${form.id}`), 3000);
+              });
             }
           });
       });

@@ -11,6 +11,7 @@ const colors = {
   stepitup_vibrantGreen: "#93f9b9",
   stepitup_blue: "#0076B8",
   stepitup_fadedBlue: "#0099ff90",
+  stepitup_purple: "#3F3047",
 };
 
 export default colors;

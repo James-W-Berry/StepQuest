@@ -34,6 +34,7 @@ import EditableTextField from "../../fields/EditableTextField";
 import UserStats from "./UserStats";
 import { useUserContext } from "../../../auth/UserContext";
 import { getChallenges, getUser } from "../../../api/userApi";
+import Badge from "./Badge";
 
 const styles = (theme) => ({
   closeButton: {
@@ -446,14 +447,7 @@ const Profile = (props) => {
   }
 
   return (
-    <div
-    // style={{
-    //   display: "flex",
-    //   flexDirection: "column",
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    // }}
-    >
+    <div>
       <Grid
         key="summary"
         item
@@ -508,8 +502,26 @@ const Profile = (props) => {
         </Grid>
       </Grid>
 
-      <Divider variant="fullWidth" />
+      <Divider variant="fullWidth" style={{ margin: "20px" }} />
 
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {profileDetails.data.badges &&
+          profileDetails.data.badges.map((badge) => {
+            return <Badge data={badge} />;
+          })}
+      </Grid>
       <Grid
         container
         spacing={2}

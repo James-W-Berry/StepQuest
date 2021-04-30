@@ -31,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(10),
     width: "100%",
     zIndex: 2000,
-  },
-  box: {
-    height: theme.spacing(10),
-    width: "100%",
     backgroundColor: colors.stepitup_blueishGray,
   },
   logoHeading: {
@@ -183,43 +179,41 @@ export default function Main() {
       }}
     >
       <BrowserRouter>
-        <Box boxShadow={3} className={classes.box}>
-          <div id="header" className={classes.header}>
-            <NavLink className={classes.logoHeading} to="/home">
-              <img src={logo} alt="logo" height={40} width={40} />
-              <Typography
-                variant="h5"
-                style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
-              >
-                Step It Up
-              </Typography>
-            </NavLink>
-
-            <IconButton
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={toggleDrawer(true)}
+        <div id="header" className={classes.header}>
+          <NavLink className={classes.logoHeading} to="/home">
+            <img src={logo} alt="logo" height={40} width={40} />
+            <Typography
+              variant="h5"
+              style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
             >
-              {open ? (
-                <CancelIcon
-                  style={{
-                    fontSize: 40,
-                    color: colors.white,
-                  }}
-                />
-              ) : (
-                <MenuIcon
-                  style={{
-                    fontSize: 40,
-                    color: colors.almostBlack,
-                  }}
-                />
-              )}
-            </IconButton>
-          </div>
-        </Box>
+              Step It Up
+            </Typography>
+          </NavLink>
+
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={toggleDrawer(true)}
+          >
+            {open ? (
+              <CancelIcon
+                style={{
+                  fontSize: 40,
+                  color: colors.white,
+                }}
+              />
+            ) : (
+              <MenuIcon
+                style={{
+                  fontSize: 40,
+                  color: colors.almostBlack,
+                }}
+              />
+            )}
+          </IconButton>
+        </div>
 
         <div className={classes.content}>
           <Switch>

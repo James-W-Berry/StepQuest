@@ -19,7 +19,7 @@ export default function ChallengeDetails(props) {
     success: null,
     data: null,
   });
-  const [adminName, setAdminName] = useState(null);
+  const [creatorName, setCreatorName] = useState(null);
 
   useEffect(() => {
     getChallenge(id).then((response) => {
@@ -30,9 +30,9 @@ export default function ChallengeDetails(props) {
 
   useEffect(() => {
     if (challengeDetails.data) {
-      getUser(challengeDetails.data.admin).then((response) => {
+      getUser(challengeDetails.data.creator).then((response) => {
         if (response.success) {
-          setAdminName(response.data.displayName);
+          setCreatorName(response.data.displayName);
         }
       });
     }
@@ -67,7 +67,7 @@ export default function ChallengeDetails(props) {
           width: "100%",
         }}
       >
-        <div>User not found :(</div>
+        <div>Challenge not found :(</div>
       </div>
     );
   }
@@ -89,11 +89,13 @@ export default function ChallengeDetails(props) {
         </Typography>
       </div>
 
-      {adminName && (
+      {creatorName && (
         <div style={{ margin: "20px" }}>
           <Typography>
             Created by{" "}
-            <a href={`/users/${challengeDetails.data.admin}`}>{adminName}</a>
+            <a href={`/users/${challengeDetails.data.creator}`}>
+              {creatorName}
+            </a>
           </Typography>
         </div>
       )}

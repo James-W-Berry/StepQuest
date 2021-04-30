@@ -18,6 +18,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import colors from "../assets/colors";
 import SyncLoader from "react-spinners/SyncLoader";
 import google from "../assets/google.png";
+import { createUser } from "../api/userApi";
 
 const styles = (theme) => ({
   closeButton: {
@@ -192,7 +193,7 @@ function Landing(props) {
           .doc(userId)
           .set({
             displayName: username,
-            totalDuration: 0,
+            badges: [{ type: "welcome", challenge: "New User" }],
           })
           .catch(function (error) {
             console.log(error);
@@ -496,7 +497,11 @@ function Landing(props) {
                   ) : (
                     <Button
                       onClick={() => {
-                        onSignUp(username, email, password);
+                        setIsLoading(true);
+                        createUser(username, email, password).then(() => {
+                          setIsLoading(false);
+                        });
+                        //onSignUp(username, email, password);
                       }}
                       className={classes.button}
                       style={{
