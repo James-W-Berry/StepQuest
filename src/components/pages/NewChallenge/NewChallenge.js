@@ -32,7 +32,7 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import { v4 as uuidv4 } from "uuid";
 import { createNewChallenge } from "../../../api/challengeApi";
 import { useHistory } from "react-router-dom";
-import { useUserContext } from "../../../auth/UserContext";
+import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import { addBadge, joinChallenge } from "../../../api/userApi";
 import { Help, Lock, VisibilityOff } from "@material-ui/icons";
 
@@ -74,8 +74,8 @@ function createActivityOption(activityOption) {
 
 export default function NewChallenge() {
   const {
-    user: { userId },
-  } = useUserContext();
+    authenticatedUser: { userId },
+  } = useAuthenticatedUserContext();
   const classes = useStyles();
   const [id, setId] = useState();
   const [title, setTitle] = useState();
@@ -135,6 +135,7 @@ export default function NewChallenge() {
     const form = {
       creator: userId,
       admin: [userId],
+      participants: [{ id: userId, name: "name" }],
       id,
       title,
       description,

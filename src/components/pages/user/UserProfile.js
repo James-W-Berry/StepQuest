@@ -32,9 +32,10 @@ import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import EditableTextField from "../../fields/EditableTextField";
 import UserStats from "./UserStats";
-import { useUserContext } from "../../../auth/UserContext";
+import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import { getChallenges, getUser } from "../../../api/userApi";
 import Badge from "./Badge";
+import { useUserContext } from "./UserContext";
 
 const styles = (theme) => ({
   closeButton: {
@@ -249,9 +250,12 @@ const DialogContent = withStyles((theme) => ({
 const Profile = (props) => {
   const classes = useStyles();
   const theme = useTheme();
-  const { user } = useUserContext();
+  const { authenticatedUser } = useAuthenticatedUserContext();
   const {
-    user: { userId },
+    authenticatedUser: { userId },
+  } = useAuthenticatedUserContext();
+  const {
+    user: { displayName, activeChallenges, badges, profilePictureUrl },
   } = useUserContext();
 
   const [open, setOpen] = useState(false);
@@ -268,20 +272,33 @@ const Profile = (props) => {
     success: null,
     data: {},
   });
-  const [activeChallenges, setActiveChallenges] = useState([]);
+  // const [activeChallenges, setActiveChallenges] = useState([]);
 
   useEffect(() => {
-    getUser(id).then((response) => {
-      setProfileDetails(response);
-    });
-  }, [id]);
-
-  useEffect(() => {
-    if (profileDetails.data && profileDetails.data.activeChallenges)
-      getChallenges(profileDetails.data.activeChallenges).then((response) => {
-        setActiveChallenges(response);
+    if (id !== userId) {
+      getUser(id).then((response) => {
+        setProfileDetails(response);
       });
-  }, [profileDetails]);
+    } else {
+      setProfileDetails({
+        isLoading: false,
+        success: true,
+        data: {
+          displayName,
+          activeChallenges,
+          badges,
+          profilePictureUrl,
+        },
+      });
+    }
+  }, [activeChallenges, badges, displayName, id, profilePictureUrl, userId]);
+
+  // useEffect(() => {
+  //   if (profileDetails.data && profileDetails.data.activeChallenges)
+  //     getChallenges(profileDetails.data.activeChallenges).then((response) => {
+  //       setActiveChallenges(response);
+  //     });
+  // }, [profileDetails]);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -321,90 +338,90 @@ const Profile = (props) => {
     );
   }
 
-  function createGroupItem(group) {
-    if (group !== undefined) {
-      return (
-        <div key={group.id}>
-          <ListItem
-            key={group.id}
-            style={{
-              backgroundColor: "#252a2e",
-              marginBottom: "1px",
-            }}
-            button={true}
-            onClick={() => {
-              group.id === profileDetails.groupId
-                ? leaveGroup(group, user).then(
-                    updateGroup({ id: null, name: null })
-                  )
-                : profileDetails.groupId !== null
-                ? leaveGroup(
-                    {
-                      id: profileDetails.groupId,
-                      name: profileDetails.groupName,
-                    },
-                    user
-                  )
-                    .then(joinGroup(group, user, profileDetails))
-                    .then(updateGroup(group))
-                : joinGroup(group, user, profileDetails).then(
-                    updateGroup(group)
-                  );
-            }}
-          >
-            <ListItemAvatar>
-              <ListItemIcon>
-                <GroupIcon style={{ color: colors.stepitup_teal }} />
-              </ListItemIcon>
-            </ListItemAvatar>
-            <ListItemText
-              disableTypography
-              primary={
-                group.id === profileDetails?.groupId ? (
-                  <Tooltip title="Leave group" placement="bottom-start">
-                    <Typography
-                      variant="h6"
-                      style={{
-                        color: colors.stepitup_teal,
-                      }}
-                    >
-                      {group.name}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Join group" placement="bottom-start">
-                    <Typography
-                      variant="h6"
-                      style={{
-                        color: "#f7f7f5",
-                      }}
-                    >
-                      {group.name}
-                    </Typography>
-                  </Tooltip>
-                )
-              }
-            />
-          </ListItem>
-        </div>
-      );
-    }
-  }
+  // function createGroupItem(group) {
+  //   if (group !== undefined) {
+  //     return (
+  //       <div key={group.id}>
+  //         <ListItem
+  //           key={group.id}
+  //           style={{
+  //             backgroundColor: "#252a2e",
+  //             marginBottom: "1px",
+  //           }}
+  //           button={true}
+  //           onClick={() => {
+  //             group.id === profileDetails.groupId
+  //               ? leaveGroup(group, user).then(
+  //                   updateGroup({ id: null, name: null })
+  //                 )
+  //               : profileDetails.groupId !== null
+  //               ? leaveGroup(
+  //                   {
+  //                     id: profileDetails.groupId,
+  //                     name: profileDetails.groupName,
+  //                   },
+  //                   user
+  //                 )
+  //                   .then(joinGroup(group, user, profileDetails))
+  //                   .then(updateGroup(group))
+  //               : joinGroup(group, user, profileDetails).then(
+  //                   updateGroup(group)
+  //                 );
+  //           }}
+  //         >
+  //           <ListItemAvatar>
+  //             <ListItemIcon>
+  //               <GroupIcon style={{ color: colors.stepitup_teal }} />
+  //             </ListItemIcon>
+  //           </ListItemAvatar>
+  //           <ListItemText
+  //             disableTypography
+  //             primary={
+  //               group.id === profileDetails?.groupId ? (
+  //                 <Tooltip title="Leave group" placement="bottom-start">
+  //                   <Typography
+  //                     variant="h6"
+  //                     style={{
+  //                       color: colors.stepitup_teal,
+  //                     }}
+  //                   >
+  //                     {group.name}
+  //                   </Typography>
+  //                 </Tooltip>
+  //               ) : (
+  //                 <Tooltip title="Join group" placement="bottom-start">
+  //                   <Typography
+  //                     variant="h6"
+  //                     style={{
+  //                       color: "#f7f7f5",
+  //                     }}
+  //                   >
+  //                     {group.name}
+  //                   </Typography>
+  //                 </Tooltip>
+  //               )
+  //             }
+  //           />
+  //         </ListItem>
+  //       </div>
+  //     );
+  //   }
+  // }
 
-  function getGroups() {
-    firebase
-      .firestore()
-      .collection("groups")
-      .get()
-      .then((retrievedDocs) => {
-        const retrievedGroups = retrievedDocs.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+  // function getGroups() {
+  //   firebase
+  //     .firestore()
+  //     .collection("groups")
+  //     .get()
+  //     .then((retrievedDocs) => {
+  //       const retrievedGroups = retrievedDocs.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
 
-        setGroups(retrievedGroups);
-      });
-  }
+  //       setGroups(retrievedGroups);
+  //     });
+  // }
 
   const handleClose = () => {
     setOpen(false);
@@ -591,7 +608,7 @@ const Profile = (props) => {
         )}
       </Grid>
 
-      <Dialog
+      {/* <Dialog
         fullScreen={fullScreen}
         fullWidth={true}
         onClose={handleClose}
@@ -679,6 +696,7 @@ const Profile = (props) => {
           </div>
         </DialogContent>
       </Dialog>
+     */}
     </div>
   );
 };

@@ -12,10 +12,11 @@ import {
 import { getUser } from "../../../api/userApi";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
-import { useUserContext } from "../../../auth/UserContext";
+import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import DeleteChallengeDialog from "./DeleteChallengeDialog";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
+import Participants from "./Participants";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -34,8 +35,8 @@ export default function ChallengeDetails(props) {
     data: null,
   });
   const {
-    user: { userId },
-  } = useUserContext();
+    authenticatedUser: { userId },
+  } = useAuthenticatedUserContext();
   const [creator, setCreator] = useState();
 
   useEffect(() => {
@@ -146,6 +147,7 @@ export default function ChallengeDetails(props) {
 
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Standings</Typography>
+        <Participants users={challengeDetails.data.participants} />
         <Typography>Challenge participant list here, ranked</Typography>
       </div>
 

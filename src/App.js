@@ -1,12 +1,15 @@
 import React from "react";
-import { UserContextProvider } from "./auth/UserContext";
+import { AuthenticatedUserContextProvider } from "./auth/AuthenticatedUserContext";
 import Main from "./components/Main";
+import { UserContextProvider } from "./components/pages/user/UserContext";
 
 function App() {
   return (
-    <UserContextProvider>
-      <Main />
-    </UserContextProvider>
+    <AuthenticatedUserContextProvider>
+      <UserContextProvider>
+        <Main />
+      </UserContextProvider>
+    </AuthenticatedUserContextProvider>
   );
 }
 

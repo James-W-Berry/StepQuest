@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useUserContext } from "../auth/UserContext";
+import { useAuthenticatedUserContext } from "../auth/AuthenticatedUserContext";
 import "../App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
@@ -23,6 +23,8 @@ import NewChallenge from "./pages/NewChallenge/NewChallenge";
 import About from "./pages/About/AboutPage";
 import ChallengeDetails from "./pages/Challenge/ChallengeDetails";
 import logo from "../assets/logo.png";
+import { getUser } from "../api/userApi";
+import { useUserContext } from "./pages/user/UserContext";
 
 const drawerWidth = "100%";
 
@@ -101,17 +103,30 @@ function onAuthStateChange(callback) {
 
 export default function Main() {
   const {
-    user: { isLoading, loggedIn, userId },
-    setUser,
-  } = useUserContext();
+    authenticatedUser: { isLoading, loggedIn, userId },
+    setAuthenticatedUser,
+  } = useAuthenticatedUserContext();
+  const { setUser } = useUserContext();
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChange(setUser);
+    const unsubscribe = onAuthStateChange(setAuthenticatedUser);
     return () => {
       unsubscribe();
     };
-  }, [setUser]);
+  }, [setAuthenticatedUser]);
+
+  useEffect(() => {
+    if (userId) {
+      getUser(userId).then((response) => {
+        console.log(response);
+        if (response.success) {
+          setUser(response.data);
+        }
+      });
+    }
+  }, [userId, setUser]);
 
   const toggleDrawer = () => (event) => {
     if (
