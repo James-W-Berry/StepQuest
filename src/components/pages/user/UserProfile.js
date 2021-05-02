@@ -272,7 +272,6 @@ const Profile = (props) => {
 
   useEffect(() => {
     getUser(id).then((response) => {
-      console.log(response);
       setProfileDetails(response);
     });
   }, [id]);
@@ -280,7 +279,6 @@ const Profile = (props) => {
   useEffect(() => {
     if (profileDetails.data && profileDetails.data.activeChallenges)
       getChallenges(profileDetails.data.activeChallenges).then((response) => {
-        console.log(response);
         setActiveChallenges(response);
       });
   }, [profileDetails]);
@@ -518,8 +516,8 @@ const Profile = (props) => {
         }}
       >
         {profileDetails.data.badges &&
-          profileDetails.data.badges.map((badge) => {
-            return <Badge data={badge} />;
+          profileDetails.data.badges.map((badge, index) => {
+            return <Badge data={badge} key={index} />;
           })}
       </Grid>
       <Grid

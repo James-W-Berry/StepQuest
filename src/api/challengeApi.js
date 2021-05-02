@@ -19,6 +19,22 @@ export async function createNewChallenge(challenge) {
     });
 }
 
+export async function deleteChallenge(id) {
+  const docRef = firebase.firestore().collection("challenges").doc(id);
+
+  return await docRef
+    .delete()
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully deleted challenge ${id}`,
+      };
+    })
+    .catch((error) => {
+      return { success: false, message: error };
+    });
+}
+
 export async function getChallenge(id) {
   const docRef = firebase.firestore().collection("challenges").doc(id);
 

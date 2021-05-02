@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
-import { getChallenge } from "../../../api/challengeApi";
-import { Button, Divider, Typography } from "@material-ui/core";
+import { deleteChallenge, getChallenge } from "../../../api/challengeApi";
+import {
+  Button,
+  Divider,
+  IconButton,
+  Snackbar,
+  Typography,
+} from "@material-ui/core";
 import { getUser } from "../../../api/userApi";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
+import { useUserContext } from "../../../auth/UserContext";
+import DeleteChallengeDialog from "./DeleteChallengeDialog";
+import CloseIcon from "@material-ui/icons/Close";
+import { useHistory } from "react-router-dom";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -14,12 +24,19 @@ function convertSecondsToDate(seconds) {
 
 export default function ChallengeDetails(props) {
   const id = props.match.params.id;
+  const history = useHistory();
+  const [displayConfirmDelete, setDisplayConfirmDelete] = useState(false);
+  const [displayToast, setDisplayToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState();
   const [challengeDetails, setChallengeDetails] = useState({
     isLoading: true,
     success: null,
     data: null,
   });
-  const [creatorName, setCreatorName] = useState(null);
+  const {
+    user: { userId },
+  } = useUserContext();
+  const [creator, setCreator] = useState();
 
   useEffect(() => {
     getChallenge(id).then((response) => {
@@ -32,11 +49,34 @@ export default function ChallengeDetails(props) {
     if (challengeDetails.data) {
       getUser(challengeDetails.data.creator).then((response) => {
         if (response.success) {
-          setCreatorName(response.data.displayName);
+          setCreator(response.data.displayName);
         }
       });
     }
   }, [challengeDetails]);
+
+  const handleConfirmationDialogClose = () => {
+    setDisplayConfirmDelete(false);
+  };
+
+  const handleConfirmationDialogConfirm = () => {
+    deleteChallenge(id).then((response) => {
+      console.log(response);
+      if (response.success) {
+        setDisplayConfirmDelete(false);
+        setToastMessage(`Successfully deleted ${challengeDetails.data.title}`);
+        setDisplayToast(true);
+        setTimeout(() => {
+          history.push(`/user/${userId}`);
+        }, 3000);
+      } else {
+        setToastMessage(
+          `Could not delete ${challengeDetails.data.title}. Please try again later.`
+        );
+        setDisplayToast(true);
+      }
+    });
+  };
 
   if (challengeDetails.isLoading) {
     return (
@@ -89,13 +129,11 @@ export default function ChallengeDetails(props) {
         </Typography>
       </div>
 
-      {creatorName && (
+      {creator && (
         <div style={{ margin: "20px" }}>
           <Typography>
             Created by{" "}
-            <a href={`/users/${challengeDetails.data.creator}`}>
-              {creatorName}
-            </a>
+            <a href={`/users/${challengeDetails.data.creator}`}>{creator}</a>
           </Typography>
         </div>
       )}
@@ -143,6 +181,50 @@ export default function ChallengeDetails(props) {
           Leave Challenge
         </Button>
       </div>
+
+      {challengeDetails.data.creator === userId && (
+        <div style={{ margin: "20px" }}>
+          <Button
+            style={{
+              backgroundColor: "red",
+              color: colors.white,
+            }}
+            onClick={() => setDisplayConfirmDelete(true)}
+          >
+            Delete Challenge
+          </Button>
+        </div>
+      )}
+
+      <DeleteChallengeDialog
+        isOpen={displayConfirmDelete}
+        title={challengeDetails.data.title}
+        handleClose={handleConfirmationDialogClose}
+        handleConfirm={handleConfirmationDialogConfirm}
+      />
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={displayToast}
+        autoHideDuration={5000}
+        onClose={() => setDisplayToast(false)}
+        message={toastMessage}
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => setDisplayToast(false)}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </div>
   );
 }

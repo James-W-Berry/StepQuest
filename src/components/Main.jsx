@@ -4,7 +4,7 @@ import "../App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
-import { Box, ListItem, Typography } from "@material-ui/core";
+import { ListItem, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
