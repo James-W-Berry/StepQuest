@@ -120,7 +120,6 @@ export default function Main() {
   useEffect(() => {
     if (userId) {
       getUser(userId).then((response) => {
-        console.log(response);
         if (response.success) {
           setUser(response.data);
         }

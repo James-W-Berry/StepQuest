@@ -265,6 +265,7 @@ const Profile = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [newGroupName, setNewGroupName] = useState();
   const [groups, setGroups] = useState([]);
+  const [activeChallengeData, setActiveChallengeData] = useState([]);
 
   const id = props.match.params.id;
   const [profileDetails, setProfileDetails] = useState({
@@ -272,7 +273,6 @@ const Profile = (props) => {
     success: null,
     data: {},
   });
-  // const [activeChallenges, setActiveChallenges] = useState([]);
 
   useEffect(() => {
     if (id !== userId) {
@@ -293,12 +293,12 @@ const Profile = (props) => {
     }
   }, [activeChallenges, badges, displayName, id, profilePictureUrl, userId]);
 
-  // useEffect(() => {
-  //   if (profileDetails.data && profileDetails.data.activeChallenges)
-  //     getChallenges(profileDetails.data.activeChallenges).then((response) => {
-  //       setActiveChallenges(response);
-  //     });
-  // }, [profileDetails]);
+  useEffect(() => {
+    if (profileDetails.data && profileDetails.data.activeChallenges)
+      getChallenges(profileDetails.data.activeChallenges).then((response) => {
+        setActiveChallengeData(response);
+      });
+  }, [profileDetails]);
 
   function uploadProfilePic(picture) {
     setIsUploading(true);
@@ -553,9 +553,9 @@ const Profile = (props) => {
           <div>
             <div style={{ margin: "20px" }}>
               <Typography variant="h5">Active challenges</Typography>
-              {activeChallenges.map((challenge) => {
+              {activeChallengeData.map((challenge) => {
                 return (
-                  <div key={challenge.id}>
+                  <div key={challenge}>
                     <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
                   </div>
                 );
