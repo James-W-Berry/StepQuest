@@ -7,7 +7,11 @@ export default function Participants(props) {
   return (
     <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
       {users.map((user) => {
-        return <Typography>{user}</Typography>;
+        return (
+          <Typography key={user.id}>
+            <a href={`/user/${user.id}`}>{user.name}</a>
+          </Typography>
+        );
       })}
     </div>
   );

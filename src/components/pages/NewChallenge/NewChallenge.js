@@ -35,6 +35,7 @@ import { useHistory } from "react-router-dom";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import { addBadge, joinChallenge } from "../../../api/userApi";
 import { Help, Lock, VisibilityOff } from "@material-ui/icons";
+import { useUserContext } from "../user/UserContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +77,9 @@ export default function NewChallenge() {
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
+  const {
+    user: { displayName },
+  } = useUserContext();
   const classes = useStyles();
   const [id, setId] = useState();
   const [title, setTitle] = useState();
@@ -135,7 +139,7 @@ export default function NewChallenge() {
     const form = {
       creator: userId,
       admin: [userId],
-      participants: [{ id: userId, name: "name" }],
+      participants: [{ id: userId, name: displayName }],
       id,
       title,
       description,

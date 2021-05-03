@@ -33,7 +33,11 @@ import AddIcon from "@material-ui/icons/Add";
 import EditableTextField from "../../fields/EditableTextField";
 import UserStats from "./UserStats";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
-import { getChallenges, getUser } from "../../../api/userApi";
+import {
+  getChallenges,
+  getUser,
+  removeEndedChallenges,
+} from "../../../api/userApi";
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 
@@ -297,6 +301,15 @@ const Profile = (props) => {
     if (profileDetails.data && profileDetails.data.activeChallenges)
       getChallenges(profileDetails.data.activeChallenges).then((response) => {
         setActiveChallengeData(response);
+        if (response.length !== profileDetails.data.activeChallenges.length) {
+          removeEndedChallenges(
+            userId,
+            profileDetails.data.activeChallenges,
+            response
+          ).then((response) => {
+            console.log(response);
+          });
+        }
       });
   }, [profileDetails]);
 
@@ -563,7 +576,6 @@ const Profile = (props) => {
             </div>
             <div style={{ margin: "20px" }}>
               <Typography variant="h5">Past challenges</Typography>
-              <div></div>
             </div>
           </div>
         ) : (

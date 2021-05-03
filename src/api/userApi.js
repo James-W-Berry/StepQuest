@@ -1,4 +1,7 @@
 import firebase from "../firebase";
+import { remove } from "lodash";
+import { arrayIncludes } from "@material-ui/pickers/_helpers/utils";
+import { findAncestor } from "typescript";
 
 export async function createUser(username, email, password) {
   const db = firebase.firestore();
@@ -115,6 +118,35 @@ export async function addBadge(userId, badge) {
       return {
         success: true,
         message: `Successfully added badge to user ${userId}!`,
+      };
+    })
+    .catch((error) => {
+      return { success: false, message: error };
+    });
+}
+
+export async function removeEndedChallenges(
+  userId,
+  allChallenges,
+  activeChallenges
+) {
+  const docRef = firebase.firestore().collection("users").doc(userId);
+  const updatedChallenges = [];
+
+  activeChallenges.forEach((challenge) => {
+    if (allChallenges.includes(challenge.id)) {
+      updatedChallenges.push(challenge.id);
+    }
+  });
+
+  return await docRef
+    .update({
+      activeChallenges: updatedChallenges,
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully removed inactive challenges from user`,
       };
     })
     .catch((error) => {

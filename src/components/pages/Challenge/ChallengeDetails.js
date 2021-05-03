@@ -148,7 +148,6 @@ export default function ChallengeDetails(props) {
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Standings</Typography>
         <Participants users={challengeDetails.data.participants} />
-        <Typography>Challenge participant list here, ranked</Typography>
       </div>
 
       <div style={{ margin: "20px" }}>
