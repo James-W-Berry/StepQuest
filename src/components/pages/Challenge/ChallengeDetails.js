@@ -17,6 +17,7 @@ import { getUser, joinChallenge, leaveChallenge } from "../../../api/userApi";
 import {
   addUserToChallenge,
   removeUserFromChallenge,
+  removeAdminFromChallenge,
 } from "../../../api/challengeApi";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
@@ -77,7 +78,8 @@ export default function ChallengeDetails(props) {
   };
 
   const handleLeaveDialogClose = () => {
-    setDisplayConfirmDelete(false);
+    setAttemptedSoloAdminDeparture(false);
+    setDisplayConfirmLeave(false);
   };
 
   const handleAddAdminClose = () => {
@@ -116,15 +118,19 @@ export default function ChallengeDetails(props) {
         if (response.success) {
           removeUserFromChallenge(userId, id).then((response) => {
             if (response.success) {
-              setDisplayConfirmLeave(false);
-              setToastMessage(
-                `Successfully left ${challengeDetails.data.title}`
-              );
-              setDisplayToast(true);
+              removeAdminFromChallenge(userId, id).then((response) => {
+                if (response.success) {
+                  setDisplayConfirmLeave(false);
+                  setToastMessage(
+                    `Successfully left ${challengeDetails.data.title}`
+                  );
+                  setDisplayToast(true);
 
-              setTimeout(() => {
-                history.push(`/user/${userId}`);
-              }, 3000);
+                  setTimeout(() => {
+                    history.push(`/user/${userId}`);
+                  }, 3000);
+                }
+              });
             }
           });
         } else {

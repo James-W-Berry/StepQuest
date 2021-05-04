@@ -32,8 +32,8 @@ const styles = (theme) => ({
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
+    width: "30%",
+    minWidth: "300px",
   },
   chips: {
     display: "flex",
@@ -92,10 +92,8 @@ export default function AddAdminDialog(props) {
 
   const handleChange = (event) => {
     console.log(event.target.value);
-    const admins = Object.assign(adminList, []);
-    admins.push(event.target.value);
-    setAdminList(admins);
-    if (admins.length > 0) {
+    setAdminList(event.target.value);
+    if (event.target.value.length > 0) {
       setDisplayAddButton(true);
     }
   };
@@ -179,10 +177,10 @@ export default function AddAdminDialog(props) {
             }}
           >
             <FormControl className={classes.formControl}>
-              <InputLabel id="demo-mutiple-chip-label">Admins</InputLabel>
+              <InputLabel id="chip-label">Select a participant</InputLabel>
               <Select
-                labelId="demo-mutiple-chip-label"
-                id="demo-mutiple-chip"
+                labelId="chip-label"
+                id="chips"
                 multiple
                 value={adminList}
                 onChange={handleChange}

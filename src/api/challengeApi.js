@@ -77,6 +77,27 @@ export async function removeUserFromChallenge(userId, id) {
     });
 }
 
+export async function removeAdminFromChallenge(userId, id) {
+  const docRef = firebase.firestore().collection("challenges").doc(id);
+
+  return await docRef
+    .update({
+      admin: firebase.firestore.FieldValue.arrayRemove(userId),
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully removed admin ${userId} from challenge ${id}!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
 export async function getChallenge(id) {
   const docRef = firebase.firestore().collection("challenges").doc(id);
 
@@ -112,7 +133,7 @@ export async function addAdmins(admins, challengeId) {
 
   return await docRef
     .update({
-      admin: firebase.firestore.FieldValue.arrayUnion(admins),
+      admin: firebase.firestore.FieldValue.arrayUnion(...admins),
     })
     .then(() => {
       return {
@@ -120,7 +141,7 @@ export async function addAdmins(admins, challengeId) {
         message:
           admins.length > 1
             ? `Successfully added admins to challenge!`
-            : `Successfully added ${admins[0].name} to challenge!`,
+            : `Successfully added ${admins[0]} to challenge!`,
       };
     })
     .catch((error) => {
