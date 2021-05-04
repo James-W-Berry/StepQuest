@@ -35,6 +35,48 @@ export async function deleteChallenge(id) {
     });
 }
 
+export async function addUserToChallenge(userId, id) {
+  const docRef = firebase.firestore().collection("challenges").doc(id);
+
+  return await docRef
+    .update({
+      participants: firebase.firestore.FieldValue.arrayUnion(userId),
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully joined challenge ${id}!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
+export async function removeUserFromChallenge(userId, id) {
+  const docRef = firebase.firestore().collection("challenges").doc(id);
+
+  return await docRef
+    .update({
+      participants: firebase.firestore.FieldValue.arrayRemove(userId),
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully removed ${userId} from challenge ${id}!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
 export async function getChallenge(id) {
   const docRef = firebase.firestore().collection("challenges").doc(id);
 
@@ -58,6 +100,31 @@ export async function getChallenge(id) {
     .catch((error) => {
       return {
         isLoading: false,
+        success: false,
+        message: error,
+      };
+    });
+}
+
+export async function addAdmins(admins, challengeId) {
+  console.log(admins, challengeId);
+  const docRef = firebase.firestore().collection("challenges").doc(challengeId);
+
+  return await docRef
+    .update({
+      admin: firebase.firestore.FieldValue.arrayUnion(admins),
+    })
+    .then(() => {
+      return {
+        success: true,
+        message:
+          admins.length > 1
+            ? `Successfully added admins to challenge!`
+            : `Successfully added ${admins[0].name} to challenge!`,
+      };
+    })
+    .catch((error) => {
+      return {
         success: false,
         message: error,
       };

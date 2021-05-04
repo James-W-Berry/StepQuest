@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
-import { deleteChallenge, getChallenge } from "../../../api/challengeApi";
+import {
+  addAdmins,
+  deleteChallenge,
+  getChallenge,
+} from "../../../api/challengeApi";
 import {
   Button,
   Divider,
@@ -9,7 +13,11 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import { getUser } from "../../../api/userApi";
+import { getUser, joinChallenge, leaveChallenge } from "../../../api/userApi";
+import {
+  addUserToChallenge,
+  removeUserFromChallenge,
+} from "../../../api/challengeApi";
 import { NavLink } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
@@ -17,6 +25,8 @@ import DeleteChallengeDialog from "./DeleteChallengeDialog";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
 import Participants from "./Participants";
+import LeaveChallengeDialog from "./LeaveChallengeDialog";
+import AddAdminDialog from "./AddAdminDialog";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -27,6 +37,12 @@ export default function ChallengeDetails(props) {
   const id = props.match.params.id;
   const history = useHistory();
   const [displayConfirmDelete, setDisplayConfirmDelete] = useState(false);
+  const [displayConfirmLeave, setDisplayConfirmLeave] = useState(false);
+  const [displayAddAdmin, setDisplayAddAdmin] = useState(false);
+  const [
+    attemptedSoloAdminDeparture,
+    setAttemptedSoloAdminDeparture,
+  ] = useState(false);
   const [displayToast, setDisplayToast] = useState(false);
   const [toastMessage, setToastMessage] = useState();
   const [challengeDetails, setChallengeDetails] = useState({
@@ -56,11 +72,19 @@ export default function ChallengeDetails(props) {
     }
   }, [challengeDetails]);
 
-  const handleConfirmationDialogClose = () => {
+  const handleDeleteDialogClose = () => {
     setDisplayConfirmDelete(false);
   };
 
-  const handleConfirmationDialogConfirm = () => {
+  const handleLeaveDialogClose = () => {
+    setDisplayConfirmDelete(false);
+  };
+
+  const handleAddAdminClose = () => {
+    setDisplayAddAdmin(false);
+  };
+
+  const handleDeleteConfirmed = () => {
     deleteChallenge(id).then((response) => {
       console.log(response);
       if (response.success) {
@@ -74,6 +98,54 @@ export default function ChallengeDetails(props) {
         setToastMessage(
           `Could not delete ${challengeDetails.data.title}. Please try again later.`
         );
+        setDisplayToast(true);
+      }
+    });
+  };
+
+  const handleLeaveConfirmed = () => {
+    if (
+      challengeDetails.data.admin.includes(userId) &&
+      challengeDetails.data.admin.length <= 1
+    ) {
+      setAttemptedSoloAdminDeparture(true);
+      setDisplayAddAdmin(true);
+    } else {
+      leaveChallenge(userId, id).then((response) => {
+        console.log(response);
+        if (response.success) {
+          removeUserFromChallenge(userId, id).then((response) => {
+            if (response.success) {
+              setDisplayConfirmLeave(false);
+              setToastMessage(
+                `Successfully left ${challengeDetails.data.title}`
+              );
+              setDisplayToast(true);
+
+              setTimeout(() => {
+                history.push(`/user/${userId}`);
+              }, 3000);
+            }
+          });
+        } else {
+          setToastMessage(
+            `Could not leave ${challengeDetails.data.title}. Please try again later.`
+          );
+          setDisplayToast(true);
+        }
+      });
+    }
+  };
+
+  const handleAddAdminConfirmed = (admins) => {
+    addAdmins(admins, id).then((response) => {
+      console.log(response);
+      if (response.success) {
+        setDisplayAddAdmin(false);
+        setToastMessage(response.message);
+        setDisplayToast(true);
+      } else {
+        setToastMessage(`Could not add admin. Please try again later.`);
         setDisplayToast(true);
       }
     });
@@ -172,36 +244,91 @@ export default function ChallengeDetails(props) {
 
       <Divider variant="fullWidth" />
 
-      <div style={{ margin: "20px" }}>
-        <Button
-          style={{
-            backgroundColor: "red",
-            color: colors.white,
-          }}
-        >
-          Leave Challenge
-        </Button>
-      </div>
-
-      {challengeDetails.data.creator === userId && (
+      {challengeDetails.data.participants.includes(userId) ? (
         <div style={{ margin: "20px" }}>
+          <Typography variant="h5">Danger Zone</Typography>
           <Button
             style={{
               backgroundColor: "red",
               color: colors.white,
             }}
-            onClick={() => setDisplayConfirmDelete(true)}
+            onClick={() => setDisplayConfirmLeave(true)}
           >
-            Delete Challenge
+            Leave Challenge
           </Button>
+        </div>
+      ) : (
+        <div style={{ margin: "20px" }}>
+          <Typography variant="h5">Join this Challenge</Typography>
+          <Button
+            style={{
+              backgroundColor: "red",
+              color: colors.white,
+            }}
+            onClick={() =>
+              joinChallenge(userId, id).then((response) => {
+                console.log(response);
+                if (response.success) {
+                  addUserToChallenge(userId, id).then((response) => {
+                    console.log(response);
+                  });
+                }
+              })
+            }
+          >
+            Join
+          </Button>
+        </div>
+      )}
+
+      {challengeDetails.data.admin.includes(userId) && (
+        <div>
+          <div style={{ margin: "20px" }}>
+            <Button
+              style={{
+                backgroundColor: "red",
+                color: colors.white,
+              }}
+              onClick={() => setDisplayAddAdmin(true)}
+            >
+              Add Challenge Admin
+            </Button>
+          </div>
+          <div style={{ margin: "20px" }}>
+            <Button
+              style={{
+                backgroundColor: "red",
+                color: colors.white,
+              }}
+              onClick={() => setDisplayConfirmDelete(true)}
+            >
+              Delete Challenge
+            </Button>
+          </div>
         </div>
       )}
 
       <DeleteChallengeDialog
         isOpen={displayConfirmDelete}
         title={challengeDetails.data.title}
-        handleClose={handleConfirmationDialogClose}
-        handleConfirm={handleConfirmationDialogConfirm}
+        handleClose={handleDeleteDialogClose}
+        handleConfirm={handleDeleteConfirmed}
+      />
+
+      <LeaveChallengeDialog
+        isOpen={displayConfirmLeave}
+        title={challengeDetails.data.title}
+        handleClose={handleLeaveDialogClose}
+        handleConfirm={handleLeaveConfirmed}
+      />
+
+      <AddAdminDialog
+        isOpen={displayAddAdmin}
+        title={challengeDetails.data.title}
+        handleClose={handleAddAdminClose}
+        handleConfirm={handleAddAdminConfirmed}
+        attemptedSoloAdminDeparture={attemptedSoloAdminDeparture}
+        participants={challengeDetails.data.participants}
       />
 
       <Snackbar

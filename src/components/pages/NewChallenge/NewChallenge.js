@@ -139,7 +139,7 @@ export default function NewChallenge() {
     const form = {
       creator: userId,
       admin: [userId],
-      participants: [{ id: userId, name: displayName }],
+      participants: [userId],
       id,
       title,
       description,

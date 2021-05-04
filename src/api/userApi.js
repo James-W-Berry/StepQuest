@@ -84,27 +84,48 @@ export async function joinChallenge(userId, challengeId) {
     });
 }
 
-export async function getChallenges(ids) {
-  const docRef = firebase.firestore().collection("challenges");
+export async function leaveChallenge(userId, challengeId) {
+  const docRef = firebase.firestore().collection("users").doc(userId);
 
   return await docRef
-    .where(firebase.firestore.FieldPath.documentId(), "in", ids)
-    .get()
-    .then((querySnapshot) => {
-      let docs = [];
-      querySnapshot.forEach((doc) => {
-        docs.push(doc.data());
-        return doc.data();
-      });
-      return docs;
+    .update({
+      activeChallenges: firebase.firestore.FieldValue.arrayRemove(challengeId),
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully left challenge ${challengeId}`,
+      };
     })
     .catch((error) => {
-      return {
-        isLoading: false,
-        success: false,
-        message: error,
-      };
+      return { success: false, message: error };
     });
+}
+
+export async function getChallenges(ids) {
+  if (ids.length > 0) {
+    const docRef = firebase.firestore().collection("challenges");
+
+    return await docRef
+      .where(firebase.firestore.FieldPath.documentId(), "in", ids)
+      .get()
+      .then((querySnapshot) => {
+        let docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push(doc.data());
+          return doc.data();
+        });
+        return docs;
+      })
+      .catch((error) => {
+        return {
+          isLoading: false,
+          success: false,
+          message: error,
+        };
+      });
+  }
+  return [];
 }
 
 export async function addBadge(userId, badge) {
