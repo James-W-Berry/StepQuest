@@ -219,3 +219,40 @@ export async function addActivityEntries(challengeId, userId, activities) {
       };
     });
 }
+
+export async function getUserEntries(challengeId, userId) {
+  const docRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(challengeId)
+    .collection("logs")
+    .doc(userId);
+
+  return await docRef
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        if (doc.data().activities) {
+          return {
+            success: true,
+            data: doc.data().activities,
+          };
+        }
+        return {
+          success: true,
+          data: [],
+        };
+      } else {
+        return {
+          success: false,
+          data: null,
+        };
+      }
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
