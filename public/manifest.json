@@ -1,5 +1,5 @@
 {
-  "short_name": "Step It Up",
+  "short_name": "StepQuest",
   "name": "Step It Up",
   "icons": [
     {
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#1d976c",
+  "theme_color": "#0076B8",
   "background_color": "#ffffff"
 }

@@ -252,9 +252,7 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent);
 
 const Profile = (props) => {
-  const classes = useStyles();
   const theme = useTheme();
-  const { authenticatedUser } = useAuthenticatedUserContext();
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
@@ -444,7 +442,6 @@ const Profile = (props) => {
     return (
       <div
         style={{
-          backgroundColor: colors.almostWhite,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -461,7 +458,6 @@ const Profile = (props) => {
     return (
       <div
         style={{
-          backgroundColor: colors.almostWhite,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

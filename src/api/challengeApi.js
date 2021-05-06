@@ -1,5 +1,45 @@
 import firebase from "../firebase";
 
+export async function createNewChallengeBatch(
+  challengeData,
+  userId,
+  challengeId
+) {
+  const challengeDocRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(challengeId);
+  const userDocRef = firebase.firestore().collection("users").doc(userId);
+  const batch = firebase.firestore().batch();
+
+  batch.set(challengeDocRef, challengeData);
+  batch.update(userDocRef, {
+    activeChallenges: firebase.firestore.FieldValue.arrayUnion(challengeId),
+  });
+  batch.update(userDocRef, {
+    badges: firebase.firestore.FieldValue.arrayUnion({
+      type: "createChallenge",
+      title: "Challenge Creator",
+    }),
+  });
+
+  return await batch
+    .commit()
+    .then((response) => {
+      console.log(response);
+      return {
+        success: true,
+        message: `Successfully created new challenge ${challengeData.title}!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
 export async function createNewChallenge(challenge) {
   const docRef = firebase
     .firestore()
@@ -128,7 +168,6 @@ export async function getChallenge(id) {
 }
 
 export async function addAdmins(admins, challengeId) {
-  console.log(admins, challengeId);
   const docRef = firebase.firestore().collection("challenges").doc(challengeId);
 
   return await docRef
@@ -142,6 +181,35 @@ export async function addAdmins(admins, challengeId) {
           admins.length > 1
             ? `Successfully added admins to challenge!`
             : `Successfully added ${admins[0]} to challenge!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
+export async function addActivityEntries(challengeId, userId, activities) {
+  const docRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(challengeId)
+    .collection("logs")
+    .doc(userId);
+
+  return await docRef
+    .set(
+      {
+        activities: firebase.firestore.FieldValue.arrayUnion(...activities),
+      },
+      { merge: true }
+    )
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully added activities from ${userId} to ${challengeId}`,
       };
     })
     .catch((error) => {

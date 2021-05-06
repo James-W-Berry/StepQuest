@@ -1,7 +1,4 @@
 import firebase from "../firebase";
-import { remove } from "lodash";
-import { arrayIncludes } from "@material-ui/pickers/_helpers/utils";
-import { findAncestor } from "typescript";
 
 export async function createUser(username, email, password) {
   const db = firebase.firestore();
@@ -66,6 +63,38 @@ export async function getUser(id) {
     });
 }
 
+export async function joinChallengeBatch(userId, challengeId) {
+  const userDocRef = firebase.firestore().collection("users").doc(userId);
+  const challengeDocRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(challengeId);
+  const batch = firebase.firestore().batch();
+
+  batch.update(userDocRef, {
+    activeChallenges: firebase.firestore.FieldValue.arrayUnion(challengeId),
+  });
+  batch.update(challengeDocRef, {
+    participants: firebase.firestore.FieldValue.arrayUnion(userId),
+  });
+
+  return await batch
+    .commit()
+    .then((response) => {
+      console.log(response);
+      return {
+        success: true,
+        message: `Successfully joined challenge ${challengeId}!`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
 export async function joinChallenge(userId, challengeId) {
   const docRef = firebase.firestore().collection("users").doc(userId);
 
@@ -81,6 +110,41 @@ export async function joinChallenge(userId, challengeId) {
     })
     .catch((error) => {
       return { success: false, message: error };
+    });
+}
+
+export async function leaveChallengeBatch(userId, challengeId) {
+  const userDocRef = firebase.firestore().collection("users").doc(userId);
+  const challengeDocRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(challengeId);
+  const batch = firebase.firestore().batch();
+
+  batch.update(userDocRef, {
+    activeChallenges: firebase.firestore.FieldValue.arrayRemove(challengeId),
+  });
+  batch.update(challengeDocRef, {
+    participants: firebase.firestore.FieldValue.arrayRemove(userId),
+  });
+  batch.update(challengeDocRef, {
+    admin: firebase.firestore.FieldValue.arrayRemove(userId),
+  });
+
+  return await batch
+    .commit()
+    .then((response) => {
+      console.log(response);
+      return {
+        success: true,
+        message: `Successfully lef challenge ${challengeId}`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
     });
 }
 

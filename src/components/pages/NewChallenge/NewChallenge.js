@@ -13,7 +13,6 @@ import {
   Input,
   InputAdornment,
   Divider,
-  Tooltip,
   Popover,
   Checkbox,
 } from "@material-ui/core";
@@ -30,12 +29,10 @@ import {
 } from "@material-ui/pickers";
 import AddCircle from "@material-ui/icons/AddCircle";
 import { v4 as uuidv4 } from "uuid";
-import { createNewChallenge } from "../../../api/challengeApi";
+import { createNewChallengeBatch } from "../../../api/challengeApi";
 import { useHistory } from "react-router-dom";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
-import { addBadge, joinChallenge } from "../../../api/userApi";
 import { Help, Lock, VisibilityOff } from "@material-ui/icons";
-import { useUserContext } from "../user/UserContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,9 +74,6 @@ export default function NewChallenge() {
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
-  const {
-    user: { displayName },
-  } = useUserContext();
   const classes = useStyles();
   const [id, setId] = useState();
   const [title, setTitle] = useState();
@@ -154,23 +148,12 @@ export default function NewChallenge() {
     setIsToastVisible(!isValid);
 
     isValid &&
-      createNewChallenge(form).then((response) => {
-        console.log(response);
+      createNewChallengeBatch(form, userId, id).then((response) => {
+        if (response.success) {
+          setCreateSuccess(true);
+        }
         setToastMessage(response.message);
         setIsToastVisible(true);
-        response.success &&
-          joinChallenge(userId, id).then((response) => {
-            console.log(response);
-            if (response.success) {
-              addBadge(userId, {
-                type: "createChallenge",
-                title: "Challenge Creator",
-              }).then((response) => {
-                console.log(response);
-                setCreateSuccess(true);
-              });
-            }
-          });
       });
   };
 

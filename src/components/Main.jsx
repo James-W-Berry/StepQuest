@@ -77,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     padding: theme.spacing(3),
-    backgroundColor: colors.almostWhite,
     height: "100%",
   },
 }));
@@ -200,7 +199,7 @@ export default function Main() {
               variant="h5"
               style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
             >
-              Step It Up
+              StepQuest
             </Typography>
           </NavLink>
 

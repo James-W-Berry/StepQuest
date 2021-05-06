@@ -13,14 +13,11 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import { getUser, joinChallenge, leaveChallenge } from "../../../api/userApi";
 import {
-  addUserToChallenge,
-  removeUserFromChallenge,
-  removeAdminFromChallenge,
-} from "../../../api/challengeApi";
-import { NavLink } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
+  getUser,
+  joinChallengeBatch,
+  leaveChallengeBatch,
+} from "../../../api/userApi";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import DeleteChallengeDialog from "./DeleteChallengeDialog";
 import CloseIcon from "@material-ui/icons/Close";
@@ -28,6 +25,7 @@ import { useHistory } from "react-router-dom";
 import Participants from "./Participants";
 import LeaveChallengeDialog from "./LeaveChallengeDialog";
 import AddAdminDialog from "./AddAdminDialog";
+import UserActivityCalendar from "./UserActivityCalendar";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -113,26 +111,14 @@ export default function ChallengeDetails(props) {
       setAttemptedSoloAdminDeparture(true);
       setDisplayAddAdmin(true);
     } else {
-      leaveChallenge(userId, id).then((response) => {
-        console.log(response);
+      leaveChallengeBatch(userId, id).then((response) => {
         if (response.success) {
-          removeUserFromChallenge(userId, id).then((response) => {
-            if (response.success) {
-              removeAdminFromChallenge(userId, id).then((response) => {
-                if (response.success) {
-                  setDisplayConfirmLeave(false);
-                  setToastMessage(
-                    `Successfully left ${challengeDetails.data.title}`
-                  );
-                  setDisplayToast(true);
-
-                  setTimeout(() => {
-                    history.push(`/user/${userId}`);
-                  }, 3000);
-                }
-              });
-            }
-          });
+          setDisplayConfirmLeave(false);
+          setToastMessage(`Successully left ${challengeDetails.data.title}`);
+          setDisplayToast(true);
+          setTimeout(() => {
+            history.push(`/user/${userId}`);
+          }, 3000);
         } else {
           setToastMessage(
             `Could not leave ${challengeDetails.data.title}. Please try again later.`
@@ -161,7 +147,6 @@ export default function ChallengeDetails(props) {
     return (
       <div
         style={{
-          backgroundColor: colors.almostWhite,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -178,7 +163,6 @@ export default function ChallengeDetails(props) {
     return (
       <div
         style={{
-          backgroundColor: colors.almostWhite,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -230,22 +214,12 @@ export default function ChallengeDetails(props) {
 
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Your Challenge Activities</Typography>
-        <Typography>Calendar populated with activities</Typography>
-
-        <NavLink
-          style={{ textDecoration: "none", color: colors.almostBlack }}
-          to="/edit"
-        >
-          <Button
-            style={{
-              backgroundColor: colors.stepitup_blue,
-              color: colors.white,
-            }}
-            startIcon={<AddIcon />}
-          >
-            Add Activity
-          </Button>
-        </NavLink>
+        <UserActivityCalendar
+          user={userId}
+          challenge={id}
+          startDate={challengeDetails.data.startDate.seconds}
+          endDate={challengeDetails.data.endDate.seconds}
+        />
       </div>
 
       <Divider variant="fullWidth" />
@@ -272,12 +246,15 @@ export default function ChallengeDetails(props) {
               color: colors.white,
             }}
             onClick={() =>
-              joinChallenge(userId, id).then((response) => {
-                console.log(response);
+              joinChallengeBatch().then((response) => {
                 if (response.success) {
-                  addUserToChallenge(userId, id).then((response) => {
-                    console.log(response);
-                  });
+                  setToastMessage(
+                    `Successfully joined ${challengeDetails.data.title}`
+                  );
+                  setDisplayToast(true);
+                } else {
+                  setToastMessage(response.message);
+                  setDisplayToast(true);
                 }
               })
             }
@@ -288,8 +265,8 @@ export default function ChallengeDetails(props) {
       )}
 
       {challengeDetails.data.admin.includes(userId) && (
-        <div>
-          <div style={{ margin: "20px" }}>
+        <div style={{ margin: "20px" }}>
+          <div>
             <Button
               style={{
                 backgroundColor: "red",
@@ -300,7 +277,7 @@ export default function ChallengeDetails(props) {
               Add Challenge Admin
             </Button>
           </div>
-          <div style={{ margin: "20px" }}>
+          <div>
             <Button
               style={{
                 backgroundColor: "red",
