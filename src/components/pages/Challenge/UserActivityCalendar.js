@@ -70,6 +70,7 @@ export default function UserActivityCalendar(props) {
                 style={{
                   padding: "4px",
                   backgroundColor: colors.stepitup_blue,
+                  borderRadius: "4px",
                   color: colors.white,
                 }}
               >
