@@ -14,7 +14,8 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import CloseIcon from "@material-ui/icons/Close";
 import colors from "../../../assets/colors";
-import { sendResetPasswordEmail } from "../../../api/authApi";
+import { SyncLoader } from "react-spinners";
+import { createUser } from "../../../api/userApi";
 
 const styles = (theme) => ({
   closeButton: {
@@ -87,19 +88,25 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-export default function ForgottenPasswordDialog(props) {
+export default function SignUpDialog(props) {
   const { isOpen, setDialogVisible } = props;
+  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [isResetLinkSent, setIsResetLinkSent] = useState();
+  const [password, setPassword] = useState("");
+  const [isSignUpSuccessful, setIsSignUpSuccessful] = useState();
   const [message, setMessage] = useState();
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const onResetPassword = (email) => {
-    sendResetPasswordEmail(email).then((response) => {
-      setIsResetLinkSent(response.success);
+  const onSignUp = () => {
+    setIsLoading(true);
+    createUser(username, email, password).then((response) => {
+      console.log(response);
+      setIsSignUpSuccessful(response.success);
       setMessage(response.message);
+      setIsLoading(false);
     });
   };
 
@@ -123,7 +130,7 @@ export default function ForgottenPasswordDialog(props) {
           id="customized-dialog-title"
           onClose={() => setDialogVisible(false)}
         >
-          No worries!
+          Let's get you set up!
         </DialogTitle>
       </div>
 
@@ -143,51 +150,93 @@ export default function ForgottenPasswordDialog(props) {
             instructions for resetting your password right away.
           </Typography>
 
-          {isResetLinkSent ? (
+          {isSignUpSuccessful ? (
             <Typography style={{ textAlign: "center", padding: "10px" }}>
               {message}
             </Typography>
           ) : (
-            <div>
-              <Typography style={{ textAlign: "center", padding: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                background: "#ffffffcc",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Typography
+                style={{ textAlign: "center", padding: "10px", color: "red" }}
+              >
                 {message}
               </Typography>
+
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                  marginTop: "20px",
                   width: "80%",
                 }}
               >
                 <TextField
                   className={classes.textInput}
-                  id="standard-email-input"
-                  label="Email"
-                  type="email"
+                  id="standard-username-input"
+                  label="Display Name"
+                  type="username"
                   InputProps={{
                     className: classes.input,
                   }}
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                  }}
+                />
+                <TextField
+                  className={classes.textInput}
+                  id="standard-email-input"
+                  label="Email"
+                  type="email"
                   autoComplete="email"
+                  InputProps={{
+                    className: classes.input,
+                  }}
                   onChange={(event) => {
                     setEmail(event.target.value);
                   }}
                 />
+                <TextField
+                  className={classes.textInput}
+                  id="standard-password-input"
+                  label="Password"
+                  type="password"
+                  autoComplete="current-password"
+                  InputProps={{
+                    className: classes.input,
+                  }}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                  }}
+                />
 
-                <Button
-                  onClick={() => {
-                    onResetPassword(email);
-                  }}
-                  className={classes.button}
-                  style={{
-                    backgroundColor: colors.stepitup_blue,
-                    color: colors.white,
-                    marginTop: "30px",
-                  }}
-                >
-                  Reset Password
-                </Button>
+                {isLoading ? (
+                  <SyncLoader color={colors.stepitup_blue} />
+                ) : (
+                  <Button
+                    onClick={() => {
+                      onSignUp();
+                    }}
+                    className={classes.button}
+                    style={{
+                      backgroundColor: colors.stepitup_blue,
+                      color: colors.white,
+                      marginTop: "30px",
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                )}
               </div>
             </div>
           )}

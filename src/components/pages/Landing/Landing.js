@@ -20,6 +20,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import google from "../../../assets/google.png";
 import { createUser } from "../../../api/userApi";
 import ForgottenPasswordDialog from "./ForgottenPasswordDialog";
+import SignUpDialog from "./SignUpDialog";
 
 const styles = (theme) => ({
   closeButton: {
@@ -410,198 +411,15 @@ function Landing(props) {
             </DialogContent>
           </Dialog>
 
-          <Dialog
-            fullScreen={fullScreen}
-            fullWidth={true}
-            onClose={() => setSignUpVisible(false)}
-            aria-labelledby="customized-dialog-title"
-            open={signupVisible}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: colors.stepitup_blue,
-              }}
-            >
-              <DialogTitle
-                id="customized-dialog-title"
-                onClose={() => setSignUpVisible(false)}
-              >
-                Let's get you set up!
-              </DialogTitle>
-            </div>
-
-            <DialogContent className="dialog" style={{ padding: "0px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  background: "#ffffffcc",
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "20px",
-                    width: "80%",
-                  }}
-                >
-                  <TextField
-                    className={classes.textInput}
-                    id="standard-username-input"
-                    label="Display Name"
-                    type="username"
-                    InputProps={{
-                      className: classes.input,
-                    }}
-                    onChange={(event) => {
-                      setUsername(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    className={classes.textInput}
-                    id="standard-email-input"
-                    label="Email"
-                    type="email"
-                    autoComplete="email"
-                    InputProps={{
-                      className: classes.input,
-                    }}
-                    onChange={(event) => {
-                      setEmail(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    className={classes.textInput}
-                    id="standard-password-input"
-                    label="Password"
-                    type="password"
-                    autoComplete="current-password"
-                    InputProps={{
-                      className: classes.input,
-                    }}
-                    onChange={(event) => {
-                      setPassword(event.target.value);
-                    }}
-                  />
-
-                  {isLoading ? (
-                    <SyncLoader color={colors.stepitup_blue} />
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        setIsLoading(true);
-                        createUser(username, email, password).then(() => {
-                          setIsLoading(false);
-                        });
-                        //onSignUp(username, email, password);
-                      }}
-                      className={classes.button}
-                      style={{
-                        backgroundColor: colors.stepitup_blue,
-                        color: colors.white,
-                        marginTop: "30px",
-                      }}
-                    >
-                      Sign Up
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <SignUpDialog
+            isOpen={signupVisible}
+            setDialogVisible={(value) => setSignUpVisible(value)}
+          />
 
           <ForgottenPasswordDialog
             isOpen={forgottenPasswordVisible}
             setDialogVisible={(value) => setForgottenPasswordVisible(value)}
           />
-
-          {/* <Dialog
-            fullScreen={fullScreen}
-            fullWidth={true}
-            onClose={() => setForgottenPasswordVisible(false)}
-            aria-labelledby="customized-dialog-title"
-            open={forgottenPasswordVisible}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: colors.stepitup_blue,
-              }}
-            >
-              <DialogTitle
-                id="customized-dialog-title"
-                onClose={() => setForgottenPasswordVisible(false)}
-              >
-                No worries!
-              </DialogTitle>
-            </div>
-
-            <DialogContent className="dialog" style={{ padding: "0px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  background: "#ffffffcc",
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <Typography style={{ textAlign: "center", padding: "10px" }}>
-                  Please enter the email you used to sign up and we'll send
-                  instructions for resetting your password right away.
-                </Typography>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "80%",
-                  }}
-                >
-                  <TextField
-                    className={classes.textInput}
-                    id="standard-email-input"
-                    label="Email"
-                    type="email"
-                    InputProps={{
-                      className: classes.input,
-                    }}
-                    autoComplete="email"
-                    onChange={(event) => {
-                      setEmail(event.target.value);
-                    }}
-                  />
-
-                  <Button
-                    onClick={() => {
-                      onResetPassword(email);
-                    }}
-                    className={classes.button}
-                    style={{
-                      backgroundColor: colors.stepitup_blue,
-                      color: colors.white,
-                      marginTop: "30px",
-                    }}
-                  >
-                    Reset Password
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog> */}
         </div>
       </div>
     </div>

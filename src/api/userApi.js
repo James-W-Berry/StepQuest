@@ -19,18 +19,21 @@ export async function createUser(username, email, password) {
         .then(() => {
           return {
             success: true,
-            message: `Successfully sign up new user ${userId}`,
+            message: `Successfully signed up!`,
           };
         })
-        .catch(function (error) {
-          console.log(error);
-          alert(error.message);
-          return { success: false, message: error };
+        .catch((error) => {
+          return {
+            success: false,
+            message: error.message,
+          };
         });
     })
-    .catch(function (error) {
-      var errorMessage = error.message;
-      alert(errorMessage);
+    .catch((error) => {
+      return {
+        success: false,
+        message: error.message,
+      };
     });
 }
 
