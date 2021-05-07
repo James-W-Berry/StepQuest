@@ -113,7 +113,10 @@ export default function SignInDialog(props) {
     <Dialog
       fullScreen={fullScreen}
       fullWidth={true}
-      onClose={() => setDialogVisible(false)}
+      onClose={() => {
+        setMessage();
+        setDialogVisible(false);
+      }}
       aria-labelledby="customized-dialog-title"
       open={isOpen}
     >
@@ -127,7 +130,10 @@ export default function SignInDialog(props) {
       >
         <DialogTitle
           id="customized-dialog-title"
-          onClose={() => setDialogVisible(false)}
+          onClose={() => {
+            setMessage();
+            setDialogVisible(false);
+          }}
         >
           Welcome Back!
         </DialogTitle>
