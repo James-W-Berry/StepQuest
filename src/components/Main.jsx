@@ -197,7 +197,7 @@ export default function Main() {
             <img src={logo} alt="logo" height={40} width={40} />
             <Typography
               variant="h5"
-              style={{ color: colors.stepitup_blue, marginLeft: "12px" }}
+              style={{ color: colors.almostBlack, marginLeft: "12px" }}
             >
               StepQuest
             </Typography>
