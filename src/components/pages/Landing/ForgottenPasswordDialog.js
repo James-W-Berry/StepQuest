@@ -148,8 +148,19 @@ export default function ForgottenPasswordDialog(props) {
               {message}
             </Typography>
           ) : (
-            <div>
-              <Typography style={{ textAlign: "center", padding: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                background: "#ffffffcc",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Typography
+                style={{ textAlign: "center", padding: "10px", color: "red" }}
+              >
                 {message}
               </Typography>
               <div

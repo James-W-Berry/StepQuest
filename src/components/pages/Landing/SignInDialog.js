@@ -15,7 +15,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import CloseIcon from "@material-ui/icons/Close";
 import colors from "../../../assets/colors";
 import { SyncLoader } from "react-spinners";
-import { signUpUser } from "../../../api/authApi";
+import { signInUser } from "../../../api/authApi";
 
 const styles = (theme) => ({
   closeButton: {
@@ -88,23 +88,22 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent);
 
-export default function SignUpDialog(props) {
-  const { isOpen, setDialogVisible } = props;
+export default function SignInDialog(props) {
+  const { isOpen, setDialogVisible, setForgottenPasswordVisible } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUpSuccessful, setIsSignUpSuccessful] = useState();
+  const [isSignInSuccessful, setIsSignInSuccessful] = useState();
   const [message, setMessage] = useState();
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const onSignUp = () => {
+  const onSignIn = () => {
     setIsLoading(true);
-    signUpUser(username, email, password).then((response) => {
+    signInUser(email, password).then((response) => {
       console.log(response);
-      setIsSignUpSuccessful(response.success);
+      setIsSignInSuccessful(response.success);
       setMessage(response.message);
       setIsLoading(false);
     });
@@ -130,7 +129,7 @@ export default function SignUpDialog(props) {
           id="customized-dialog-title"
           onClose={() => setDialogVisible(false)}
         >
-          Let's get you set up!
+          Welcome Back!
         </DialogTitle>
       </div>
 
@@ -145,7 +144,7 @@ export default function SignUpDialog(props) {
             height: "100%",
           }}
         >
-          {isSignUpSuccessful ? (
+          {isSignInSuccessful ? (
             <Typography style={{ textAlign: "center", padding: "10px" }}>
               {message}
             </Typography>
@@ -178,25 +177,13 @@ export default function SignUpDialog(props) {
               >
                 <TextField
                   className={classes.textInput}
-                  id="standard-username-input"
-                  label="Display Name"
-                  type="username"
-                  InputProps={{
-                    className: classes.input,
-                  }}
-                  onChange={(event) => {
-                    setUsername(event.target.value);
-                  }}
-                />
-                <TextField
-                  className={classes.textInput}
                   id="standard-email-input"
                   label="Email"
                   type="email"
-                  autoComplete="email"
                   InputProps={{
                     className: classes.input,
                   }}
+                  autoComplete="email"
                   onChange={(event) => {
                     setEmail(event.target.value);
                   }}
@@ -220,7 +207,7 @@ export default function SignUpDialog(props) {
                 ) : (
                   <Button
                     onClick={() => {
-                      onSignUp();
+                      onSignIn(email, password);
                     }}
                     className={classes.button}
                     style={{
@@ -229,9 +216,23 @@ export default function SignUpDialog(props) {
                       marginTop: "30px",
                     }}
                   >
-                    Sign Up
+                    Log In
                   </Button>
                 )}
+
+                <Button
+                  onClick={() => {
+                    setDialogVisible(false);
+                    setForgottenPasswordVisible(true);
+                  }}
+                  className={classes.button}
+                  style={{
+                    backgroundColor: colors.stepitup_blue,
+                    color: colors.white,
+                  }}
+                >
+                  Forgot Password?
+                </Button>
               </div>
             </div>
           )}

@@ -1,42 +1,5 @@
 import firebase from "../firebase";
 
-export async function createUser(username, email, password) {
-  const db = firebase.firestore();
-
-  return await firebase
-    .auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then(async () => {
-      var userId = firebase.auth().currentUser.uid;
-
-      return await db
-        .collection("users")
-        .doc(userId)
-        .set({
-          displayName: username,
-          badges: [{ type: "welcome", title: "New User" }],
-        })
-        .then(() => {
-          return {
-            success: true,
-            message: `Successfully signed up!`,
-          };
-        })
-        .catch((error) => {
-          return {
-            success: false,
-            message: error.message,
-          };
-        });
-    })
-    .catch((error) => {
-      return {
-        success: false,
-        message: error.message,
-      };
-    });
-}
-
 export async function getUser(id) {
   const docRef = firebase.firestore().collection("users").doc(id);
 
