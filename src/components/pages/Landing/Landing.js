@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../App.css";
+import "../../../App.css";
 import "firebase/auth";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -7,7 +7,7 @@ import { Typography, IconButton, Dialog, TextField } from "@material-ui/core";
 import LandingCarousel from "./LandingCarousel";
 import CloseIcon from "@material-ui/icons/Close";
 import { useTheme } from "@material-ui/core/styles";
-import firebase from "../firebase";
+import firebase from "../../../firebase";
 import "firebase/auth";
 import "typeface-roboto";
 import PropTypes from "prop-types";
@@ -15,10 +15,11 @@ import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import colors from "../assets/colors";
+import colors from "../../../assets/colors";
 import SyncLoader from "react-spinners/SyncLoader";
-import google from "../assets/google.png";
-import { createUser } from "../api/userApi";
+import google from "../../../assets/google.png";
+import { createUser } from "../../../api/userApi";
+import ForgottenPasswordDialog from "./ForgottenPasswordDialog";
 
 const styles = (theme) => ({
   closeButton: {
@@ -208,21 +209,21 @@ function Landing(props) {
       });
   }
 
-  function onResetPassword(email) {
-    firebase
-      .auth()
-      .sendPasswordResetEmail(email)
-      .then(function () {
-        alert("Check your email to reset your password.");
-      })
-      .catch(function (error) {
-        console.log("error resetting password ");
+  // function onResetPassword(email) {
+  //   firebase
+  //     .auth()
+  //     .sendPasswordResetEmail(email)
+  //     .then(function () {
+  //       alert("Check your email to reset your password.");
+  //     })
+  //     .catch(function (error) {
+  //       console.log("error resetting password ");
 
-        alert(
-          "Could not send email, please enter your email address and try again."
-        );
-      });
-  }
+  //       alert(
+  //         "Could not send email, please enter your email address and try again."
+  //       );
+  //     });
+  // }
 
   function ensureUserExists(id) {
     setIsLoading(true);
@@ -518,7 +519,12 @@ function Landing(props) {
             </DialogContent>
           </Dialog>
 
-          <Dialog
+          <ForgottenPasswordDialog
+            isOpen={forgottenPasswordVisible}
+            setDialogVisible={(value) => setForgottenPasswordVisible(value)}
+          />
+
+          {/* <Dialog
             fullScreen={fullScreen}
             fullWidth={true}
             onClose={() => setForgottenPasswordVisible(false)}
@@ -595,7 +601,7 @@ function Landing(props) {
                 </div>
               </div>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
         </div>
       </div>
     </div>

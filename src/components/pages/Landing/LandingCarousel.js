@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../App.css";
+import "../../../App.css";
 import Carousel from "react-bootstrap/Carousel";
-import colors from "../assets/colors";
+import colors from "../../../assets/colors";
 import Img from "react-image";
-import team from "../assets/team.png";
-import target from "../assets/target.png";
-import chart from "../assets/chart.png";
+import team from "../../../assets/team.png";
+import target from "../../../assets/target.png";
+import chart from "../../../assets/chart.png";
 import { makeStyles } from "@material-ui/core/styles";
 
 const TeamIcon = () => <Img src={team} height={80} />;

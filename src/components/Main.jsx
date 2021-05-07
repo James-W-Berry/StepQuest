@@ -14,7 +14,7 @@ import firebase from "../firebase";
 import "firebase/auth";
 import EditActivities from "./EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
-import Landing from "./Landing";
+import Landing from "./pages/Landing/Landing";
 import UserProfile from "./pages/user/UserProfile";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
