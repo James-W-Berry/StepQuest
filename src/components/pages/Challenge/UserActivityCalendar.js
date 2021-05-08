@@ -1,8 +1,9 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button, Dialog, Typography } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import Calender from "react-calendar";
 import { addActivityEntries, getUserEntries } from "../../../api/challengeApi";
 import colors from "../../../assets/colors";
+import DayActivitiesDialog from "./DayActivitiesDialog";
 
 const testData = [
   {
@@ -30,7 +31,11 @@ export default function UserActivityCalendar(props) {
   const [maxDate, setMaxDate] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userEntries, setUserEntries] = useState([]);
-  const [newLogEntries, setNewLogEntries] = useState(testData);
+  const [newLogEntries, setNewLogEntries] = useState([]);
+  const [
+    isDayActivitiesDialogVisible,
+    setIsDayActivitiesDialogVisible,
+  ] = useState(false);
 
   useEffect(() => {
     const start = new Date(1970, 0, 1);
@@ -48,6 +53,7 @@ export default function UserActivityCalendar(props) {
     getUserEntries(challenge, user).then((response) => {
       if (response.success) {
         setUserEntries(response.data);
+        setNewLogEntries(response.data);
       } else {
         console.log(response.message);
       }
@@ -61,29 +67,32 @@ export default function UserActivityCalendar(props) {
         maxDate={maxDate}
         value={selectedDate}
         tileContent={({ activeStartDate, date, view }) => {
-          const activeDate = userEntries.find(
+          const daysWithActivities = userEntries.filter(
             (entry) => entry.date === date.toString()
           );
-          if (activeDate) {
-            return (
-              <div
-                style={{
-                  padding: "4px",
-                  backgroundColor: colors.stepitup_blue,
-                  borderRadius: "4px",
-                  color: colors.white,
-                }}
-              >
-                <Typography>
-                  {activeDate.activity} - {activeDate.duration}min
-                </Typography>
-              </div>
-            );
+          console.log(daysWithActivities);
+          if (daysWithActivities.length > 0) {
+            daysWithActivities.map((day) => {
+              return (
+                <div
+                  style={{
+                    padding: "4px",
+                    backgroundColor: colors.stepitup_blue,
+                    borderRadius: "4px",
+                    color: colors.white,
+                  }}
+                >
+                  <Typography>
+                    {day.activity} - {day.duration}min
+                  </Typography>
+                </div>
+              );
+            });
           }
         }}
         onClickDay={(value) => {
-          console.log(value);
           setSelectedDate(value);
+          setIsDayActivitiesDialogVisible(!isDayActivitiesDialogVisible);
         }}
       />
       <Button
@@ -101,6 +110,28 @@ export default function UserActivityCalendar(props) {
       >
         Save
       </Button>
+      <Button
+        style={{
+          backgroundColor: colors.stepitup_blue,
+          color: colors.white,
+        }}
+        onClick={() =>
+          addActivityEntries(challenge, user, testData).then((response) => {
+            console.log(response);
+          })
+        }
+      >
+        Save Test Data
+      </Button>
+
+      <DayActivitiesDialog
+        isOpen={isDayActivitiesDialogVisible}
+        day={selectedDate}
+        activities={newLogEntries.filter((entry) => {
+          return entry.date === selectedDate;
+        })}
+        handleClose={setIsDayActivitiesDialogVisible}
+      />
     </div>
   );
 }
