@@ -11,13 +11,11 @@ const testData = [
     activity: "Weightlifting",
     duration: "60",
   },
-
   {
     date: "Thu May 20 2021 00:00:00 GMT-0400 (Eastern Daylight Time)",
     activity: "Swimming",
     duration: "60",
   },
-
   {
     date: "Fri May 21 2021 00:00:00 GMT-0400 (Eastern Daylight Time)",
     activity: "Running",
@@ -54,11 +52,16 @@ export default function UserActivityCalendar(props) {
       if (response.success) {
         setUserEntries(response.data);
         setNewLogEntries(response.data);
+        console.log(response.data);
       } else {
         console.log(response.message);
       }
     });
   }, []);
+
+  useEffect(() => {
+    console.log(newLogEntries);
+  }, [newLogEntries]);
 
   return (
     <div>
@@ -70,7 +73,6 @@ export default function UserActivityCalendar(props) {
           const daysWithActivities = userEntries.filter(
             (entry) => entry.date === date.toString()
           );
-          console.log(daysWithActivities);
           if (daysWithActivities.length > 0) {
             daysWithActivities.map((day) => {
               return (
@@ -128,9 +130,10 @@ export default function UserActivityCalendar(props) {
         isOpen={isDayActivitiesDialogVisible}
         day={selectedDate}
         activities={newLogEntries.filter((entry) => {
-          return entry.date === selectedDate;
+          return entry.date === selectedDate.toString();
         })}
-        handleClose={setIsDayActivitiesDialogVisible}
+        setActivities={setNewLogEntries}
+        setDialogVisible={setIsDayActivitiesDialogVisible}
       />
     </div>
   );
