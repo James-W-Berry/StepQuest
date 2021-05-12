@@ -30,10 +30,8 @@ export default function UserActivityCalendar(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userEntries, setUserEntries] = useState([]);
   const [newLogEntries, setNewLogEntries] = useState([]);
-  const [
-    isDayActivitiesDialogVisible,
-    setIsDayActivitiesDialogVisible,
-  ] = useState(false);
+  const [isDayActivitiesDialogVisible, setIsDayActivitiesDialogVisible] =
+    useState(false);
 
   useEffect(() => {
     const start = new Date(1970, 0, 1);
@@ -52,7 +50,6 @@ export default function UserActivityCalendar(props) {
       if (response.success) {
         setUserEntries(response.data);
         setNewLogEntries(response.data);
-        console.log(response.data);
       } else {
         console.log(response.message);
       }
@@ -74,10 +71,11 @@ export default function UserActivityCalendar(props) {
             (entry) => entry.date === date.toString()
           );
           if (daysWithActivities.length > 0) {
-            daysWithActivities.map((day) => {
+            return daysWithActivities.map((day) => {
               return (
                 <div
                   style={{
+                    margin: "4px",
                     padding: "4px",
                     backgroundColor: colors.stepitup_blue,
                     borderRadius: "4px",
