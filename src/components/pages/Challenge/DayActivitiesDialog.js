@@ -10,7 +10,6 @@ import {
   Input,
   InputLabel,
   Select,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -173,9 +172,18 @@ export default function DayActivitiesDialog(props) {
             height: "100%",
           }}
         >
+          <Typography variant="h5">Logged Activities</Typography>
           {editedActivities.map((activity, index) => {
             return (
-              <div key={index} style={{ display: "flex", padding: "10px" }}>
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  padding: "10px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
                 <Typography>
                   {activity.activity} - {activity.duration}min
                 </Typography>
@@ -185,6 +193,7 @@ export default function DayActivitiesDialog(props) {
               </div>
             );
           })}
+          <Typography variant="h5">Log a new activity</Typography>
           <div
             style={{
               display: "flex",
@@ -225,21 +234,31 @@ export default function DayActivitiesDialog(props) {
             </FormControl>
             <Typography> minutes</Typography>
 
-            <IconButton onClick={addActivity}>
-              <Add />
-            </IconButton>
+            <Button
+              style={{
+                backgroundColor: colors.stepitup_blue,
+                color: colors.white,
+                margin: "20px",
+              }}
+              onClick={addActivity}
+              startIcon={<Add />}
+            >
+              Add
+            </Button>
           </div>
-          <Button
-            disabled={!hasChange}
-            style={{
-              backgroundColor: colors.stepitup_blue,
-              color: colors.white,
-              margin: "20px",
-            }}
-            onClick={saveActivities}
-          >
-            Add Activities
-          </Button>
+          {hasChange && (
+            <Button
+              disabled={!hasChange}
+              style={{
+                backgroundColor: colors.stepitup_blue,
+                color: colors.white,
+                margin: "20px",
+              }}
+              onClick={saveActivities}
+            >
+              Log
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
