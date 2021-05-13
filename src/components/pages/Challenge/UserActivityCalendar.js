@@ -55,9 +55,10 @@ export default function UserActivityCalendar(props) {
             (entry) => entry.date === date.toString()
           );
           if (daysWithActivities.length > 0) {
-            return daysWithActivities.map((day) => {
+            return daysWithActivities.map((day, index) => {
               return (
                 <div
+                  key={index}
                   style={{
                     width: "100%",
                     margin: "4px",

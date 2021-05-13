@@ -1,4 +1,4 @@
-import { Tooltip } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React from "react";
 import colors from "../../../assets/colors";
 import medal from "../../../assets/medal.png";
@@ -19,19 +19,31 @@ export default function Badge(props) {
   return (
     <div
       style={{
-        width: "50px",
-        height: "50px",
-        margin: "10px",
-        borderRadius: "25px",
-        backgroundColor: `${applyMedalColor[data.type]}`,
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        margin: "10px",
+        userSelect: "none",
       }}
     >
-      <Tooltip title={data.title}>
+      <div
+        style={{
+          width: "50px",
+          height: "50px",
+          margin: "10px",
+          borderRadius: "25px",
+          backgroundColor: `${applyMedalColor[data.type]}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <img src={medal} alt="logo" height={40} width={40} />
-      </Tooltip>
+      </div>
+      <Typography style={{ width: "75px", textAlign: "center" }}>
+        {data.title}
+      </Typography>
     </div>
   );
 }

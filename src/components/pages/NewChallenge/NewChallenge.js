@@ -80,7 +80,7 @@ export default function NewChallenge() {
   const [activity, setActivity] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(add(new Date(), { months: 1 }));
-  const [description, setDescription] = useState();
+  const [description, setDescription] = useState("");
   const [privateChallenge, setPrivateChallenge] = useState(false);
   const [participantEmail, setParticipantEmail] = useState();
   const [isParticipantEmailValid, setIsParticipantEmailValid] = useState(false);
