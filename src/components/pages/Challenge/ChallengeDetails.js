@@ -26,6 +26,8 @@ import Participants from "./Participants";
 import LeaveChallengeDialog from "./LeaveChallengeDialog";
 import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
+import ChallengeTotalChart from "./ChallengeTotalChart";
+import ParentSize from "@visx/responsive/lib/components/ParentSize";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -38,10 +40,8 @@ export default function ChallengeDetails(props) {
   const [displayConfirmDelete, setDisplayConfirmDelete] = useState(false);
   const [displayConfirmLeave, setDisplayConfirmLeave] = useState(false);
   const [displayAddAdmin, setDisplayAddAdmin] = useState(false);
-  const [
-    attemptedSoloAdminDeparture,
-    setAttemptedSoloAdminDeparture,
-  ] = useState(false);
+  const [attemptedSoloAdminDeparture, setAttemptedSoloAdminDeparture] =
+    useState(false);
   const [displayToast, setDisplayToast] = useState(false);
   const [toastMessage, setToastMessage] = useState();
   const [challengeDetails, setChallengeDetails] = useState({
@@ -205,6 +205,11 @@ export default function ChallengeDetails(props) {
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Challenge Stats</Typography>
         <Typography>Totals, graphs, visualizations, etc</Typography>
+        <ParentSize>
+          {({ width, height }) => (
+            <ChallengeTotalChart width={500} height={500} />
+          )}
+        </ParentSize>
       </div>
 
       <div style={{ margin: "20px" }}>
@@ -226,7 +231,7 @@ export default function ChallengeDetails(props) {
 
       {challengeDetails.data.participants.includes(userId) ? (
         <div style={{ margin: "20px" }}>
-          <Typography variant="h5">Danger Zone</Typography>
+          <Typography variant="h5">Admin Zone</Typography>
           <Button
             style={{
               backgroundColor: "red",
@@ -265,8 +270,8 @@ export default function ChallengeDetails(props) {
       )}
 
       {challengeDetails.data.admin.includes(userId) && (
-        <div style={{ margin: "20px" }}>
-          <div>
+        <div style={{ marginBottom: "40px" }}>
+          <div style={{ margin: "20px" }}>
             <Button
               style={{
                 backgroundColor: "red",
@@ -277,7 +282,7 @@ export default function ChallengeDetails(props) {
               Add Challenge Admin
             </Button>
           </div>
-          <div>
+          <div style={{ margin: "20px" }}>
             <Button
               style={{
                 backgroundColor: "red",

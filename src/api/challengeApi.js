@@ -12,16 +12,23 @@ export async function createNewChallengeBatch(
   const userDocRef = firebase.firestore().collection("users").doc(userId);
   const batch = firebase.firestore().batch();
 
-  batch.set(challengeDocRef, challengeData);
-  batch.update(userDocRef, {
-    activeChallenges: firebase.firestore.FieldValue.arrayUnion(challengeId),
-  });
-  batch.update(userDocRef, {
-    badges: firebase.firestore.FieldValue.arrayUnion({
-      type: "createChallenge",
-      title: "Challenge Creator",
-    }),
-  });
+  try {
+    batch.set(challengeDocRef, challengeData);
+    batch.update(userDocRef, {
+      activeChallenges: firebase.firestore.FieldValue.arrayUnion(challengeId),
+    });
+    batch.update(userDocRef, {
+      badges: firebase.firestore.FieldValue.arrayUnion({
+        type: "createChallenge",
+        title: "Challenge Creator",
+      }),
+    });
+  } catch (error) {
+    return {
+      success: false,
+      message: "Could not create challenge! Please try again later.",
+    };
+  }
 
   return await batch
     .commit()
