@@ -207,12 +207,9 @@ export async function addActivityEntries(challengeId, userId, activities) {
     .doc(userId);
 
   return await docRef
-    .set(
-      {
-        activities: firebase.firestore.FieldValue.arrayUnion(...activities),
-      },
-      { merge: true }
-    )
+    .set({
+      activities: activities,
+    })
     .then(() => {
       return {
         success: true,
@@ -252,7 +249,7 @@ export async function getUserEntries(challengeId, userId) {
       } else {
         return {
           success: false,
-          data: null,
+          data: [],
         };
       }
     })

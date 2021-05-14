@@ -27,7 +27,6 @@ import LeaveChallengeDialog from "./LeaveChallengeDialog";
 import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
-import ParentSize from "@visx/responsive/lib/components/ParentSize";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -131,7 +130,6 @@ export default function ChallengeDetails(props) {
 
   const handleAddAdminConfirmed = (admins) => {
     addAdmins(admins, id).then((response) => {
-      console.log(response);
       if (response.success) {
         setDisplayAddAdmin(false);
         setToastMessage(response.message);
@@ -204,12 +202,9 @@ export default function ChallengeDetails(props) {
       <Divider variant="fullWidth" />
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Challenge Stats</Typography>
-        <Typography>Totals, graphs, visualizations, etc</Typography>
-        <ParentSize>
-          {({ width, height }) => (
-            <ChallengeTotalChart width={500} height={500} />
-          )}
-        </ParentSize>
+        <div style={{ height: "500px" }}>
+          <ChallengeTotalChart />
+        </div>
       </div>
 
       <div style={{ margin: "20px" }}>

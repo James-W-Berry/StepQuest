@@ -1,4 +1,6 @@
-import { Button, Dialog, Typography } from "@material-ui/core";
+import { Button, IconButton, Snackbar, Typography } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
+import { isEqual } from "lodash";
 import React, { useState, useEffect } from "react";
 import Calender from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -11,10 +13,12 @@ export default function UserActivityCalendar(props) {
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [userEntries, setUserEntries] = useState([]);
-  const [newLogEntries, setNewLogEntries] = useState([]);
+  const [origLogEntries, setOrigLogEntries] = useState([]);
+  const [logEntries, setLogEntries] = useState([]);
   const [isDayActivitiesDialogVisible, setIsDayActivitiesDialogVisible] =
     useState(false);
+  const [displayToast, setDisplayToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState();
 
   useEffect(() => {
     const start = new Date(1970, 0, 1);
@@ -31,17 +35,21 @@ export default function UserActivityCalendar(props) {
   useEffect(() => {
     getUserEntries(challenge, user).then((response) => {
       if (response.success) {
-        setUserEntries(response.data);
-        setNewLogEntries(response.data);
+        setOrigLogEntries(response.data);
+        setLogEntries(response.data);
       } else {
         console.log(response.message);
       }
     });
   }, []);
 
-  useEffect(() => {
-    console.log(newLogEntries);
-  }, [newLogEntries]);
+  const updateLogEntries = (day, entries) => {
+    const updated = logEntries
+      .filter((entry) => entry.date !== day)
+      .concat(entries);
+    console.log(updated);
+    setLogEntries(updated);
+  };
 
   return (
     <div>
@@ -51,7 +59,7 @@ export default function UserActivityCalendar(props) {
         value={selectedDate}
         style={{}}
         tileContent={({ activeStartDate, date, view }) => {
-          const daysWithActivities = userEntries.filter(
+          const daysWithActivities = logEntries.filter(
             (entry) => entry.date === date.toString()
           );
           if (daysWithActivities.length > 0) {
@@ -81,29 +89,64 @@ export default function UserActivityCalendar(props) {
           setIsDayActivitiesDialogVisible(!isDayActivitiesDialogVisible);
         }}
       />
+
       <Button
         style={{
-          backgroundColor: colors.stepitup_blue,
+          backgroundColor: isEqual(logEntries, origLogEntries)
+            ? colors.stepitup_fadedBlue
+            : colors.stepitup_blue,
           color: colors.white,
+          margin: "10px",
         }}
+        disabled={isEqual(logEntries, origLogEntries)}
         onClick={() =>
-          addActivityEntries(challenge, user, newLogEntries).then(
-            (response) => {
-              console.log(response);
+          addActivityEntries(challenge, user, logEntries).then((response) => {
+            if (response.success) {
+              setToastMessage("Successfully logged activities!");
+              setDisplayToast(true);
+            } else {
+              setToastMessage(
+                "Failed to log activities! Please try again later."
+              );
+              setDisplayToast(true);
             }
-          )
+          })
         }
       >
         Save
       </Button>
+
       <DayActivitiesDialog
         isOpen={isDayActivitiesDialogVisible}
         day={selectedDate}
-        activities={newLogEntries.filter((entry) => {
+        activities={logEntries.filter((entry) => {
           return entry.date === selectedDate.toString();
         })}
-        setActivities={setNewLogEntries}
+        updateActivities={updateLogEntries}
         setDialogVisible={setIsDayActivitiesDialogVisible}
+      />
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={displayToast}
+        autoHideDuration={5000}
+        onClose={() => setDisplayToast(false)}
+        message={toastMessage}
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => setDisplayToast(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
       />
     </div>
   );

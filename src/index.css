@@ -24,7 +24,7 @@ code {
 }
 
 .react-calendar__tile:hover {
-  background: #0099ff90 !important;
+  background: #0099ff15 !important;
 }
 
 .react-calendar__tile:disabled {
@@ -44,9 +44,10 @@ code {
 }
 
 .react-calendar__tile--now {
-  background: #0099ff30 !important;
+  background: #0099ff15 !important;
 }
 
 .react-calendar__tile--active {
-  background: #0099ff90 !important;
+  background: #ffffff !important;
+  color: black !important;
 }
