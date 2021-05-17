@@ -15,7 +15,7 @@ import "firebase/auth";
 import EditActivities from "./EditActivities";
 import SyncLoader from "react-spinners/SyncLoader";
 import Landing from "./pages/Landing/Landing";
-import UserProfile from "./pages/user/UserProfile";
+import UserProfile from "./pages/User/UserProfile";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import colors from "../assets/colors";
@@ -24,7 +24,7 @@ import About from "./pages/About/AboutPage";
 import ChallengeDetails from "./pages/Challenge/ChallengeDetails";
 import logo from "../assets/logo.png";
 import { getUser } from "../api/userApi";
-import { useUserContext } from "./pages/user/UserContext";
+import { useUserContext } from "./pages/User/UserContext";
 
 const drawerWidth = "100%";
 

@@ -6,6 +6,7 @@ import {
   IconButton,
   Grid,
   Divider,
+  ButtonBase,
 } from "@material-ui/core";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
@@ -19,6 +20,63 @@ import {
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 import ChallengesWidget from "./ChallengesWidget";
+import { makeStyles } from "@material-ui/core/styles";
+import AvatarWidget from "./AvatarWidget";
+
+const useStyles = makeStyles((theme) => ({
+  image: {
+    position: "relative",
+    height: 200,
+    borderRadius: "20px",
+    [theme.breakpoints.down("xs")]: {
+      width: "100% !important", // Overrides inline-style
+      height: 100,
+    },
+    "&:hover, &$focusVisible": {
+      zIndex: 1,
+      "& $imageBackdrop": {
+        opacity: 0.15,
+      },
+      "& $imageMarked": {
+        opacity: 0,
+      },
+      "& $imageTitle": {
+        border: "4px solid currentColor",
+      },
+    },
+  },
+  focusVisible: {},
+  imageButton: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: theme.palette.common.white,
+  },
+  imageSrc: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundSize: "cover",
+    backgroundPosition: "center 40%",
+  },
+  imageBackdrop: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0.4,
+    transition: theme.transitions.create("opacity"),
+  },
+}));
 
 function registerProfilePictureUrl(url) {
   const userId = firebase.auth().currentUser.uid;
@@ -63,18 +121,17 @@ function onEditDisplayName(displayName) {
 }
 
 const Profile = (props) => {
+  const classes = useStyles();
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
   const {
     user: { displayName, activeChallenges, badges, profilePictureUrl },
   } = useUserContext();
-
   const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
   const [profilePic, setProfilePic] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [activeChallengeData, setActiveChallengeData] = useState([]);
-
   const id = props.match.params.id;
   const [profileDetails, setProfileDetails] = useState({
     isLoading: true,
@@ -213,17 +270,7 @@ const Profile = (props) => {
               justifyContent: "center",
             }}
           >
-            <label htmlFor="contained-button-file">
-              <IconButton>
-                <Avatar
-                  src={profileDetails.data.profilePictureUrl}
-                  style={{
-                    height: "175px",
-                    width: "175px",
-                  }}
-                />
-              </IconButton>
-            </label>
+            <AvatarWidget />
           </div>
         </Grid>
 
@@ -280,19 +327,6 @@ const Profile = (props) => {
               {profileDetails.data.badges.map((badge, index) => {
                 return <Badge data={badge} key={index} />;
               })}
-            </div>
-
-            <div
-              style={{
-                margin: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography variant="h5">Membership</Typography>
-              <div>Member since Month Year</div>
             </div>
           </div>
         )}

@@ -29,20 +29,46 @@ const styles = (theme) => ({
 });
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+  button: {
+    background: colors.stepitup_teal,
+    border: 0,
+    borderRadius: 3,
+    color: colors.almostWhite,
+    height: 48,
+    padding: "0 30px",
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "10px",
+  },
+  calendar: {
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textInput: {
+    marginBottom: "20px",
+    "& label.Mui-focused": {
+      color: colors.almostBlack,
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: colors.stepitup_teal,
+    },
+  },
   formControl: {
     margin: theme.spacing(1),
-    width: "30%",
-    minWidth: "300px",
-  },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: 2,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
+    minWidth: 120,
+    width: "max-content",
+    justifyContent: "center",
   },
 }));
 
