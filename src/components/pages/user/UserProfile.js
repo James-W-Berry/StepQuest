@@ -38,6 +38,7 @@ const Profile = (props) => {
   });
   const [displayToast, setDisplayToast] = useState(false);
   const [toastMessage, setToastMessage] = useState();
+  const [newDisplayName, setNewDisplayName] = useState();
 
   useEffect(() => {
     if (id !== userId) {
@@ -72,6 +73,7 @@ const Profile = (props) => {
       updateUsernameBatch(userId, newName).then((response) => {
         console.log(response);
         if (response.success) {
+          setNewDisplayName(newName);
           setProfileDetails({
             isLoading: false,
             success: true,
@@ -100,7 +102,7 @@ const Profile = (props) => {
       isLoading: false,
       success: true,
       data: {
-        displayName,
+        displayName: newDisplayName ? newDisplayName : displayName,
         activeChallenges,
         badges,
         profilePictureUrl,
