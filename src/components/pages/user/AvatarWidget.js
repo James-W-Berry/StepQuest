@@ -28,8 +28,8 @@ import {
   clotheTypeOptions,
   clotheColorTypeOptions,
 } from "./AvatarOptions";
-import { updateAvatar } from "../../../api/userApi";
 import { isEqual } from "lodash";
+import { updateAvatar } from "../../../api/userApi";
 
 const styles = (theme) => ({
   closeButton: {
@@ -41,7 +41,7 @@ const styles = (theme) => ({
 });
 
 export default function AvatarWidget(props) {
-  const { userId, currentAvatar } = props;
+  const { userId, currentAvatar, updateLocalAvatar } = props;
   const theme = useTheme();
   const [displayToast, setDisplayToast] = useState(false);
   const [toastMessage, setToastMessage] = useState();
@@ -74,6 +74,7 @@ export default function AvatarWidget(props) {
         if (response.success) {
           setToastMessage("Successfully updated your avatar!");
           setDisplayToast(true);
+          updateLocalAvatar(avatarOptions);
           setAvatarCreatorVisible(false);
         } else {
           setToastMessage(

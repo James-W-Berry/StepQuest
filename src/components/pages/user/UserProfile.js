@@ -80,6 +80,20 @@ const Profile = (props) => {
     avatar,
   ]);
 
+  const updateLocalAvatar = (newAvatar) => {
+    setProfileDetails({
+      isLoading: false,
+      success: true,
+      data: {
+        displayName,
+        activeChallenges,
+        badges,
+        profilePictureUrl,
+        avatar: newAvatar,
+      },
+    });
+  };
+
   useEffect(() => {
     if (profileDetails.data && profileDetails.data.activeChallenges)
       getChallenges(profileDetails.data.activeChallenges).then((response) => {
@@ -157,6 +171,7 @@ const Profile = (props) => {
             <AvatarWidget
               userId={userId}
               currentAvatar={profileDetails.data.avatar}
+              updateLocalAvatar={updateLocalAvatar}
             />
           </div>
         </Grid>
