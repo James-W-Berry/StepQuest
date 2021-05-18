@@ -1,278 +1,37 @@
 import { ResponsiveLine } from "@nivo/line";
+import { useEffect, useState } from "react";
+import colors from "../../../assets/colors";
 
-export default function ChallengeTotalChart() {
-  const data = [
-    {
-      id: "user 1",
-      color: "hsl(167, 70%, 50%)",
-      data: [
-        {
-          x: "day 1",
-          y: 33,
-        },
-        {
-          x: "day 2",
-          y: 226,
-        },
-        {
-          x: "day 3",
-          y: 198,
-        },
-        {
-          x: "day 4",
-          y: 137,
-        },
-        {
-          x: "day 5",
-          y: 94,
-        },
-        {
-          x: "day 6",
-          y: 44,
-        },
-        {
-          x: "day 7",
-          y: 23,
-        },
-        {
-          x: "day 8",
-          y: 106,
-        },
-        {
-          x: "day 9",
-          y: 131,
-        },
-        {
-          x: "day 10",
-          y: 137,
-        },
-        {
-          x: "day 11",
-          y: 11,
-        },
-        {
-          x: "day 12",
-          y: 164,
-        },
-      ],
-    },
-    {
-      id: "user 2",
-      color: "hsl(85, 70%, 50%)",
-      data: [
-        {
-          x: "day 1",
-          y: 94,
-        },
-        {
-          x: "day 2",
-          y: 71,
-        },
-        {
-          x: "day 3",
-          y: 198,
-        },
-        {
-          x: "day 4",
-          y: 40,
-        },
-        {
-          x: "day 5",
-          y: 154,
-        },
-        {
-          x: "day 6",
-          y: 237,
-        },
-        {
-          x: "day 7",
-          y: 165,
-        },
-        {
-          x: "day 8",
-          y: 173,
-        },
-        {
-          x: "day 9",
-          y: 88,
-        },
-        {
-          x: "day 10",
-          y: 234,
-        },
-        {
-          x: "day 11",
-          y: 118,
-        },
-        {
-          x: "day 12",
-          y: 128,
-        },
-      ],
-    },
-    {
-      id: "user 3",
-      color: "hsl(266, 70%, 50%)",
-      data: [
-        {
-          x: "day 1",
-          y: 21,
-        },
-        {
-          x: "day 2",
-          y: 65,
-        },
-        {
-          x: "day 3",
-          y: 291,
-        },
-        {
-          x: "day 4",
-          y: 169,
-        },
-        {
-          x: "day 5",
-          y: 282,
-        },
-        {
-          x: "day 6",
-          y: 300,
-        },
-        {
-          x: "day 7",
-          y: 242,
-        },
-        {
-          x: "day 8",
-          y: 254,
-        },
-        {
-          x: "day 9",
-          y: 198,
-        },
-        {
-          x: "day 10",
-          y: 291,
-        },
-        {
-          x: "day 11",
-          y: 40,
-        },
-        {
-          x: "day 12",
-          y: 113,
-        },
-      ],
-    },
-    {
-      id: "user 4",
-      color: "hsl(351, 70%, 50%)",
-      data: [
-        {
-          x: "day 1",
-          y: 9,
-        },
-        {
-          x: "day 2",
-          y: 144,
-        },
-        {
-          x: "day 3",
-          y: 195,
-        },
-        {
-          x: "day 4",
-          y: 22,
-        },
-        {
-          x: "day 5",
-          y: 91,
-        },
-        {
-          x: "day 6",
-          y: 237,
-        },
-        {
-          x: "day 7",
-          y: 87,
-        },
-        {
-          x: "day 8",
-          y: 209,
-        },
-        {
-          x: "day 9",
-          y: 205,
-        },
-        {
-          x: "day 10",
-          y: 223,
-        },
-        {
-          x: "day 11",
-          y: 24,
-        },
-        {
-          x: "day 12",
-          y: 37,
-        },
-      ],
-    },
-    {
-      id: "user 5",
-      color: "hsl(85, 70%, 50%)",
-      data: [
-        {
-          x: "day 1",
-          y: 51,
-        },
-        {
-          x: "day 2",
-          y: 264,
-        },
-        {
-          x: "day 3",
-          y: 27,
-        },
-        {
-          x: "day 4",
-          y: 124,
-        },
-        {
-          x: "day 5",
-          y: 84,
-        },
-        {
-          x: "day 6",
-          y: 257,
-        },
-        {
-          x: "day 7",
-          y: 276,
-        },
-        {
-          x: "day 8",
-          y: 278,
-        },
-        {
-          x: "day 9",
-          y: 295,
-        },
-        {
-          x: "day 10",
-          y: 226,
-        },
-        {
-          x: "day 11",
-          y: 61,
-        },
-        {
-          x: "day 12",
-          y: 272,
-        },
-      ],
-    },
-  ];
+export default function ChallengeTotalChart(props) {
+  const { logs, idToNameMappings } = props;
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (logs && idToNameMappings) {
+      setData(convertLogsToChartData(logs));
+      console.log(convertLogsToChartData(logs));
+    }
+  }, [logs, idToNameMappings]);
+
+  const convertActivitiesToChartData = (activities) => {
+    return activities.map((activity) => {
+      const dateSplits = activity.date.split(" ");
+      return {
+        x: `${dateSplits[1]} ${dateSplits[2]}`,
+        y: parseInt(activity.duration),
+      };
+    });
+  };
+
+  const convertLogsToChartData = (logs) => {
+    return logs.map((log, index) => {
+      return {
+        id: idToNameMappings[log.participant],
+        color: index > 1 ? "hsl(167, 70%, 50%)" : "hsl(85, 70%, 50%)",
+        data: convertActivitiesToChartData(log.activities),
+      };
+    });
+  };
 
   return (
     <ResponsiveLine
@@ -294,7 +53,7 @@ export default function ChallengeTotalChart() {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Challenge Day",
+        legend: "Day",
         legendOffset: 36,
         legendPosition: "middle",
       }}
@@ -303,21 +62,15 @@ export default function ChallengeTotalChart() {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Challenge Unit (time, miles, count, etc)",
+        legend: "Duration",
         legendOffset: -40,
         legendPosition: "middle",
       }}
-      colors={{ scheme: "paired" }}
-      enablePoints={false}
       pointSize={10}
       pointColor={{ theme: "background" }}
       pointBorderWidth={2}
       pointBorderColor={{ from: "serieColor" }}
       pointLabelYOffset={-12}
-      enableArea={true}
-      areaBlendMode="darken"
-      areaBaselineValue={60}
-      areaOpacity={0.3}
       useMesh={true}
       legends={[
         {

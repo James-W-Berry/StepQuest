@@ -73,7 +73,6 @@ export default function ChallengeDetails(props) {
 
   useEffect(() => {
     getChallengeLogs(id).then((response) => {
-      console.log(response);
       setChallengeLogs(response.data);
     });
   }, [id]);
@@ -211,7 +210,10 @@ export default function ChallengeDetails(props) {
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Challenge Stats</Typography>
         <div style={{ height: "500px" }}>
-          <ChallengeTotalChart />
+          <ChallengeTotalChart
+            idToNameMappings={idToNameMappings}
+            logs={challengeLogs}
+          />
         </div>
       </div>
 
