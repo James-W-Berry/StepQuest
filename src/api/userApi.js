@@ -204,3 +204,21 @@ export async function removeEndedChallenges(
       return { success: false, message: error };
     });
 }
+
+export async function updateAvatar(userId, avatar) {
+  const docRef = firebase.firestore().collection("users").doc(userId);
+
+  return await docRef
+    .update({
+      avatar: avatar,
+    })
+    .then(() => {
+      return {
+        success: true,
+        message: `Successfully updated the user avatar`,
+      };
+    })
+    .catch((error) => {
+      return { success: false, message: error };
+    });
+}

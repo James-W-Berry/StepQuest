@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../../../firebase";
-import {
-  Typography,
-  Avatar,
-  IconButton,
-  Grid,
-  Divider,
-  ButtonBase,
-} from "@material-ui/core";
+import { Typography, Grid, Divider } from "@material-ui/core";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
 import EditableTextField from "../../fields/EditableTextField";
@@ -20,83 +13,7 @@ import {
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 import ChallengesWidget from "./ChallengesWidget";
-import { makeStyles } from "@material-ui/core/styles";
 import AvatarWidget from "./AvatarWidget";
-
-const useStyles = makeStyles((theme) => ({
-  image: {
-    position: "relative",
-    height: 200,
-    borderRadius: "20px",
-    [theme.breakpoints.down("xs")]: {
-      width: "100% !important", // Overrides inline-style
-      height: 100,
-    },
-    "&:hover, &$focusVisible": {
-      zIndex: 1,
-      "& $imageBackdrop": {
-        opacity: 0.15,
-      },
-      "& $imageMarked": {
-        opacity: 0,
-      },
-      "& $imageTitle": {
-        border: "4px solid currentColor",
-      },
-    },
-  },
-  focusVisible: {},
-  imageButton: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: theme.palette.common.white,
-  },
-  imageSrc: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundSize: "cover",
-    backgroundPosition: "center 40%",
-  },
-  imageBackdrop: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: theme.palette.common.black,
-    opacity: 0.4,
-    transition: theme.transitions.create("opacity"),
-  },
-}));
-
-function registerProfilePictureUrl(url) {
-  const userId = firebase.auth().currentUser.uid;
-
-  const docRef = firebase.firestore().collection("users").doc(userId);
-
-  return docRef
-    .set(
-      {
-        profilePictureUrl: url,
-      },
-      { merge: true }
-    )
-    .then(function () {
-      console.log("successfully updated profile picture");
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
 
 function onEditDisplayName(displayName) {
   if (displayName !== "") {
@@ -121,16 +38,12 @@ function onEditDisplayName(displayName) {
 }
 
 const Profile = (props) => {
-  const classes = useStyles();
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
   const {
-    user: { displayName, activeChallenges, badges, profilePictureUrl },
+    user: { displayName, activeChallenges, badges, profilePictureUrl, avatar },
   } = useUserContext();
-  const [currentProfilePicUrl, setCurrentProfilePicUrl] = useState("");
-  const [profilePic, setProfilePic] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
   const [activeChallengeData, setActiveChallengeData] = useState([]);
   const id = props.match.params.id;
   const [profileDetails, setProfileDetails] = useState({
@@ -153,10 +66,19 @@ const Profile = (props) => {
           activeChallenges,
           badges,
           profilePictureUrl,
+          avatar,
         },
       });
     }
-  }, [activeChallenges, badges, displayName, id, profilePictureUrl, userId]);
+  }, [
+    activeChallenges,
+    badges,
+    displayName,
+    id,
+    profilePictureUrl,
+    userId,
+    avatar,
+  ]);
 
   useEffect(() => {
     if (profileDetails.data && profileDetails.data.activeChallenges)
@@ -173,44 +95,6 @@ const Profile = (props) => {
         }
       });
   }, [profileDetails]);
-
-  function uploadProfilePic(picture) {
-    setIsUploading(true);
-    const userId = firebase.auth().currentUser.uid;
-
-    var storageRef = firebase.storage().ref();
-    var profilePicRef = storageRef.child(`profilePics/${userId}`);
-    let uploadProfilePicTask = profilePicRef.put(picture);
-
-    uploadProfilePicTask.on(
-      "state_changed",
-      function (snapshot) {
-        switch (snapshot.state) {
-          case firebase.storage.TaskState.PAUSED:
-            console.log("Upload is paused");
-            break;
-          case firebase.storage.TaskState.RUNNING:
-            console.log("Upload is running");
-            break;
-          default:
-            break;
-        }
-      },
-      function (error) {
-        console.log(error);
-        setIsUploading(false);
-      },
-      function () {
-        uploadProfilePicTask.snapshot.ref
-          .getDownloadURL()
-          .then(function (downloadURL) {
-            console.log("File available at", downloadURL);
-            registerProfilePictureUrl(downloadURL);
-            setIsUploading(false);
-          });
-      }
-    );
-  }
 
   if (profileDetails.isLoading) {
     return (
@@ -270,7 +154,10 @@ const Profile = (props) => {
               justifyContent: "center",
             }}
           >
-            <AvatarWidget />
+            <AvatarWidget
+              userId={userId}
+              currentAvatar={profileDetails.data.avatar}
+            />
           </div>
         </Grid>
 

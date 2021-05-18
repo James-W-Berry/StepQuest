@@ -29,6 +29,7 @@ export const UserContextProvider = (props: IUserProviderProps) => {
     displayName: null,
     activeChallenges: null,
     badges: null,
+    avatar: null,
   });
 
   const userContextValue: IUserContext = { user, setUser };
