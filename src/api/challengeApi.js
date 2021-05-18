@@ -260,3 +260,30 @@ export async function getUserEntries(challengeId, userId) {
       };
     });
 }
+
+export async function getChallengeLogs(id) {
+  const docRef = firebase
+    .firestore()
+    .collection("challenges")
+    .doc(id)
+    .collection("logs");
+
+  return await docRef
+    .get()
+    .then((doc) => {
+      return {
+        isLoading: false,
+        success: true,
+        data: doc.docs.map((doc) => {
+          return { participant: doc.id, ...doc.data() };
+        }),
+      };
+    })
+    .catch((error) => {
+      return {
+        isLoading: false,
+        success: false,
+        message: error,
+      };
+    });
+}

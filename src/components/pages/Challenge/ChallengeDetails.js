@@ -5,6 +5,7 @@ import {
   addAdmins,
   deleteChallenge,
   getChallenge,
+  getChallengeLogs,
 } from "../../../api/challengeApi";
 import {
   Button,
@@ -52,6 +53,7 @@ export default function ChallengeDetails(props) {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
   const [creator, setCreator] = useState();
+  const [challengeLogs, setChallengeLogs] = useState();
 
   useEffect(() => {
     getChallenge(id).then((response) => {
@@ -69,6 +71,13 @@ export default function ChallengeDetails(props) {
       });
     }
   }, [challengeDetails]);
+
+  useEffect(() => {
+    getChallengeLogs(id).then((response) => {
+      console.log(response);
+      setChallengeLogs(response.data);
+    });
+  }, [id]);
 
   const handleDeleteDialogClose = () => {
     setDisplayConfirmDelete(false);
@@ -209,7 +218,10 @@ export default function ChallengeDetails(props) {
 
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Standings</Typography>
-        <Participants users={challengeDetails.data.participants} />
+        <Participants
+          users={challengeDetails.data.participants}
+          logs={challengeLogs}
+        />
       </div>
 
       <div style={{ margin: "20px" }}>
