@@ -205,6 +205,42 @@ export async function removeEndedChallenges(
     });
 }
 
+export async function updateUsernameBatch(userId, newName) {
+  const userDocRef = firebase.firestore().collection("users").doc(userId);
+  const idNameMappingDocRef = firebase
+    .firestore()
+    .collection("mappings")
+    .doc("idToName");
+  const batch = firebase.firestore().batch();
+
+  batch.update(userDocRef, {
+    displayName: newName,
+  });
+
+  batch.set(
+    idNameMappingDocRef,
+    {
+      [userId]: newName,
+    },
+    { merge: true }
+  );
+
+  return await batch
+    .commit()
+    .then((response) => {
+      return {
+        success: true,
+        message: `Successfully updated user display name.`,
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: error,
+      };
+    });
+}
+
 export async function updateAvatar(userId, avatar) {
   const docRef = firebase.firestore().collection("users").doc(userId);
 

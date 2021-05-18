@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import firebase from "../../../firebase";
-import { Typography, Grid, Divider } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  Divider,
+  Snackbar,
+  IconButton,
+} from "@material-ui/core";
 import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
 import EditableTextField from "../../fields/EditableTextField";
@@ -9,33 +14,13 @@ import {
   getChallenges,
   getUser,
   removeEndedChallenges,
+  updateUsernameBatch,
 } from "../../../api/userApi";
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 import ChallengesWidget from "./ChallengesWidget";
 import AvatarWidget from "./AvatarWidget";
-
-function onEditDisplayName(displayName) {
-  if (displayName !== "") {
-    const userId = firebase.auth().currentUser.uid;
-
-    const docRef = firebase.firestore().collection("users").doc(userId);
-
-    return docRef
-      .set(
-        {
-          displayName: displayName,
-        },
-        { merge: true }
-      )
-      .then(function () {
-        console.log("successfully updated display name");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-}
+import { Close } from "@material-ui/icons";
 
 const Profile = (props) => {
   const {
@@ -51,6 +36,8 @@ const Profile = (props) => {
     success: null,
     data: {},
   });
+  const [displayToast, setDisplayToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState();
 
   useEffect(() => {
     if (id !== userId) {
@@ -79,6 +66,34 @@ const Profile = (props) => {
     userId,
     avatar,
   ]);
+
+  const onEditDisplayName = (newName) => {
+    if (newName !== "" && newName !== displayName) {
+      updateUsernameBatch(userId, newName).then((response) => {
+        console.log(response);
+        if (response.success) {
+          setProfileDetails({
+            isLoading: false,
+            success: true,
+            data: {
+              displayName: newName,
+              activeChallenges,
+              badges,
+              profilePictureUrl,
+              avatar,
+            },
+          });
+          setToastMessage("Successfully updated your display name!");
+          setDisplayToast(true);
+        } else {
+          setToastMessage(
+            "Could not update your display name! Please try again later."
+          );
+          setDisplayToast(true);
+        }
+      });
+    }
+  };
 
   const updateLocalAvatar = (newAvatar) => {
     setProfileDetails({
@@ -240,6 +255,29 @@ const Profile = (props) => {
         id={id}
         activeChallenges={profileDetails.data.activeChallenges}
         activeChallengeData={activeChallengeData}
+      />
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={displayToast}
+        autoHideDuration={5000}
+        onClose={() => setDisplayToast(false)}
+        message={toastMessage}
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => setDisplayToast(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
       />
     </div>
   );

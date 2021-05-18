@@ -14,11 +14,7 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import {
-  getUser,
-  joinChallengeBatch,
-  leaveChallengeBatch,
-} from "../../../api/userApi";
+import { joinChallengeBatch, leaveChallengeBatch } from "../../../api/userApi";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import DeleteChallengeDialog from "./DeleteChallengeDialog";
 import CloseIcon from "@material-ui/icons/Close";
@@ -28,6 +24,7 @@ import LeaveChallengeDialog from "./LeaveChallengeDialog";
 import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
+import { getIdToNameMappings } from "../../../api/mappingApi";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -54,6 +51,7 @@ export default function ChallengeDetails(props) {
   } = useAuthenticatedUserContext();
   const [creator, setCreator] = useState();
   const [challengeLogs, setChallengeLogs] = useState();
+  const [idToNameMappings, setIdToNameMappings] = useState();
 
   useEffect(() => {
     getChallenge(id).then((response) => {
@@ -64,9 +62,10 @@ export default function ChallengeDetails(props) {
 
   useEffect(() => {
     if (challengeDetails.data) {
-      getUser(challengeDetails.data.creator).then((response) => {
+      getIdToNameMappings().then((response) => {
         if (response.success) {
-          setCreator(response.data.displayName);
+          setCreator(response.data[challengeDetails.data.creator]);
+          setIdToNameMappings(response.data);
         }
       });
     }
@@ -219,8 +218,8 @@ export default function ChallengeDetails(props) {
       <div style={{ margin: "20px" }}>
         <Typography variant="h5">Standings</Typography>
         <Participants
-          users={challengeDetails.data.participants}
           logs={challengeLogs}
+          participantMappings={idToNameMappings}
         />
       </div>
 

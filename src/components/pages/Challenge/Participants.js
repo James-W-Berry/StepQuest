@@ -13,9 +13,9 @@ const calculateStandings = (logs) => {
 };
 
 export default function Participants(props) {
-  const { users, logs } = props;
-  const [participantRanking, setParticipantRanking] = useState(users);
-
+  const { logs, participantMappings } = props;
+  const [participantRanking, setParticipantRanking] = useState([]);
+  const [mappings, setMappings] = useState({});
   useEffect(() => {
     if (logs) {
       const sortedRanking = calculateStandings(logs).sort((a, b) =>
@@ -25,13 +25,19 @@ export default function Participants(props) {
     }
   }, [logs]);
 
+  useEffect(() => {
+    if (participantMappings) {
+      setMappings(participantMappings);
+    }
+  }, [participantMappings]);
+
   return (
     <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
       {participantRanking.map((user) => {
         return (
           <Typography key={user.participant}>
             <a href={`/user/${user.participant}`}>
-              {user.participant} - {user.sum}
+              {mappings[user.participant]} - {user.sum}
             </a>
           </Typography>
         );
