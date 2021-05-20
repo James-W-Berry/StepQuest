@@ -25,6 +25,7 @@ import ChallengeDetails from "./pages/Challenge/ChallengeDetails";
 import logo from "../assets/logo.png";
 import { getUser } from "../api/userApi";
 import { useUserContext } from "./pages/User/UserContext";
+import ScrollToTop from "./ScrollToTop";
 
 const drawerWidth = "100%";
 
@@ -192,6 +193,7 @@ export default function Main() {
       }}
     >
       <BrowserRouter>
+        <ScrollToTop />
         <div id="header" className={classes.header}>
           <NavLink className={classes.logoHeading} to="/home">
             <img src={logo} alt="logo" height={40} width={40} />
