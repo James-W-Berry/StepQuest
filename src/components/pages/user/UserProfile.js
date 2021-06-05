@@ -21,6 +21,8 @@ import { useUserContext } from "./UserContext";
 import ChallengesWidget from "./ChallengesWidget";
 import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
+import MissingUser from "./MissingUser";
+import Loading from "../../Loading";
 
 const Profile = (props) => {
   const {
@@ -138,7 +140,8 @@ const Profile = (props) => {
           width: "100%",
         }}
       >
-        <SyncLoader color={colors.stepitup_blue} />
+        <Loading />
+        {/* <SyncLoader color={colors.stepitup_blue} /> */}
       </div>
     );
   }
@@ -150,11 +153,11 @@ const Profile = (props) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
+          height: "80%",
           width: "100%",
         }}
       >
-        <div>User not found :(</div>
+        <MissingUser />
       </div>
     );
   }

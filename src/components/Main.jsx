@@ -26,6 +26,7 @@ import logo from "../assets/logo.png";
 import { getUser } from "../api/userApi";
 import { useUserContext } from "./pages/User/UserContext";
 import ScrollToTop from "./ScrollToTop";
+import Loading from "./Loading";
 
 const drawerWidth = "100%";
 
@@ -168,7 +169,7 @@ export default function Main() {
           width: "100vw",
         }}
       >
-        <SyncLoader color={colors.stepitup_blue} />
+        <Loading />
       </div>
     );
   }

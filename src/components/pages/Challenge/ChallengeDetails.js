@@ -25,6 +25,7 @@ import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
 import { getIdToNameMappings } from "../../../api/mappingApi";
+import MissingChallenge from "./MissingChallenge";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -171,11 +172,11 @@ export default function ChallengeDetails(props) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
+          height: "80%",
           width: "100%",
         }}
       >
-        <div>Challenge not found :(</div>
+        <MissingChallenge />
       </div>
     );
   }
