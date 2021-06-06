@@ -6,7 +6,6 @@ import {
   Snackbar,
   IconButton,
 } from "@material-ui/core";
-import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
 import EditableTextField from "../../fields/EditableTextField";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";

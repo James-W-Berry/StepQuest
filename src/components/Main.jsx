@@ -13,7 +13,6 @@ import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
 import EditActivities from "./EditActivities";
-import SyncLoader from "react-spinners/SyncLoader";
 import Landing from "./pages/Landing/Landing";
 import UserProfile from "./pages/User/UserProfile";
 import { makeStyles } from "@material-ui/core/styles";
@@ -27,6 +26,7 @@ import { getUser } from "../api/userApi";
 import { useUserContext } from "./pages/User/UserContext";
 import ScrollToTop from "./ScrollToTop";
 import Loading from "./Loading";
+import { useTheme } from "@material-ui/core/styles";
 
 const drawerWidth = "100%";
 
@@ -77,10 +77,6 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
   },
-  content: {
-    padding: theme.spacing(3),
-    height: "100%",
-  },
 }));
 
 function logout() {
@@ -103,6 +99,8 @@ function onAuthStateChange(callback) {
 }
 
 export default function Main() {
+  const theme = useTheme();
+
   const {
     authenticatedUser: { isLoading, loggedIn, userId },
     setAuthenticatedUser,
@@ -184,14 +182,8 @@ export default function Main() {
 
   return (
     <div
-      style={{
-        flex: 1,
-        minWidth: "100%",
-        width: "100%",
-        minHeight: "100%",
-        height: "100%",
-        position: "absolute",
-      }}
+      className="background"
+      style={{ backgroundColor: theme.palette.primary.main }}
     >
       <BrowserRouter>
         <ScrollToTop />
@@ -231,7 +223,7 @@ export default function Main() {
           </IconButton>
         </div>
 
-        <div className={classes.content}>
+        <div className="content">
           <Switch>
             <Route
               path="/user/:id"

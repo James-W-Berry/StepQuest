@@ -87,3 +87,17 @@ body {
 h1 {
   font-family: monospace;
 }
+
+.background {
+  position: absolute;
+  min-height: 100%;
+  min-width: 100%;
+  left: 0;
+  top: 0;
+  z-index: -2;
+}
+
+.content {
+  padding: 16px;
+  height: 100%;
+}
