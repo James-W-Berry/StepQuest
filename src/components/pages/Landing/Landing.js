@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../../App.css";
 import "firebase/auth";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Typography } from "@material-ui/core";
 import LandingCarousel from "./LandingCarousel";
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "5px",
   },
   title: {
-    fontFamily: "Monoton",
+    fontFamily: "Josefin Sans",
     textAlign: "center",
     color: colors.white,
     [theme.breakpoints.down("sm")]: {
@@ -81,10 +81,10 @@ export default function Landing(props) {
   const classes = useStyles();
   const [signinVisible, setSignInVisible] = useState(false);
   const [signupVisible, setSignUpVisible] = useState(false);
-  const [forgottenPasswordVisible, setForgottenPasswordVisible] = useState(
-    false
-  );
+  const [forgottenPasswordVisible, setForgottenPasswordVisible] =
+    useState(false);
   const history = useHistory();
+  const theme = useTheme();
 
   const onGoogleSignIn = () => {
     signInUserWithProvider(provider).then((response) => {
@@ -113,7 +113,6 @@ export default function Landing(props) {
             }}
           >
             <div>
-              <Typography className={classes.title}>Step It Up</Typography>
               <Typography className={classes.subtitle}>
                 Fitness challenges for groups
               </Typography>

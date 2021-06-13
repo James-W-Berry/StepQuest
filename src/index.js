@@ -7,7 +7,7 @@ import WebFont from "webfontloader";
 
 WebFont.load({
   google: {
-    families: ["Monoton"],
+    families: ["Josefin Sans", "Roboto"],
   },
 });
 
