@@ -43,19 +43,7 @@ html {
 
 body {
   margin: 0;
-}
-
-.bg {
-  background-image: url("./assets/landing.jpeg");
-  background-size: cover;
   height: 100%;
-  width: 100%;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
-  bottom: 0;
-  position: fixed;
-  top: 0;
-  z-index: -1;
 }
 
 .dialog {
@@ -63,6 +51,15 @@ body {
   background-size: cover;
   height: 100%;
   width: 100%;
+}
+
+.signup-background {
+  background-image: url("./assets/fitness_stock.png");
+  background-size: cover;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
 }
 
 .overlay {
@@ -79,26 +76,13 @@ body {
 .content {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   text-align: center;
   width: 100%;
-  margin-top: 64px;
+  height: 100%;
+  padding-top: 64px;
 }
 
 h1 {
   font-family: monospace;
-}
-
-.background {
-  position: absolute;
-  min-height: 100%;
-  min-width: 100%;
-  left: 0;
-  top: 0;
-  z-index: -2;
-}
-
-.content {
-  padding: 16px;
-  height: 100%;
 }

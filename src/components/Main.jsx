@@ -181,7 +181,7 @@ export default function Main() {
   }
 
   return (
-    <div className="background" style={{ backgroundColor: theme.background }}>
+    <div style={{ height: "100%", backgroundColor: theme.background }}>
       <BrowserRouter>
         <ScrollToTop />
         <AppBar
