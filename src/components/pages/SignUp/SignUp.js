@@ -4,6 +4,10 @@ import { NavLink, useHistory } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import { signUpUser } from "../../../api/authApi";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
+import { signInUserWithProvider } from "../../../api/authApi";
+import firebase from "../../../firebase";
+
+const provider = new firebase.auth.GoogleAuthProvider();
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +27,17 @@ export default function SignUp() {
       setIsSignUpSuccessful(response.success);
       setMessage(response.message);
       setIsLoading(false);
+    });
+  };
+
+  const onGoogleSignIn = () => {
+    signInUserWithProvider(provider).then((response) => {
+      if (response.success) {
+        console.log(response.message);
+      } else {
+        history.push("/");
+        alert(response.message);
+      }
     });
   };
 

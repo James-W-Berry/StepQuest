@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../../App.css";
 import Carousel from "react-bootstrap/Carousel";
 import colors from "../../../assets/colors";
 import Img from "react-image";

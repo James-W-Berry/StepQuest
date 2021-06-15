@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedUserContext } from "../auth/AuthenticatedUserContext";
-import "../App.css";
+import "../App.scss";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -20,7 +20,7 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -121,7 +121,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Main() {
   const theme = useTheme();
-  const history = useHistory();
   const [email, setEmail] = useState();
   const [displayName, setDisplayName] = useState();
   const shouldCollapseIntoDrawer = useMediaQuery(theme.breakpoints.up("md"));
@@ -220,17 +219,7 @@ export default function Main() {
         >
           <Toolbar>
             <NavLink to={`/`} className={classes.navLink}>
-              <Typography
-                style={{
-                  color: theme.palette.primary.main,
-                  fontFamily: "Josefin Sans",
-                  fontWeight: 100,
-                  fontSize: "1.2rem",
-                  letterSpacing: "0.4rem",
-                }}
-              >
-                STEPQUEST
-              </Typography>
+              <Typography className="header-title">STEPQUEST</Typography>
             </NavLink>
 
             {shouldCollapseIntoDrawer ? (
@@ -242,9 +231,41 @@ export default function Main() {
                   justifyContent: "flex-end",
                 }}
               >
-                <NavLink to={`/resources`} className={classes.navLink}>
-                  <Typography className={classes.navLink}>RESOURCES</Typography>
-                </NavLink>
+                <div className={classes.navLink}>
+                  <div
+                    style={{ display: "flex", alignItems: "center" }}
+                    {...bindHover(popupState)}
+                  >
+                    <Typography className={classes.navLink}>
+                      RESOURCES
+                    </Typography>
+                    <ExpandMoreOutlined style={{ width: "0.8em" }} />
+                  </div>
+                  <Popover
+                    {...bindPopover(popupState)}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                    disableRestoreFocus
+                  >
+                    <Paper className="menu">
+                      <NavLink
+                        to={`/user/${userId}`}
+                        className={classes.navLink}
+                        style={{ padding: "0px" }}
+                      >
+                        <Typography>WORKOUT TIPS</Typography>
+                      </NavLink>
+                      <Typography>INSPIRATION</Typography>
+                      <Typography>CHALLENGE TIPS</Typography>
+                    </Paper>
+                  </Popover>
+                </div>
                 <NavLink to={`/join-a-challenge`} className={classes.navLink}>
                   <Typography className={classes.navLink}>
                     JOIN A CHALLENGE
