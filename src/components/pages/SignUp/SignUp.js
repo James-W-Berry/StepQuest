@@ -2,14 +2,14 @@ import { Grid, Typography, useTheme } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
-import { signInUser } from "../../../api/authApi";
+import { signUpUser } from "../../../api/authApi";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 
-export default function SignIn() {
+export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignInSuccessful, setIsSignInSuccessful] = useState();
+  const [isSignUpSuccessful, setIsSignUpSuccessful] = useState();
   const [message, setMessage] = useState();
   const theme = useTheme();
   const history = useHistory();
@@ -17,11 +17,10 @@ export default function SignIn() {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
 
-  const onSignIn = () => {
+  const onSignUp = () => {
     setIsLoading(true);
-    signInUser(email, password).then((response) => {
-      console.log(response);
-      setIsSignInSuccessful(response.success);
+    signUpUser(email, password).then((response) => {
+      setIsSignUpSuccessful(response.success);
       setMessage(response.message);
       setIsLoading(false);
     });
@@ -55,7 +54,7 @@ export default function SignIn() {
               height: "100%",
             }}
           >
-            <Typography className="form-title">Log In</Typography>
+            <Typography className="form-title">Create an account</Typography>
             <div
               style={{
                 display: "flex",
@@ -71,13 +70,13 @@ export default function SignIn() {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                  marginTop: "20px",
                   width: "100%",
                 }}
               >
-                {!isSignInSuccessful && (
+                {!isSignUpSuccessful && (
                   <Typography className="error-text">{message}</Typography>
                 )}
-
                 <input
                   className="form-text-input"
                   type="text"
@@ -98,45 +97,33 @@ export default function SignIn() {
                     setPassword(event.target.value);
                   }}
                 />
-
                 <button
                   className="form-button-submit"
                   onClick={() => {
-                    onSignIn();
+                    onSignUp();
                   }}
-                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <BeatLoader color={"#fff"} />
                   ) : (
-                    <Typography>Log In</Typography>
+                    <Typography>GET STARTED</Typography>
                   )}
                 </button>
-
-                <NavLink
-                  to={`/password-reset`}
-                  style={{
-                    color: theme.palette.primary.main,
-                    textDecoration: "none",
-                    "&:hover": {
-                      textDecoration: "none",
-                    },
-                    padding: "10px",
-                  }}
-                >
-                  <Typography>Forgot Password?</Typography>
-                </NavLink>
               </div>
             </div>
-
-            <button
-              className="form-button"
-              onClick={() => {
-                history.push("/signup");
+            <NavLink
+              to={`/signin`}
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: "none",
+                "&:hover": {
+                  textDecoration: "none",
+                },
+                padding: "10px",
               }}
             >
-              <Typography>Create New Account</Typography>
-            </button>
+              <Typography>Already have an account?</Typography>
+            </NavLink>
           </div>
         </div>
       </Grid>

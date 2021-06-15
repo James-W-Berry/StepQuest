@@ -6,15 +6,21 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import {
   AppBar,
-  Button,
   ListItem,
+  Paper,
   Toolbar,
   Typography,
 } from "@material-ui/core";
+import Popover from "material-ui-popup-state/HoverPopover";
+import {
+  usePopupState,
+  bindHover,
+  bindPopover,
+} from "material-ui-popup-state/hooks";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -34,8 +40,11 @@ import Loading from "./Loading";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SignIn from "./pages/SignIn/SignIn";
-import SignUp from "./SignUp/SignUp";
+import SignUp from "./pages/SignUp/SignUp";
 import PasswordReset from "./pages/PasswordReset/PasswordReset";
+import { ExpandMoreOutlined } from "@material-ui/icons";
+import FAQ from "./pages/FAQ/FAQ";
+import Resources from "./pages/Resources/Resources";
 
 const drawerWidth = "100%";
 
@@ -66,12 +75,22 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     "&:hover": {
       textDecoration: "none",
+      cursor: "pointer",
     },
     padding: "10px",
   },
   navLinkButton: {
-    width: "95%",
-    marginLeft: "5%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: ".8125rem",
+    color: theme.palette.primary.main,
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+      cursor: "pointer",
+    },
+    padding: "10px",
   },
   drawerPaper: {
     background: colors.almostBlack,
@@ -93,42 +112,45 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     "&:hover": {
       textDecoration: "none",
-      color: colors.almostWhite,
+      color: colors.white,
+      backgroundColor: colors.almostBlack,
     },
-    padding: "10px",
+    marginBottom: "0px",
   },
 }));
 
-function logout() {
-  firebase.auth().signOut();
-}
-
-function onAuthStateChange(callback) {
-  return firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      callback({
-        loggedIn: true,
-        email: user.email,
-        isLoading: false,
-        userId: user.uid,
-      });
-    } else {
-      callback({ loggedIn: false, isLoading: false });
-    }
-  });
-}
-
 export default function Main() {
   const theme = useTheme();
+  const history = useHistory();
+  const [email, setEmail] = useState();
+  const [displayName, setDisplayName] = useState();
   const shouldCollapseIntoDrawer = useMediaQuery(theme.breakpoints.up("md"));
-
   const {
     authenticatedUser: { isLoading, loggedIn, userId },
     setAuthenticatedUser,
   } = useAuthenticatedUserContext();
   const { setUser } = useUserContext();
-
   const [open, setOpen] = useState(false);
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: "demoPopover",
+  });
+
+  function onAuthStateChange(callback) {
+    return firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setEmail(user.email);
+        callback({
+          loggedIn: true,
+          email: user.email,
+          isLoading: false,
+          userId: user.uid,
+        });
+      } else {
+        callback({ loggedIn: false, isLoading: false });
+      }
+    });
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChange(setAuthenticatedUser);
@@ -142,6 +164,8 @@ export default function Main() {
       getUser(userId).then((response) => {
         if (response.success) {
           setUser(response.data);
+          response.data.displayName !== "Anonymous" &&
+            setDisplayName(response.data.displayName);
         }
       });
     }
@@ -156,6 +180,10 @@ export default function Main() {
     }
     setOpen(!open);
   };
+
+  function logout() {
+    firebase.auth().signOut();
+  }
 
   const requestLogout = useCallback(() => {
     logout();
@@ -191,7 +219,7 @@ export default function Main() {
           }}
         >
           <Toolbar>
-            <NavLink to={`/home`} className={classes.navLink}>
+            <NavLink to={`/`} className={classes.navLink}>
               <Typography
                 style={{
                   color: theme.palette.primary.main,
@@ -214,6 +242,9 @@ export default function Main() {
                   justifyContent: "flex-end",
                 }}
               >
+                <NavLink to={`/resources`} className={classes.navLink}>
+                  <Typography className={classes.navLink}>RESOURCES</Typography>
+                </NavLink>
                 <NavLink to={`/join-a-challenge`} className={classes.navLink}>
                   <Typography className={classes.navLink}>
                     JOIN A CHALLENGE
@@ -222,13 +253,53 @@ export default function Main() {
                 <NavLink to={`/about`} className={classes.navLink}>
                   <Typography className={classes.navLink}>ABOUT</Typography>
                 </NavLink>
-                <NavLink to={`/signin`} className={classes.navLink}>
-                  <Button className={classes.signInButton}>
-                    <Typography className={classes.signInLink}>
-                      SIGN IN
-                    </Typography>
-                  </Button>
+                <NavLink to={`/faq`} className={classes.navLink}>
+                  <Typography className={classes.navLink}>FAQ</Typography>
                 </NavLink>
+                {loggedIn ? (
+                  <div className={classes.navLink}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      {...bindHover(popupState)}
+                    >
+                      <Typography className={classes.navLink}>
+                        {displayName?.toUpperCase() || email?.toUpperCase()}
+                      </Typography>
+                      <ExpandMoreOutlined style={{ width: "0.8em" }} />
+                    </div>
+                    <Popover
+                      {...bindPopover(popupState)}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "center",
+                      }}
+                      disableRestoreFocus
+                    >
+                      <Paper className="menu">
+                        <NavLink
+                          to={`/user/${userId}`}
+                          className={classes.navLink}
+                          style={{ padding: "0px" }}
+                        >
+                          <Typography>PROFILE</Typography>
+                        </NavLink>
+                        <Typography>MY CHALLENGES</Typography>
+                        <Typography>SETTINGS</Typography>
+                        <Typography onClick={requestLogout}>LOG OUT</Typography>
+                      </Paper>
+                    </Popover>
+                  </div>
+                ) : (
+                  <NavLink to={`/signin`} className={classes.navLinkButton}>
+                    <button className="header-menu-button">
+                      <p className={classes.signInLink}>SIGN IN</p>
+                    </button>
+                  </NavLink>
+                )}
               </div>
             ) : (
               <IconButton
@@ -263,7 +334,7 @@ export default function Main() {
             <Route
               path="/signin"
               render={() => (
-                <div key="about" style={{ height: "100%", width: "100%" }}>
+                <div key="signin" style={{ height: "100%", width: "100%" }}>
                   <SignIn />
                 </div>
               )}
@@ -271,7 +342,7 @@ export default function Main() {
             <Route
               path="/signup"
               render={() => (
-                <div key="about" style={{ height: "100%", width: "100%" }}>
+                <div key="signup" style={{ height: "100%", width: "100%" }}>
                   <SignUp />
                 </div>
               )}
@@ -279,7 +350,10 @@ export default function Main() {
             <Route
               path="/password-reset"
               render={() => (
-                <div key="about" style={{ height: "100%", width: "100%" }}>
+                <div
+                  key="password-reset"
+                  style={{ height: "100%", width: "100%" }}
+                >
                   <PasswordReset />
                 </div>
               )}
@@ -309,6 +383,22 @@ export default function Main() {
               )}
             />
             <Route
+              path="/faq"
+              render={() => (
+                <div key="faq" style={{ height: "100%", width: "100%" }}>
+                  <FAQ />
+                </div>
+              )}
+            />
+            <Route
+              path="/resources"
+              render={() => (
+                <div key="about" style={{ height: "100%", width: "100%" }}>
+                  <Resources />
+                </div>
+              )}
+            />
+            <Route
               path="/edit"
               render={() => (
                 <div key="edit" style={{ height: "100%", width: "100%" }}>
@@ -319,21 +409,30 @@ export default function Main() {
             <Route
               path="/create-challenge"
               render={() => (
-                <div key="edit" style={{ height: "100%", width: "100%" }}>
+                <div key="create" style={{ height: "100%", width: "100%" }}>
                   <NewChallenge />
                 </div>
               )}
             />
             <Route
-              path="/home"
+              path="/join-a-challenge"
               render={() => (
-                <div key="edit" style={{ height: "100%", width: "100%" }}>
+                <div key="join" style={{ height: "100%", width: "100%" }}>
+                  <NewChallenge />
+                </div>
+              )}
+            />
+            <Route
+              path="/"
+              exact
+              render={() => (
+                <div key="home" style={{ height: "100%", width: "100%" }}>
                   <Landing />
                 </div>
               )}
             />
 
-            <Redirect to="/home" />
+            <Redirect to="/" />
           </Switch>
         </div>
 
@@ -354,19 +453,19 @@ export default function Main() {
           >
             <List component="nav">
               <NavLink className={classes.navLink} to={`/user/${userId}`}>
-                <ListItem button className={classes.navLinkButton}>
+                <ListItem button>
                   <Typography style={{ fontSize: "2rem" }}>Profile</Typography>
                 </ListItem>
               </NavLink>
               <NavLink className={classes.navLink} to="/create-challenge">
-                <ListItem button className={classes.navLinkButton}>
+                <ListItem button>
                   <Typography style={{ fontSize: "2rem" }}>
                     Create a new challenge
                   </Typography>
                 </ListItem>
               </NavLink>
               <NavLink className={classes.navLink} to="/about">
-                <ListItem button className={classes.navLinkButton}>
+                <ListItem button>
                   <Typography style={{ fontSize: "2rem" }}>About</Typography>
                 </ListItem>
               </NavLink>
@@ -382,10 +481,12 @@ export default function Main() {
                 width: "100%",
               }}
             >
-              <Typography style={{ marginRight: "10px", color: colors.white }}>
+              <Typography
+                style={{ marginRight: "10px", color: colors.stepQuestGray }}
+              >
                 Logout
               </Typography>
-              <LogoutIcon style={{ color: colors.white }} />
+              <LogoutIcon style={{ color: colors.stepQuestGray }} />
             </div>
           </div>
         </Drawer>

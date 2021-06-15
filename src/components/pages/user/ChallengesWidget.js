@@ -36,7 +36,7 @@ export default function ChallengesWidget(props) {
             }}
           >
             <Typography variant="h5">Active challenges</Typography>
-            {activeChallengeData.map((challenge) => {
+            {activeChallengeData?.map((challenge) => {
               return (
                 <div key={challenge}>
                   <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>

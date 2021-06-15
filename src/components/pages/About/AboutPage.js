@@ -9,11 +9,11 @@ export default function About() {
       </Typography>
       <Typography>Attributions:</Typography>
       <Typography>
-        Photo by{" "}
+        Photo by
         <a href="https://unsplash.com/@victorfreitas?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
           Victor Freitas
-        </a>{" "}
-        on{" "}
+        </a>
+        on
         <a href="https://unsplash.com/s/photos/fitness?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
           Unsplash
         </a>

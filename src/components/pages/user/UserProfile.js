@@ -140,7 +140,6 @@ const Profile = (props) => {
         }}
       >
         <Loading />
-        {/* <SyncLoader color={colors.stepitup_blue} /> */}
       </div>
     );
   }

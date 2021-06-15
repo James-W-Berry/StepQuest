@@ -1,6 +1,6 @@
 import firebase from "firebase";
 
-export async function signUpUser(username, email, password) {
+export async function signUpUser(email, password) {
   return await firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
@@ -12,7 +12,7 @@ export async function signUpUser(username, email, password) {
         .collection("users")
         .doc(userId)
         .set({
-          displayName: username,
+          displayName: "Anonymous",
           badges: [{ type: "welcome", title: "New User" }],
         })
         .then(() => {

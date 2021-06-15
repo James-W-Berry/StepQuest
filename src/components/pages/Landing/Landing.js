@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../../App.css";
 import "firebase/auth";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Typography } from "@material-ui/core";
 import LandingCarousel from "./LandingCarousel";
@@ -11,8 +11,6 @@ import "typeface-roboto";
 import colors from "../../../assets/colors";
 import google from "../../../assets/google.png";
 import ForgottenPasswordDialog from "./ForgottenPasswordDialog";
-import SignUpDialog from "./SignUpDialog";
-import SignInDialog from "./SignInDialog";
 import { signInUserWithProvider } from "../../../api/authApi";
 import { useHistory } from "react-router-dom";
 
@@ -79,12 +77,9 @@ const provider = new firebase.auth.GoogleAuthProvider();
 
 export default function Landing(props) {
   const classes = useStyles();
-  const [signinVisible, setSignInVisible] = useState(false);
-  const [signupVisible, setSignUpVisible] = useState(false);
   const [forgottenPasswordVisible, setForgottenPasswordVisible] =
     useState(false);
   const history = useHistory();
-  const theme = useTheme();
 
   const onGoogleSignIn = () => {
     signInUserWithProvider(provider).then((response) => {
@@ -130,17 +125,11 @@ export default function Landing(props) {
                   alignItems: "center",
                 }}
               >
-                <Button
-                  className={classes.button}
-                  onClick={() => setSignInVisible(true)}
-                >
+                <Button className={classes.button}>
                   <Typography>Log In</Typography>
                 </Button>
 
-                <Button
-                  className={classes.button}
-                  onClick={() => setSignUpVisible(true)}
-                >
+                <Button className={classes.button}>
                   <Typography>Sign Up</Typography>
                 </Button>
 
@@ -155,18 +144,6 @@ export default function Landing(props) {
               </div>
             </div>
           </div>
-
-          <SignInDialog
-            isOpen={signinVisible}
-            setDialogVisible={(value) => setSignInVisible(value)}
-            setForgottenPasswordVisible={(value) =>
-              setForgottenPasswordVisible(value)
-            }
-          />
-          <SignUpDialog
-            isOpen={signupVisible}
-            setDialogVisible={(value) => setSignUpVisible(value)}
-          />
           <ForgottenPasswordDialog
             isOpen={forgottenPasswordVisible}
             setDialogVisible={(value) => setForgottenPasswordVisible(value)}
