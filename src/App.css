@@ -62,6 +62,24 @@ body {
   height: 100%;
 }
 
+.signin-background {
+  background-image: url("./assets/fitness_stock_1.png");
+  background-size: cover;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
+
+.password-reset-background {
+  background-image: url("./assets/fitness_stock_2.png");
+  background-size: cover;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
+
 .overlay {
   z-index: 1;
   height: 100%;

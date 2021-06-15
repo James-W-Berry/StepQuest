@@ -141,7 +141,7 @@ export default function SignIn() {
         </div>
       </Grid>
       <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="signup-background" />
+        <div className="signin-background" />
       </Grid>
     </Grid>
   );
