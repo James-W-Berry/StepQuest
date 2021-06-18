@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
       color: colors.white,
       backgroundColor: colors.almostBlack,
     },
-    marginBottom: "0px",
+    margin: "0px",
   },
 }));
 

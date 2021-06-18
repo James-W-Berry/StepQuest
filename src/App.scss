@@ -8,8 +8,6 @@ $stepQuestLightOrange: #f2c166;
 $stepQuestPaleOrange: #f2d6a2;
 $stepQuestOrange: #d98236;
 
-// @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;400&display=swap");
-
 .App {
   text-align: center;
 }
@@ -23,19 +21,33 @@ body {
   height: 100%;
 }
 
+.landing-background {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: $stepQuestPaleOrange;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
 .landing {
   display: flex;
   flex: 1;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  text-align: start;
   width: 100%;
   height: 100%;
-  background-color: $stepQuestPaleOrange;
-  padding: 100px;
+  padding-left: 60px;
 }
 
 .landing-title {
+  font-family: "Josefin Sans" !important;
+  font-size: 3rem !important;
+}
+
+.landing-subtitle {
   font-family: "Josefin Sans" !important;
   font-size: 2rem !important;
 }
@@ -166,6 +178,7 @@ body {
 }
 .header-menu-button:hover {
   background-color: #191919;
+  cursor: pointer;
 }
 
 .header-menu-button:hover p {
