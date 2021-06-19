@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedUserContext } from "../auth/AuthenticatedUserContext";
 import "../App.scss";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -45,6 +45,7 @@ import PasswordReset from "./pages/PasswordReset/PasswordReset";
 import { ExpandMoreOutlined } from "@material-ui/icons";
 import FAQ from "./pages/FAQ/FAQ";
 import Resources from "./pages/Resources/Resources";
+import JoinChallenge from "./pages/JoinChallenge/JoinChallenge";
 
 const drawerWidth = "100%";
 
@@ -215,6 +216,7 @@ export default function Main() {
           position="fixed"
           style={{
             backgroundColor: theme.palette.background.main,
+            minHeight: "64px",
           }}
         >
           <Toolbar>
@@ -255,14 +257,26 @@ export default function Main() {
                   >
                     <Paper className="menu">
                       <NavLink
-                        to={`/user/${userId}`}
+                        to={`/fitness-tips`}
                         className={classes.navLink}
                         style={{ padding: "0px" }}
                       >
                         <Typography>WORKOUT TIPS</Typography>
                       </NavLink>
-                      <Typography>INSPIRATION</Typography>
-                      <Typography>CHALLENGE TIPS</Typography>
+                      <NavLink
+                        to={`/inspiration`}
+                        className={classes.navLink}
+                        style={{ padding: "0px" }}
+                      >
+                        <Typography>INSPIRATION</Typography>
+                      </NavLink>
+                      <NavLink
+                        to={`/challenge-tips`}
+                        className={classes.navLink}
+                        style={{ padding: "0px" }}
+                      >
+                        <Typography>CHALLENGE TIPS</Typography>
+                      </NavLink>
                     </Paper>
                   </Popover>
                 </div>
@@ -384,6 +398,14 @@ export default function Main() {
               render={(props) => (
                 <div key="profile" style={{ height: "100%", width: "100%" }}>
                   <UserProfile {...props} />
+                </div>
+              )}
+            />
+            <Route
+              path="/join-a-challenge"
+              render={(props) => (
+                <div key="challenge" style={{ height: "100%", width: "100%" }}>
+                  <JoinChallenge {...props} />
                 </div>
               )}
             />
