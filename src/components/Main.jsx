@@ -131,9 +131,13 @@ export default function Main() {
   } = useAuthenticatedUserContext();
   const { setUser } = useUserContext();
   const [open, setOpen] = useState(false);
-  const popupState = usePopupState({
+  const resourcesPopUpState = usePopupState({
     variant: "popover",
-    popupId: "demoPopover",
+    popupId: "resources",
+  });
+  const userPopUpState = usePopupState({
+    variant: "popover",
+    popupId: "resources",
   });
 
   function onAuthStateChange(callback) {
@@ -236,7 +240,7 @@ export default function Main() {
                 <div className={classes.navLink}>
                   <div
                     style={{ display: "flex", alignItems: "center" }}
-                    {...bindHover(popupState)}
+                    {...bindHover(resourcesPopUpState)}
                   >
                     <Typography className={classes.navLink}>
                       RESOURCES
@@ -244,7 +248,8 @@ export default function Main() {
                     <ExpandMoreOutlined style={{ width: "0.8em" }} />
                   </div>
                   <Popover
-                    {...bindPopover(popupState)}
+                    id="resources"
+                    {...bindPopover(resourcesPopUpState)}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "center",
@@ -295,7 +300,7 @@ export default function Main() {
                   <div className={classes.navLink}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      {...bindHover(popupState)}
+                      {...bindHover(userPopUpState)}
                     >
                       <Typography className={classes.navLink}>
                         {displayName?.toUpperCase() || email?.toUpperCase()}
@@ -303,7 +308,8 @@ export default function Main() {
                       <ExpandMoreOutlined style={{ width: "0.8em" }} />
                     </div>
                     <Popover
-                      {...bindPopover(popupState)}
+                      id="user"
+                      {...bindPopover(userPopUpState)}
                       anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "center",
