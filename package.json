@@ -49,7 +49,7 @@
     "react-scrollbars-custom": "^4.0.21",
     "react-spinners": "^0.8.0",
     "recharts": "^2.0.0-beta.1",
-    "typeface-roboto": "0.0.75",
+    "typeface-roboto": "^1.1.13",
     "typescript": "^4.2.4",
     "uuid": "^8.3.2",
     "webfontloader": "^1.6.28"

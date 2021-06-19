@@ -7,9 +7,18 @@ import WebFont from "webfontloader";
 
 WebFont.load({
   google: {
-    families: ["Josefin Sans", "Roboto"],
+    families: [
+      "Josefin Sans:100,200,300,400,700",
+      "Roboto:100,200,300,400,700",
+    ],
   },
 });
+
+// WebFont.load({
+//   google: {
+//     families: ["Josefin Sans", "Roboto"],
+//   },
+// });
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

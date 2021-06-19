@@ -25,39 +25,56 @@ const useStyles = makeStyles((theme) => ({
 
 const features = [
   {
-    title: "Feature 1",
+    title: "Find challenge",
     picture: photo_0,
-    description: "Test feature 1",
+    description: "Find and join the perfect challenge for you",
   },
   {
-    title: "Feature 2",
+    title: "Create challenge",
     picture: photo_0,
-
-    description: "Test feature 2",
+    description: "Create a custom challenge for your needs",
   },
   {
-    title: "Feature 3",
+    title: "Invite",
     picture: photo_0,
-
-    description: "Test feature 3",
+    description: "Invite members via email or by sharing a direct link",
   },
   {
-    title: "Feature 4",
+    title: "Track progress",
     picture: photo_0,
-
-    description: "Test feature 4",
+    description: "See how members are progressing throughout the challenge",
   },
   {
-    title: "Feature 5",
+    title: "Awards",
     picture: photo_0,
+    description: "Award badges at the end of challenge ceremony",
+  },
+];
 
-    description: "Test feature 5",
+const challenges = [
+  {
+    title: "Stepocalypse 2021",
+    picture: photo_0,
+    startDate: "July 1st, 2021",
+    endDate: "July 31st, 2021",
+    description:
+      "Step challenge - open to all! Come join us and see how many steps you can take!",
   },
   {
-    title: "Feature 6",
+    title: "Pushup Mitten Mania",
     picture: photo_0,
-
-    description: "Test feature 6",
+    startDate: "July 1st, 2021",
+    endDate: "July 31st, 2021",
+    description:
+      "Pushup challenge for the state of Michigan. How many can you do in a month?!? Prizes for winner and most improved!",
+  },
+  {
+    title: "Bikeorama",
+    picture: photo_0,
+    startDate: "July 1st, 2021",
+    endDate: "July 31st, 2021",
+    description:
+      "Bike mile challenge for bikers in Traverse City. Let's hit the road!",
   },
 ];
 
@@ -111,7 +128,7 @@ export default function Landing() {
             xl={6}
             style={{
               backgroundRepeat: "no-repeat",
-              backgroundPosition: "right",
+              backgroundPosition: "right bottom",
               backgroundSize: "contain",
               backgroundImage: `url(${data})`,
             }}
@@ -119,12 +136,23 @@ export default function Landing() {
         )}
       </div>
       <div className="landing-section">
-        <Typography style={{ fontSize: "1.25rem", fontWeight: 300 }}>
-          FEATURES
-        </Typography>
-        <Grid container style={{ display: "flex" }}>
+        <Typography className="landing-section-header">FEATURES</Typography>
+        <Grid
+          container
+          spacing={8}
+          style={{
+            display: "flex",
+            paddingLeft: "10%",
+            paddingRight: "10%",
+            justifyContent: "center",
+          }}
+        >
           {features.map((feature) => {
-            return <FeatureTile feature={feature} />;
+            return (
+              <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+                <FeatureTile feature={feature} />{" "}
+              </Grid>
+            );
           })}
         </Grid>
       </div>
@@ -132,17 +160,38 @@ export default function Landing() {
         className="landing-section"
         style={{ backgroundColor: colors.stepQuestLightGray }}
       >
-        <Typography style={{ fontSize: "1.25rem", fontWeight: 300 }}>
+        <Typography className="landing-section-header">
           JOIN A CHALLENGE
         </Typography>
-        <Typography>Ready to start?</Typography>
-        <Typography>
-          Find the right challenge for you! Here are a few popular challenges
-          you may be interested in.
+        <Typography
+          className="landing-section-body"
+          style={{ paddingTop: "20px" }}
+        >
+          Ready to start? Let's find the right challenge for you!
         </Typography>
-        <Grid container style={{ display: "flex", marginBottom: "60px" }}>
-          {features.map((challenge) => {
-            return <ChallengeTile challenge={challenge} />;
+        <Typography
+          className="landing-section-body"
+          style={{ paddingBottom: "20px" }}
+        >
+          Here are some popular challenges you may be interested in.
+        </Typography>
+        <Grid
+          container
+          spacing={8}
+          style={{
+            display: "flex",
+            marginBottom: "60px",
+            paddingLeft: "10%",
+            paddingRight: "10%",
+            justifyContent: "center",
+          }}
+        >
+          {challenges.map((challenge) => {
+            return (
+              <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+                <ChallengeTile challenge={challenge} />
+              </Grid>
+            );
           })}
         </Grid>
         <NavLink to={`/join-a-challenge`} className="nav-link-dark">

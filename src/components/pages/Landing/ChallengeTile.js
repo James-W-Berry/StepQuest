@@ -1,17 +1,32 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 export default function ChallengeTile(props) {
   const { challenge } = props;
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <img
         width="100%"
         height="100%"
         src={challenge.picture}
         alt={challenge.title}
       />
-      <Typography>{challenge.description}</Typography>
-    </Grid>
+      <Typography className="landing-section-body">
+        {challenge.title}
+      </Typography>
+      <Typography className="landing-section-body">
+        {challenge.startDate} - {challenge.endDate}
+      </Typography>
+      <Typography className="landing-section-body">
+        {challenge.description}
+      </Typography>
+    </div>
   );
 }
