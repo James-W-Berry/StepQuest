@@ -18,15 +18,11 @@ export default function ChallengeTile(props) {
         src={challenge.picture}
         alt={challenge.title}
       />
-      <Typography className="landing-section-body">
-        {challenge.title}
-      </Typography>
-      <Typography className="landing-section-body">
+      <Typography className="section-body">{challenge.title}</Typography>
+      <Typography className="section-body">
         {challenge.startDate} - {challenge.endDate}
       </Typography>
-      <Typography className="landing-section-body">
-        {challenge.description}
-      </Typography>
+      <Typography className="section-body">{challenge.description}</Typography>
     </div>
   );
 }

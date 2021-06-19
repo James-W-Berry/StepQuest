@@ -18,9 +18,7 @@ export default function FeatureTile(props) {
         src={feature.picture}
         alt={feature.title}
       />
-      <Typography className="landing-section-body">
-        {feature.description}
-      </Typography>
+      <Typography className="section-body">{feature.description}</Typography>
     </div>
   );
 }

@@ -1,14 +1,25 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Chip } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import colors from "../../../assets/colors";
 
 export default function ChallengesSection(props) {
   const { activeChallenges, activeChallengeData, user, userId, id } = props;
+  const [chipFilterState, setChipFilterState] = useState({
+    active: true,
+    completed: true,
+  });
+  const handleChipClick = (chip) => {
+    setChipFilterState({ [chip.key]: !chipFilterState[chip.key] });
+  };
 
   return (
-    <Grid container spacing={3}>
+    <Grid
+      container
+      spacing={3}
+      style={{ paddingLeft: "10%", paddingRight: "10%", paddingTop: "20px" }}
+    >
       <Grid
         item
         xs={12}
@@ -17,29 +28,80 @@ export default function ChallengesSection(props) {
         lg={12}
         xl={12}
         style={{
-          textAlign: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <Typography variant="h5">Challenges</Typography>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Typography className="section-header">MY CHALLENGES</Typography>
+          <div style={{ display: "flex" }}>
+            <Chip
+              key="active"
+              style={{
+                marginRight: "10px",
+                backgroundcolor:
+                  chipFilterState.active && colors.stepQuestOrange,
+              }}
+              label="Active"
+              onClick={handleChipClick}
+              clickable
+            />
+            <Chip
+              key="completed"
+              label="Completed"
+              onClick={handleChipClick}
+              clickable
+              style={{
+                backgroundcolor:
+                  chipFilterState.active && colors.stepQuestOrange,
+              }}
+            />
+          </div>
+        </div>
+
+        <NavLink
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          to="/create-challenge"
+        >
+          <Add width={100} height={100} />
+          <Typography
+            class="section-body"
+            style={{ textDecoration: "none", color: colors.almostBlack }}
+          >
+            Create New Challenge
+          </Typography>
+        </NavLink>
       </Grid>
-      <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         {activeChallenges ? (
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               flexDirection: "column",
-              border: "1px solid #0099ff90",
-              borderRadius: "8px",
-              padding: "20px",
+              alignItems: "flex-start",
             }}
           >
-            <Typography variant="h5">Active challenges</Typography>
+            <Typography className="section-subheading">ACTIVE</Typography>
             {activeChallengeData?.map((challenge) => {
               return (
                 <div key={challenge}>
-                  <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
+                  <a
+                    className="section-body"
+                    href={`/challenge/${challenge.id}`}
+                    style={{
+                      textDecoration: "none",
+                      color: colors.almostBlack,
+                    }}
+                  >
+                    {challenge.title}
+                  </a>
                 </div>
               );
             })}
@@ -48,34 +110,28 @@ export default function ChallengesSection(props) {
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               flexDirection: "column",
-              border: "1px solid #0099ff90",
-              borderRadius: "8px",
               padding: "20px",
+              alignItems: "flex-start",
             }}
           >
-            <Typography variant="h4" style={{ color: colors.almostBlack }}>
-              You have no active challenges.
+            <Typography className="section-subheading">
+              You have no active challenges. Join or create one now.
             </Typography>
           </div>
         )}
       </Grid>
 
-      <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             flexDirection: "column",
-            border: "1px solid #0099ff90",
-            borderRadius: "8px",
-            padding: "20px",
+            alignItems: "flex-start",
+            paddingTop: "20px",
           }}
         >
-          <Typography variant="h5">Completed Challenges</Typography>
+          <Typography className="section-subheading">COMPLETED</Typography>
           {user.completedChallenges ? (
             user.completedChallenges.map((challenge) => {
               return (
@@ -85,40 +141,9 @@ export default function ChallengesSection(props) {
               );
             })
           ) : (
-            <div>No completed challenges yet. Keep going!</div>
-          )}
-        </div>
-      </Grid>
-
-      <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            borderRadius: "8px",
-            backgroundColor: colors.stepitup_blue,
-            padding: "20px",
-          }}
-        >
-          {userId === id && (
-            <NavLink
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-              to="/create-challenge"
-            >
-              <Add style={{ color: colors.white }} width={100} height={100} />
-              <Typography variant="h5" style={{ color: colors.white }}>
-                Create New Challenge
-              </Typography>
-            </NavLink>
+            <Typography className="section-body">
+              No completed challenges, yet!
+            </Typography>
           )}
         </div>
       </Grid>

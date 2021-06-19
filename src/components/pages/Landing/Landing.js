@@ -142,7 +142,7 @@ export default function Landing() {
         )}
       </div>
       <div className="landing-section">
-        <Typography className="landing-section-header">FEATURES</Typography>
+        <Typography className="section-header">FEATURES</Typography>
         <Grid
           container
           spacing={8}
@@ -166,19 +166,11 @@ export default function Landing() {
         className="landing-section"
         style={{ backgroundColor: colors.stepQuestLightGray }}
       >
-        <Typography className="landing-section-header">
-          JOIN A CHALLENGE
-        </Typography>
-        <Typography
-          className="landing-section-body"
-          style={{ paddingTop: "20px" }}
-        >
+        <Typography className="section-header">JOIN A CHALLENGE</Typography>
+        <Typography className="section-body" style={{ paddingTop: "20px" }}>
           Ready to start? Let's find the right challenge for you!
         </Typography>
-        <Typography
-          className="landing-section-body"
-          style={{ paddingBottom: "20px" }}
-        >
+        <Typography className="section-body" style={{ paddingBottom: "20px" }}>
           Here are some popular challenges you may be interested in.
         </Typography>
         <Grid
