@@ -4,7 +4,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import colors from "../../../assets/colors";
 
-export default function ChallengesWidget(props) {
+export default function ChallengesSection(props) {
   const { activeChallenges, activeChallengeData, user, userId, id } = props;
 
   return (

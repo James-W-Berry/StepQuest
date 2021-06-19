@@ -17,7 +17,7 @@ import {
 } from "../../../api/userApi";
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
-import ChallengesWidget from "./ChallengesWidget";
+import ChallengesSection from "./ChallengesSection";
 import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
 import MissingUser from "./MissingUser";
@@ -28,10 +28,19 @@ const Profile = (props) => {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
   const {
-    user: { displayName, activeChallenges, badges, profilePictureUrl, avatar },
+    user: {
+      id,
+      displayName,
+      activeChallenges,
+      badges,
+      profilePictureUrl,
+      avatar,
+    },
   } = useUserContext();
+  const [focusedSection, setFocusedSection] = useState(
+    props.location.pathname.split("/").pop()
+  );
   const [activeChallengeData, setActiveChallengeData] = useState([]);
-  const id = props.match.params.id;
   const [profileDetails, setProfileDetails] = useState({
     isLoading: true,
     success: null,
@@ -42,8 +51,8 @@ const Profile = (props) => {
   const [newDisplayName, setNewDisplayName] = useState();
 
   useEffect(() => {
-    if (id !== userId) {
-      getUser(id).then((response) => {
+    if (userId) {
+      getUser(userId).then((response) => {
         setProfileDetails(response);
       });
     } else {
@@ -128,6 +137,10 @@ const Profile = (props) => {
       });
   }, [profileDetails]);
 
+  useEffect(() => {
+    setFocusedSection(props.location.pathname.split("/").pop());
+  }, [props.location.pathname]);
+
   if (profileDetails.isLoading) {
     return (
       <div
@@ -162,103 +175,119 @@ const Profile = (props) => {
 
   return (
     <div>
-      <Grid
-        key="summary"
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
-        xl={12}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Grid key="picture" item>
-          <div
-            style={{
-              display: "flex",
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <AvatarWidget
-              userId={userId}
-              currentAvatar={profileDetails.data.avatar}
-              updateLocalAvatar={updateLocalAvatar}
-            />
-          </div>
-        </Grid>
-
-        <Grid key="name" item>
-          {userId === id ? (
-            <EditableTextField
-              label="Display Name"
-              variant="h4"
-              current={profileDetails.data.displayName}
-              updateField={(name) => onEditDisplayName(name)}
-            />
-          ) : (
-            <Typography variant="h4" style={{ color: colors.almostBlack }}>
-              {profileDetails.data.displayName}
-            </Typography>
-          )}
-        </Grid>
-      </Grid>
-
-      <Divider variant="fullWidth" style={{ margin: "20px" }} />
-
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
-        xl={12}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {profileDetails.data.badges && (
-          <div
+      {focusedSection === "profile" && (
+        <div>
+          <Grid
+            key="summary"
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              margin: "20px",
             }}
           >
-            <Typography variant="h5">Awards</Typography>
+            <Grid key="picture" item>
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <AvatarWidget
+                  userId={userId}
+                  currentAvatar={profileDetails.data.avatar}
+                  updateLocalAvatar={updateLocalAvatar}
+                />
+              </div>
+            </Grid>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {profileDetails.data.badges.map((badge, index) => {
-                return <Badge data={badge} key={index} />;
-              })}
-            </div>
-          </div>
-        )}
-      </Grid>
+            <Grid key="name" item>
+              {userId === id ? (
+                <EditableTextField
+                  label="Display Name"
+                  variant="h4"
+                  current={profileDetails.data.displayName}
+                  updateField={(name) => onEditDisplayName(name)}
+                />
+              ) : (
+                <Typography variant="h4" style={{ color: colors.almostBlack }}>
+                  {profileDetails.data.displayName}
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
 
-      <ChallengesWidget
-        userId={userId}
-        user={profileDetails.data}
-        id={id}
-        activeChallenges={profileDetails.data.activeChallenges}
-        activeChallengeData={activeChallengeData}
-      />
+          <Divider variant="fullWidth" style={{ margin: "20px" }} />
+
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {profileDetails.data.badges && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <Typography variant="h5">Awards</Typography>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {profileDetails.data.badges.map((badge, index) => {
+                    return <Badge data={badge} key={index} />;
+                  })}
+                </div>
+              </div>
+            )}
+          </Grid>
+
+          <ChallengesSection
+            userId={userId}
+            user={profileDetails.data}
+            id={id}
+            activeChallenges={profileDetails.data.activeChallenges}
+            activeChallengeData={activeChallengeData}
+          />
+        </div>
+      )}
+      {focusedSection === "challenges" && (
+        <ChallengesSection
+          userId={userId}
+          user={profileDetails.data}
+          id={id}
+          activeChallenges={profileDetails.data.activeChallenges}
+          activeChallengeData={activeChallengeData}
+        />
+      )}
+      {focusedSection === "settings" && (
+        <Typography>Show the settings here</Typography>
+      )}
 
       <Snackbar
         anchorOrigin={{

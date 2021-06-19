@@ -25,6 +25,7 @@ const UserContext = createContext<IUserContext>(initialUserContext);
 
 export const UserContextProvider = (props: IUserProviderProps) => {
   const [user, setUser] = useState({
+    id: null,
     profilePictureUrl: null,
     displayName: null,
     activeChallenges: null,

@@ -20,7 +20,6 @@ export default function SignIn() {
   const onSignIn = () => {
     setIsLoading(true);
     signInUser(email, password).then((response) => {
-      console.log(response);
       setIsSignInSuccessful(response.success);
       setMessage(response.message);
       setIsLoading(false);
@@ -28,7 +27,7 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    userId && history.push(`/user/${userId}`);
+    userId && history.push(`/profile`);
   }, [userId, history]);
 
   return (

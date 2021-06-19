@@ -10,6 +10,7 @@ import photo_3 from "../../../assets/landing_3.png";
 import FeatureTile from "./FeatureTile";
 import ChallengeTile from "./ChallengeTile";
 import colors from "../../../assets/colors";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   navLink: {
@@ -78,29 +79,34 @@ const challenges = [
   },
 ];
 
-export default function Landing() {
-  const classes = useStyles();
-  const theme = useTheme();
-  const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+const getLandingPhoto = () => {
   const number = Math.floor(Math.random() * 4);
-  let data = 0;
+  let photo = 0;
   switch (number) {
     case 0:
-      data = photo_0;
+      photo = photo_0;
       break;
     case 1:
-      data = photo_1;
+      photo = photo_1;
       break;
     case 2:
-      data = photo_2;
+      photo = photo_2;
 
       break;
     case 3:
-      data = photo_3;
+      photo = photo_3;
 
       break;
     default:
   }
+  return photo;
+};
+
+export default function Landing() {
+  const classes = useStyles();
+  const theme = useTheme();
+  const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const [photo, setPhoto] = useState(getLandingPhoto());
 
   return (
     <Grid container style={{ minHeight: "100%" }}>
@@ -130,7 +136,7 @@ export default function Landing() {
               backgroundRepeat: "no-repeat",
               backgroundPosition: "right bottom",
               backgroundSize: "contain",
-              backgroundImage: `url(${data})`,
+              backgroundImage: `url(${photo})`,
             }}
           />
         )}

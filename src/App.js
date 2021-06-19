@@ -5,6 +5,7 @@ import { UserContextProvider } from "./components/pages/User/UserContext";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import colors from "./assets/colors";
 import { CssBaseline } from "@material-ui/core";
+import { BrowserRouter } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -30,7 +31,9 @@ function App() {
       <UserContextProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Main />
+          <BrowserRouter>
+            <Main />
+          </BrowserRouter>
         </ThemeProvider>
       </UserContextProvider>
     </AuthenticatedUserContextProvider>
