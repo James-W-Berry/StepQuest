@@ -1,18 +1,24 @@
 import { Grid, Typography, Chip } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import colors from "../../../assets/colors";
+import challengeIcon from "../../../assets/challenge.png";
 
 export default function ChallengesSection(props) {
   const { activeChallenges, activeChallengeData, user, userId, id } = props;
-  const [chipFilterState, setChipFilterState] = useState({
-    active: true,
-    completed: true,
-  });
-  const handleChipClick = (chip) => {
-    setChipFilterState({ [chip.key]: !chipFilterState[chip.key] });
+  const [activeFilter, setActiveFilter] = useState(true);
+  const [completedFilter, setCompletedFilter] = useState(true);
+
+  const handleChipClick = (category) => {
+    if (category === "active") {
+      setActiveFilter(!activeFilter);
+    } else {
+      setCompletedFilter(!completedFilter);
+    }
   };
+
+  console.log();
 
   return (
     <Grid
@@ -40,21 +46,21 @@ export default function ChallengesSection(props) {
               key="active"
               style={{
                 marginRight: "10px",
-                backgroundcolor:
-                  chipFilterState.active && colors.stepQuestOrange,
+                backgroundColor: activeFilter && colors.stepQuestOrange,
+                color: activeFilter && colors.almostWhite,
               }}
               label="Active"
-              onClick={handleChipClick}
+              onClick={() => handleChipClick("active")}
               clickable
             />
             <Chip
               key="completed"
               label="Completed"
-              onClick={handleChipClick}
+              onClick={() => handleChipClick("completed")}
               clickable
               style={{
-                backgroundcolor:
-                  chipFilterState.active && colors.stepQuestOrange,
+                backgroundColor: completedFilter && colors.stepQuestOrange,
+                color: completedFilter && colors.almostWhite,
               }}
             />
           </div>
@@ -69,7 +75,11 @@ export default function ChallengesSection(props) {
           }}
           to="/create-challenge"
         >
-          <Add width={100} height={100} />
+          <Add
+            width={100}
+            height={100}
+            style={{ color: colors.stepQuestOrange }}
+          />
           <Typography
             class="section-body"
             style={{ textDecoration: "none", color: colors.almostBlack }}
@@ -79,74 +89,88 @@ export default function ChallengesSection(props) {
         </NavLink>
       </Grid>
 
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        {activeChallenges ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <Typography className="section-subheading">ACTIVE</Typography>
-            {activeChallengeData?.map((challenge) => {
-              return (
-                <div key={challenge}>
-                  <a
-                    className="section-body"
-                    href={`/challenge/${challenge.id}`}
-                    style={{
-                      textDecoration: "none",
-                      color: colors.almostBlack,
-                    }}
-                  >
-                    {challenge.title}
-                  </a>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "20px",
-              alignItems: "flex-start",
-            }}
-          >
-            <Typography className="section-subheading">
-              You have no active challenges. Join or create one now.
-            </Typography>
-          </div>
-        )}
-      </Grid>
-
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            paddingTop: "20px",
-          }}
-        >
-          <Typography className="section-subheading">COMPLETED</Typography>
-          {user.completedChallenges ? (
-            user.completedChallenges.map((challenge) => {
-              return (
-                <div key={challenge.id}>
-                  <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
-                </div>
-              );
-            })
+      {activeFilter && (
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          {activeChallenges ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                paddingTop: "20px",
+              }}
+            >
+              <Typography className="section-subheading">ACTIVE</Typography>
+              {activeChallengeData?.map((challenge) => {
+                return (
+                  <div key={challenge}>
+                    <a
+                      className="section-body"
+                      href={`/challenge/${challenge.id}`}
+                      style={{
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: colors.almostBlack,
+                        padding: "10px 0px",
+                      }}
+                    >
+                      <img
+                        alt={challenge.title}
+                        src={challengeIcon}
+                        height="60px"
+                        width="60px"
+                      />
+                      {challenge.title}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            <Typography className="section-body">
-              No completed challenges, yet!
-            </Typography>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "20px",
+                alignItems: "flex-start",
+              }}
+            >
+              <Typography className="section-subheading">
+                You have no active challenges. Join or create one now.
+              </Typography>
+            </div>
           )}
-        </div>
-      </Grid>
+        </Grid>
+      )}
+      {completedFilter && (
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              paddingTop: "20px",
+            }}
+          >
+            <Typography className="section-subheading">COMPLETED</Typography>
+            {user.completedChallenges ? (
+              user.completedChallenges.map((challenge) => {
+                return (
+                  <div key={challenge.id}>
+                    <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
+                  </div>
+                );
+              })
+            ) : (
+              <Typography className="section-body">
+                No completed challenges, yet!
+              </Typography>
+            )}
+          </div>
+        </Grid>
+      )}
     </Grid>
   );
 }
