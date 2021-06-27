@@ -3,7 +3,9 @@ import { Add } from "@material-ui/icons";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import colors from "../../../assets/colors";
-import challengeIcon from "../../../assets/challenge.png";
+import activeChallengeIcon from "../../../assets/active_challenge.png";
+import pastChallengeIcon from "../../../assets/past_challenge.png";
+
 
 export default function ChallengesSection(props) {
   const { activeChallenges, activeChallengeData, user, userId, id } = props;
@@ -17,6 +19,17 @@ export default function ChallengesSection(props) {
       setCompletedFilter(!completedFilter);
     }
   };
+
+  const evenStyle = {
+    backgroundColor: colors.stepQuestLightGray,
+    width: '100%',
+
+  }
+
+  const oddStyle = {
+    backgroundColor: colors.almostWhite,
+    width: '100%',
+  }
 
   console.log();
 
@@ -101,9 +114,9 @@ export default function ChallengesSection(props) {
               }}
             >
               <Typography className="section-subheading">ACTIVE</Typography>
-              {activeChallengeData?.map((challenge) => {
+              {activeChallengeData?.map((challenge, index) => {
                 return (
-                  <div key={challenge}>
+                  <div key={challenge} style={index%2===0 ? evenStyle : oddStyle}>
                     <a
                       className="section-body"
                       href={`/challenge/${challenge.id}`}
@@ -111,14 +124,13 @@ export default function ChallengesSection(props) {
                         textDecoration: "none",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
                         color: colors.almostBlack,
-                        padding: "10px 0px",
+                        padding: "20px 10px",
                       }}
                     >
                       <img
                         alt={challenge.title}
-                        src={challengeIcon}
+                        src={activeChallengeIcon}
                         height="60px"
                         width="60px"
                       />
@@ -156,11 +168,32 @@ export default function ChallengesSection(props) {
           >
             <Typography className="section-subheading">COMPLETED</Typography>
             {user.completedChallenges ? (
-              user.completedChallenges.map((challenge) => {
-                return (
-                  <div key={challenge.id}>
-                    <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
+              user.completedChallenges.map((challenge, index) => {
+                 return (
+                  <div key={challenge} style={ index%2!==0 && {backgroundColor: colors.stepQuestPaleOrange }}>
+                    <a
+                      className="section-body"
+                      href={`/challenge/${challenge.id}`}
+                      style={{
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        color: colors.almostBlack,
+                        padding: "10px",
+                      }}
+                    >
+                      <img
+                        alt={challenge.title}
+                        src={pastChallengeIcon}
+                        height="60px"
+                        width="60px"
+                      />
+                      {challenge.title}
+                    </a>
                   </div>
+                  // <div key={challenge.id}>
+                  //   <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
+                  // </div>
                 );
               })
             ) : (
