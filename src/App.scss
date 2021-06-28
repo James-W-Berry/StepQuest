@@ -88,6 +88,16 @@ body {
   font-size: 1.125rem !important;
 }
 
+.section-body-regular-weight {
+  font-weight: 400 !important;
+  font-size: 1.125rem !important;
+}
+
+.section-body-regular-size {
+  font-weight: 300 !important;
+  font-size: 1rem !important;
+}
+
 .section-subheading {
   font-weight: 300 !important;
   font-size: 1.125rem !important;
@@ -134,6 +144,14 @@ body {
   font-size: 2rem !important;
   font-weight: 300 !important;
   padding: 30px 0;
+  white-space: nowrap;
+}
+
+.form-title-highlight {
+  font-size: 2rem !important;
+  font-weight: 400 !important;
+  padding: 30px 0px 30px 30px;
+  color: $stepQuestOrange;
   white-space: nowrap;
 }
 

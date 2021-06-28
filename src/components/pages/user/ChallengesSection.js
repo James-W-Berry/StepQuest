@@ -1,16 +1,163 @@
-import { Grid, Typography, Chip } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+  Grid,
+  Typography,
+  Chip,
+  TextField,
+  Snackbar,
+  IconButton,
+} from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import { useState } from "react";
+import GroupIcon from "@material-ui/icons/Group";
+import CloseIcon from "@material-ui/icons/Close";
 import { NavLink } from "react-router-dom";
 import colors from "../../../assets/colors";
 import activeChallengeIcon from "../../../assets/active_challenge.png";
 import pastChallengeIcon from "../../../assets/past_challenge.png";
+import { makeStyles } from "@material-ui/core/styles";
 
+const useStyles = makeStyles((theme) => ({
+  oddStyle: {
+    backgroundColor: colors.almostWhite,
+    width: "100%",
+    display: "flex",
+    borderRadius: "4px",
+    justifyContent: "space-between",
+    "&:hover": {
+      backgroundColor: "#F2D6A250",
+    },
+  },
+  evenStyle: {
+    backgroundColor: colors.stepQuestLightGray,
+    width: "100%",
+    display: "flex",
+    borderRadius: "4px",
+
+    justifyContent: "space-between",
+    "&:hover": {
+      backgroundColor: "#F2D6A250",
+    },
+  },
+}));
 
 export default function ChallengesSection(props) {
+  const classes = useStyles();
   const { activeChallenges, activeChallengeData, user, userId, id } = props;
   const [activeFilter, setActiveFilter] = useState(true);
   const [completedFilter, setCompletedFilter] = useState(true);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
+  const copyToClipboard = (e) => {
+    navigator.clipboard.writeText(e);
+    setIsToastVisible(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setIsToastVisible(false);
+  };
+
+  const ListItem = (props) => {
+    const { item, id, active } = props;
+    return (
+      <Grid
+        container
+        key={item}
+        className={id % 2 === 0 ? classes.evenStyle : classes.oddStyle}
+      >
+        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+          <a
+            className="section-body"
+            href={`/challenge/${item.id}`}
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              color: colors.almostBlack,
+              padding: "20px 10px",
+              height: "100%",
+            }}
+          >
+            <img
+              alt={item.title}
+              src={active ? activeChallengeIcon : pastChallengeIcon}
+              height="60px"
+              width="60px"
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                paddingLeft: "10px",
+              }}
+            >
+              <Typography className="section-body-regular-weight">
+                {item.title}
+              </Typography>
+              <Typography className="section-body-regular-size">
+                {item.description}
+              </Typography>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <GroupIcon fontSize="small" style={{ color: "#666" }} />
+                <Typography
+                  className="section-body-regular-size"
+                  style={{ paddingLeft: "5px", color: "#666" }}
+                >
+                  {`${item.participants.length} ${
+                    item.participants.length > 1 ? "members" : "member"
+                  }`}{" "}
+                </Typography>
+              </div>
+            </div>
+          </a>
+        </Grid>
+        <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              padding: "10px 10px",
+            }}
+          >
+            <Typography>INVITE LINK</Typography>
+            <TextField
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+              onClick={() =>
+                // copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
+                copyToClipboard(`http://localhost:3000/join/${item.id}`)
+              }
+              className="section-body-regular-size"
+              style={{
+                backgroundColor: "#eee",
+                cursor: "pointer",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                width: "100%",
+              }}
+              // defaultValue={`http://stepquest.web.app/join/${item.id}`}
+              defaultValue={`http://localhost:3000/join/${item.id}`}
+            />
+            <Typography
+              className="section-body-regular-size"
+              style={{ color: "#666" }}
+            >
+              Share this link to invite participants to your challenge
+            </Typography>
+          </div>
+        </Grid>
+      </Grid>
+    );
+  };
 
   const handleChipClick = (category) => {
     if (category === "active") {
@@ -19,19 +166,6 @@ export default function ChallengesSection(props) {
       setCompletedFilter(!completedFilter);
     }
   };
-
-  const evenStyle = {
-    backgroundColor: colors.stepQuestLightGray,
-    width: '100%',
-
-  }
-
-  const oddStyle = {
-    backgroundColor: colors.almostWhite,
-    width: '100%',
-  }
-
-  console.log();
 
   return (
     <Grid
@@ -115,29 +249,7 @@ export default function ChallengesSection(props) {
             >
               <Typography className="section-subheading">ACTIVE</Typography>
               {activeChallengeData?.map((challenge, index) => {
-                return (
-                  <div key={challenge} style={index%2===0 ? evenStyle : oddStyle}>
-                    <a
-                      className="section-body"
-                      href={`/challenge/${challenge.id}`}
-                      style={{
-                        textDecoration: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        color: colors.almostBlack,
-                        padding: "20px 10px",
-                      }}
-                    >
-                      <img
-                        alt={challenge.title}
-                        src={activeChallengeIcon}
-                        height="60px"
-                        width="60px"
-                      />
-                      {challenge.title}
-                    </a>
-                  </div>
-                );
+                return <ListItem item={challenge} id={index} active />;
               })}
             </div>
           ) : (
@@ -169,32 +281,7 @@ export default function ChallengesSection(props) {
             <Typography className="section-subheading">COMPLETED</Typography>
             {user.completedChallenges ? (
               user.completedChallenges.map((challenge, index) => {
-                 return (
-                  <div key={challenge} style={ index%2!==0 && {backgroundColor: colors.stepQuestPaleOrange }}>
-                    <a
-                      className="section-body"
-                      href={`/challenge/${challenge.id}`}
-                      style={{
-                        textDecoration: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        color: colors.almostBlack,
-                        padding: "10px",
-                      }}
-                    >
-                      <img
-                        alt={challenge.title}
-                        src={pastChallengeIcon}
-                        height="60px"
-                        width="60px"
-                      />
-                      {challenge.title}
-                    </a>
-                  </div>
-                  // <div key={challenge.id}>
-                  //   <a href={`/challenge/${challenge.id}`}>{challenge.title}</a>
-                  // </div>
-                );
+                return <ListItem item={challenge} id={index} />;
               })
             ) : (
               <Typography className="section-body">
@@ -204,6 +291,29 @@ export default function ChallengesSection(props) {
           </div>
         </Grid>
       )}
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={isToastVisible}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        message={"Copied invite link!"}
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </Grid>
   );
 }

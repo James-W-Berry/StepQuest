@@ -7,6 +7,7 @@ import {
   Redirect,
   useHistory,
   withRouter,
+  NavLink,
 } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -26,7 +27,6 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { NavLink } from "react-router-dom";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import firebase from "../firebase";
 import "firebase/auth";
@@ -52,7 +52,7 @@ import { ExpandMoreOutlined } from "@material-ui/icons";
 import FAQ from "./pages/FAQ/FAQ";
 import Resources from "./pages/Resources/Resources";
 import JoinChallenge from "./pages/JoinChallenge/JoinChallenge";
-
+import ChallengeInvite from "./pages/ChallengeInvite/ChallengeInvite";
 const drawerWidth = "100%";
 
 const useStyles = makeStyles((theme) => ({
@@ -458,7 +458,17 @@ function Main() {
               </div>
             )}
           />
-
+          <Route
+            path="/join/:id"
+            render={(props) => (
+              <div
+                key="invite-to-join"
+                style={{ height: "100%", width: "100%" }}
+              >
+                <ChallengeInvite {...props} />
+              </div>
+            )}
+          />
           <Route
             path="/challenge/:id"
             render={(props) => (
