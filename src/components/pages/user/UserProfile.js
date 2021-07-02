@@ -22,6 +22,7 @@ import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
 import MissingUser from "./MissingUser";
 import Loading from "../../Loading";
+import { callbackify } from "util";
 
 const Profile = (props) => {
   const {
@@ -174,7 +175,12 @@ const Profile = (props) => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: colors.stepQuestLightGray,
+        minHeight: "100vh",
+      }}
+    >
       {focusedSection === "profile" && (
         <div>
           <Grid

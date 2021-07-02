@@ -6,6 +6,7 @@ import {
   TextField,
   Snackbar,
   IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import GroupIcon from "@material-ui/icons/Group";
@@ -32,11 +33,24 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     borderRadius: "4px",
-
     justifyContent: "space-between",
     "&:hover": {
       backgroundColor: "#F2D6A250",
     },
+  },
+  tooltip: {
+    backgroundColor: colors.almostBlack,
+    color: colors.almostWhite,
+  },
+  navLinkButton: {
+    fontSize: ".8125rem",
+    color: colors.almostBlack,
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+      borderRadius: "50px",
+    },
+    margin: "0px",
   },
 }));
 
@@ -109,7 +123,7 @@ export default function ChallengesSection(props) {
                 >
                   {`${item.participants.length} ${
                     item.participants.length > 1 ? "members" : "member"
-                  }`}{" "}
+                  }`}
                 </Typography>
               </div>
             </div>
@@ -126,27 +140,38 @@ export default function ChallengesSection(props) {
             }}
           >
             <Typography>INVITE LINK</Typography>
-            <TextField
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-              onClick={() =>
-                // copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
-                copyToClipboard(`http://localhost:3000/join/${item.id}`)
+            <Tooltip
+              classes={{ tooltip: classes.tooltip }}
+              title={
+                <React.Fragment>
+                  <Typography
+                    style={{
+                      color: "inherit",
+                      padding: "10px",
+                    }}
+                  >
+                    Click to copy
+                  </Typography>
+                </React.Fragment>
               }
-              className="section-body-regular-size"
-              style={{
-                backgroundColor: "#eee",
-                cursor: "pointer",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                width: "100%",
-              }}
-              // defaultValue={`http://stepquest.web.app/join/${item.id}`}
-              defaultValue={`http://localhost:3000/join/${item.id}`}
-            />
+              arrow
+              placement="top"
+            >
+              <TextField
+                variant="outlined"
+                className="text-field-copy"
+                InputProps={{
+                  readOnly: true,
+                }}
+                onClick={() =>
+                  // copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
+                  copyToClipboard(`http://localhost:3000/join/${item.id}`)
+                }
+                // defaultValue={`http://stepquest.web.app/join/${item.id}`}
+                defaultValue={`http://localhost:3000/join/${item.id}`}
+              />
+            </Tooltip>
+
             <Typography
               className="section-body-regular-size"
               style={{ color: "#666" }}
@@ -171,7 +196,11 @@ export default function ChallengesSection(props) {
     <Grid
       container
       spacing={3}
-      style={{ paddingLeft: "10%", paddingRight: "10%", paddingTop: "20px" }}
+      style={{
+        paddingLeft: "10%",
+        paddingRight: "10%",
+        paddingTop: "20px",
+      }}
     >
       <Grid
         item
@@ -214,25 +243,29 @@ export default function ChallengesSection(props) {
         </div>
 
         <NavLink
+          className={classes.navLinkButton}
           style={{
             textDecoration: "none",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
           }}
           to="/create-challenge"
         >
-          <Add
-            width={100}
-            height={100}
-            style={{ color: colors.stepQuestOrange }}
-          />
-          <Typography
-            class="section-body"
-            style={{ textDecoration: "none", color: colors.almostBlack }}
+          <button
+            className="header-menu-button"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Create New Challenge
-          </Typography>
+            <Add
+              width={100}
+              height={100}
+              style={{ color: colors.stepQuestOrange }}
+            />
+            <Typography class="section-body" style={{ textDecoration: "none" }}>
+              Create New Challenge
+            </Typography>
+          </button>
         </NavLink>
       </Grid>
 

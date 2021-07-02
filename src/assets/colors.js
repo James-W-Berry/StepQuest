@@ -7,6 +7,7 @@ const colors = {
   stepQuestYellow: "#F2D06B",
   stepQuestLightOrange: "#F2C166",
   stepQuestPaleOrange: "#F2D6A2",
+  stepQuestPaleOrangeFaded: "#f2d6a250",
   stepQuestOrange: "#D98236",
 };
 

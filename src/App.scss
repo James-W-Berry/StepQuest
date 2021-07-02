@@ -5,6 +5,7 @@ $stepQuestLightGray: #f5f5f5;
 $stepQuestGray: #2b3240;
 $stepQuestYellow: #f2d06b;
 $stepQuestLightOrange: #f2c166;
+$stepQuestPaleOrangeFaded: #f2d6a220;
 $stepQuestPaleOrange: #f2d6a2;
 $stepQuestOrange: #d98236;
 
@@ -195,6 +196,14 @@ body {
 .form-button-submit p {
   font-weight: 300 !important;
   color: #fff;
+}
+
+.text-field-copy {
+  background-color: #eee;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .menu {
