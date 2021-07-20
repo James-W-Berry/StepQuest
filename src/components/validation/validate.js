@@ -1,6 +1,24 @@
 export function validate(form) {
-  if (!(form.title && form.id && form.startDate && form.endDate)) return false;
-  return true;
+  if (!form.title || form.title.trim() === "") {
+    return { status: false, message: "Please enter a challenge name" };
+  }
+
+  if (!form.id) {
+    return {
+      status: false,
+      message:
+        "Could not create a new challenge at this time. Please try again later",
+    };
+  }
+
+  if (!(form.startDate && form.endDate)) {
+    return {
+      status: false,
+      message: "Please enter a start and end date for the challenge",
+    };
+  }
+
+  return { status: true };
 }
 
 export function validateEmail(email) {

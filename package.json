@@ -6,6 +6,7 @@
     "@date-io/date-fns": "1.x",
     "@material-ui/core": "^4.9.5",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/pickers": "^3.3.10",
     "@nivo/core": "^0.69.0",
     "@nivo/line": "^0.69.1",

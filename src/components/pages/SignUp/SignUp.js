@@ -1,9 +1,8 @@
 import { Grid, Typography, useTheme } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import { signUpUser } from "../../../api/authApi";
-import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import { signInUserWithProvider } from "../../../api/authApi";
 import firebase from "../../../firebase";
 
@@ -17,9 +16,6 @@ export default function SignUp() {
   const [message, setMessage] = useState();
   const theme = useTheme();
   const history = useHistory();
-  const {
-    authenticatedUser: { userId },
-  } = useAuthenticatedUserContext();
 
   const onSignUp = () => {
     setIsLoading(true);
@@ -40,10 +36,6 @@ export default function SignUp() {
       }
     });
   };
-
-  useEffect(() => {
-    userId && history.push(`/user/${userId}`);
-  }, [userId, history]);
 
   return (
     <Grid container style={{ display: "flex", height: "100%" }}>

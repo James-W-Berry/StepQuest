@@ -32,8 +32,7 @@ export async function createNewChallengeBatch(
 
   return await batch
     .commit()
-    .then((response) => {
-      console.log(response);
+    .then(() => {
       return {
         success: true,
         message: `Successfully created new challenge ${challengeData.title}!`,

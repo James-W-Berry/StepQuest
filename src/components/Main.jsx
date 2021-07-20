@@ -351,7 +351,6 @@ function Main() {
                         className={classes.navLink}
                         style={{ padding: "0px" }}
                       >
-                        {" "}
                         <Typography>SETTINGS</Typography>
                       </NavLink>
                       <Typography onClick={requestLogout}>LOG OUT</Typography>

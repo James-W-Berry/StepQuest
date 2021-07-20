@@ -1,9 +1,8 @@
 import { Grid, Typography, useTheme } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import { signInUser } from "../../../api/authApi";
-import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,9 +12,6 @@ export default function SignIn() {
   const [message, setMessage] = useState();
   const theme = useTheme();
   const history = useHistory();
-  const {
-    authenticatedUser: { userId },
-  } = useAuthenticatedUserContext();
 
   const onSignIn = () => {
     setIsLoading(true);
@@ -25,10 +21,6 @@ export default function SignIn() {
       setIsLoading(false);
     });
   };
-
-  useEffect(() => {
-    userId && history.push(`/profile`);
-  }, [userId, history]);
 
   return (
     <Grid container style={{ display: "flex", height: "100%" }}>
