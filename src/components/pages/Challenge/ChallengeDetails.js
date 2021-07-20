@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import SyncLoader from "react-spinners/SyncLoader";
 import colors from "../../../assets/colors";
 import {
   addAdmins,
@@ -159,9 +158,7 @@ export default function ChallengeDetails(props) {
           height: "100%",
           width: "100%",
         }}
-      >
-        <SyncLoader color={colors.stepitup_blue} />
-      </div>
+      />
     );
   }
 

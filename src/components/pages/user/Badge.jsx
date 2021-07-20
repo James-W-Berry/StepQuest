@@ -4,15 +4,16 @@ import medal from "../../../assets/medal.png";
 
 export default function Badge(props) {
   const { data } = props;
+  console.log(data);
 
   const applyMedalColor = {
     gold: "#FFD700",
     silver: "C0C0C0",
     bronze: "CD7F32",
-    welcome: colors.stepitup_blue,
-    createChallenge: colors.stepitup_purple,
-    participation: colors.stepitup_teal,
-    mostImproved: colors.stepitup_vibrantGreen,
+    welcome: colors.stepQuestOrange,
+    createChallenge: colors.stepQuestYellow,
+    participation: colors.stepQuestGray,
+    mostImproved: colors.almostBlack,
   };
 
   return (
@@ -28,10 +29,10 @@ export default function Badge(props) {
     >
       <div
         style={{
-          width: "50px",
-          height: "50px",
+          width: "60px",
+          height: "60px",
           margin: "10px",
-          borderRadius: "25px",
+          borderRadius: "30px",
           backgroundColor: `${applyMedalColor[data.type]}`,
           display: "flex",
           alignItems: "center",

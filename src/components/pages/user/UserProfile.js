@@ -21,8 +21,6 @@ import ChallengesSection from "./ChallengesSection";
 import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
 import MissingUser from "./MissingUser";
-import Loading from "../../Loading";
-import { callbackify } from "util";
 
 const Profile = (props) => {
   const {
@@ -152,9 +150,7 @@ const Profile = (props) => {
           height: "100%",
           width: "100%",
         }}
-      >
-        <Loading />
-      </div>
+      />
     );
   }
 

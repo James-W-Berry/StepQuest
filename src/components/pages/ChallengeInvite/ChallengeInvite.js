@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Typography, Snackbar, IconButton } from "@material-ui/core";
-import { BeatLoader } from "react-spinners";
 import { getChallenge } from "../../../api/challengeApi";
 import { joinChallengeBatch } from "../../../api/userApi";
 import CloseIcon from "@material-ui/icons/Close";
@@ -142,11 +141,7 @@ export default function ChallengeInvite(props) {
               })
             }
           >
-            {isLoading ? (
-              <BeatLoader color={"#fff"} />
-            ) : (
-              <Typography>JOIN CHALLENGE</Typography>
-            )}
+            {isLoading ? null : <Typography>JOIN CHALLENGE</Typography>}
           </button>
         </Grid>
       )}

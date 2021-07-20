@@ -42,7 +42,6 @@ import ChallengeDetails from "./pages/Challenge/ChallengeDetails";
 import { getUser } from "../api/userApi";
 import { useUserContext } from "./pages/User/UserContext";
 import ScrollToTop from "./ScrollToTop";
-import Loading from "./Loading";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SignIn from "./pages/SignIn/SignIn";
@@ -53,6 +52,9 @@ import FAQ from "./pages/FAQ/FAQ";
 import Resources from "./pages/Resources/Resources";
 import JoinChallenge from "./pages/JoinChallenge/JoinChallenge";
 import ChallengeInvite from "./pages/ChallengeInvite/ChallengeInvite";
+import FitnessTips from "./pages/FitnessTips/FitnessTips";
+import Inspiration from "./pages/Inspiration/Inspiration";
+import ChallengeTips from "./pages/ChallengeTips/ChallengeTips";
 const drawerWidth = "100%";
 
 const useStyles = makeStyles((theme) => ({
@@ -214,9 +216,7 @@ function Main() {
           height: "100vh",
           width: "100vw",
         }}
-      >
-        <Loading />
-      </div>
+      />
     );
   }
 
@@ -522,6 +522,33 @@ function Main() {
             render={() => (
               <div key="join" style={{ height: "100%", width: "100%" }}>
                 <NewChallenge />
+              </div>
+            )}
+          />
+          <Route
+            path="/fitness-tips"
+            render={() => (
+              <div key="fitnessTips" style={{ height: "100%", width: "100%" }}>
+                <FitnessTips />
+              </div>
+            )}
+          />
+          <Route
+            path="/inspiration"
+            render={() => (
+              <div key="inspiration" style={{ height: "100%", width: "100%" }}>
+                <Inspiration />
+              </div>
+            )}
+          />
+          <Route
+            path="/challenge-tips"
+            render={() => (
+              <div
+                key="challengeTips"
+                style={{ height: "100%", width: "100%" }}
+              >
+                <ChallengeTips />
               </div>
             )}
           />

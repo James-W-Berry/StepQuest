@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import { withStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme, makeStyles } from "@material-ui/core/styles";
 import colors from "../../../assets/colors";
 import { Cancel, Close, Save } from "@material-ui/icons";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -31,16 +31,27 @@ import {
 import { isEqual } from "lodash";
 import { updateAvatar } from "../../../api/userApi";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   closeButton: {
     position: "absolute",
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: colors.stepitup_blue,
+    color: colors.almostWhite,
   },
-});
+  saveButton: {
+    color: colors.black,
+    backgroundColor: colors.stepQuestLightGray,
+    margin: "10px",
+    border: "1px solid #191919",
+    "&:hover": {
+      backgroundColor: colors.almostBlack,
+      color: colors.almostWhite,
+    },
+  },
+}));
 
 export default function AvatarWidget(props) {
+  const classes = useStyles();
   const { userId, currentAvatar, updateLocalAvatar } = props;
   const theme = useTheme();
   const [displayToast, setDisplayToast] = useState(false);
@@ -48,6 +59,7 @@ export default function AvatarWidget(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [avatarCreatorVisible, setAvatarCreatorVisible] = useState(false);
   const [avatarOptions, setAvatarOptions] = useState();
+  const [hasChange, setHasChange] = useState(false);
 
   useEffect(() => {
     if (currentAvatar) {
@@ -66,6 +78,7 @@ export default function AvatarWidget(props) {
 
   const handleOptionChange = (option, event) => {
     setAvatarOptions({ ...avatarOptions, [option]: event.target.value });
+    setHasChange(true);
   };
 
   const handleSaveAvatar = () => {
@@ -86,8 +99,8 @@ export default function AvatarWidget(props) {
     }
   };
 
-  const DialogTitle = withStyles(styles)((props) => {
-    const { children, classes, onClose, ...other } = props;
+  const DialogTitle = (props) => {
+    const { children, onClose, ...other } = props;
     return (
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
         <Typography style={{ color: "#f7f7f5" }} variant="h6">
@@ -104,7 +117,7 @@ export default function AvatarWidget(props) {
         ) : null}
       </MuiDialogTitle>
     );
-  });
+  };
 
   return (
     <div>
@@ -139,7 +152,7 @@ export default function AvatarWidget(props) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: colors.almostBlack,
+            backgroundColor: colors.stepQuestOrange,
           }}
         >
           <DialogTitle
@@ -418,11 +431,8 @@ export default function AvatarWidget(props) {
                 </Button>
 
                 <Button
-                  style={{
-                    color: colors.white,
-                    backgroundColor: colors.stepitup_blue,
-                    margin: "10px",
-                  }}
+                  disabled={!hasChange}
+                  className={classes.saveButton}
                   onClick={handleSaveAvatar}
                   startIcon={<Save />}
                 >
