@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  Grid,
-  Divider,
-  Snackbar,
-  IconButton,
-} from "@material-ui/core";
+import { Typography, Grid, Snackbar, IconButton } from "@material-ui/core";
 import colors from "../../../assets/colors";
 import EditableTextField from "../../fields/EditableTextField";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
@@ -15,14 +9,30 @@ import {
   removeEndedChallenges,
   updateUsernameBatch,
 } from "../../../api/userApi";
+import { NavLink } from "react-router-dom";
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 import ChallengesSection from "./ChallengesSection";
 import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
 import MissingUser from "./MissingUser";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  navLink: {
+    fontSize: ".8125rem",
+    color: theme.palette.primary.main,
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+      cursor: "pointer",
+    },
+    padding: "10px",
+  },
+}));
 
 const Profile = (props) => {
+  const classes = useStyles();
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
@@ -174,122 +184,182 @@ const Profile = (props) => {
     <div
       style={{
         backgroundColor: colors.stepQuestLightGray,
-        minHeight: "100vh",
+        height: "100%",
       }}
     >
-      {focusedSection === "profile" && (
-        <div>
-          <Grid
-            key="summary"
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
+      <Grid container style={{ display: "flex", height: "100%" }}>
+        <Grid
+          key="summary"
+          item
+          xs={12}
+          sm={12}
+          md={3}
+          lg={3}
+          xl={3}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.stepQuestPaleOrangeFaded,
+            height: "100%",
+          }}
+        >
+          <div
+            key="picture"
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Grid key="picture" item>
-              <div
-                style={{
-                  display: "flex",
-                  flex: 1,
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <AvatarWidget
-                  userId={userId}
-                  currentAvatar={profileDetails.data.avatar}
-                  updateLocalAvatar={updateLocalAvatar}
-                />
-              </div>
-            </Grid>
+            <AvatarWidget
+              userId={userId}
+              currentAvatar={profileDetails.data.avatar}
+              updateLocalAvatar={updateLocalAvatar}
+            />
+          </div>
 
-            <Grid key="name" item>
-              {userId === id ? (
-                <EditableTextField
-                  label="Display Name"
-                  variant="h4"
-                  current={profileDetails.data.displayName}
-                  updateField={(name) => onEditDisplayName(name)}
-                />
-              ) : (
-                <Typography variant="h4" style={{ color: colors.almostBlack }}>
-                  {profileDetails.data.displayName}
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
+          <EditableTextField
+            key="name"
+            label="Display Name"
+            current={profileDetails.data.displayName}
+            updateField={(name) => onEditDisplayName(name)}
+          />
 
-          <Divider variant="fullWidth" style={{ margin: "20px" }} />
-
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
+          <div
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "flex-start",
             }}
           >
-            {profileDetails.data.badges && (
+            <NavLink
+              to={`/profile`}
+              className={classes.navLink}
+              style={{
+                padding: "0px",
+              }}
+            >
+              <Typography
+                className={focusedSection === "profile" ? "bold-text" : ""}
+              >
+                Overview
+              </Typography>
+            </NavLink>
+            <NavLink
+              to={`/profile/awards`}
+              className={classes.navLink}
+              style={{
+                padding: "0px",
+              }}
+            >
+              <Typography
+                className={focusedSection === "awards" ? "bold-text" : ""}
+              >
+                Awards
+              </Typography>
+            </NavLink>
+            <NavLink
+              to={`/profile/challenges`}
+              className={classes.navLink}
+              style={{
+                padding: "0px",
+              }}
+            >
+              <Typography
+                className={focusedSection === "challenges" ? "bold-text" : ""}
+              >
+                Challenges
+              </Typography>
+            </NavLink>
+          </div>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={9}
+          lg={9}
+          xl={9}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {focusedSection === "profile" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "20px",
+              }}
+            >
+              <Typography variant="h5">Awards</Typography>
+
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  margin: "20px",
                 }}
               >
-                <Typography variant="h5">Awards</Typography>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {profileDetails.data.badges.map((badge, index) => {
-                    return <Badge data={badge} key={index} />;
-                  })}
-                </div>
+                {profileDetails.data.badges.map((badge, index) => {
+                  return <Badge data={badge} key={index} />;
+                })}
               </div>
-            )}
-          </Grid>
+              <ChallengesSection
+                userId={userId}
+                user={profileDetails.data}
+                id={id}
+                activeChallenges={profileDetails.data.activeChallenges}
+                activeChallengeData={activeChallengeData}
+              />
+            </div>
+          )}
+          {focusedSection === "awards" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "20px",
+              }}
+            >
+              <Typography variant="h5">Awards</Typography>
 
-          <ChallengesSection
-            userId={userId}
-            user={profileDetails.data}
-            id={id}
-            activeChallenges={profileDetails.data.activeChallenges}
-            activeChallengeData={activeChallengeData}
-          />
-        </div>
-      )}
-      {focusedSection === "challenges" && (
-        <ChallengesSection
-          userId={userId}
-          user={profileDetails.data}
-          id={id}
-          activeChallenges={profileDetails.data.activeChallenges}
-          activeChallengeData={activeChallengeData}
-        />
-      )}
-      {focusedSection === "settings" && (
-        <Typography>Show the settings here</Typography>
-      )}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {profileDetails.data.badges.map((badge, index) => {
+                  return <Badge data={badge} key={index} />;
+                })}
+              </div>
+            </div>
+          )}
+          {focusedSection === "challenges" && (
+            <ChallengesSection
+              userId={userId}
+              user={profileDetails.data}
+              id={id}
+              activeChallenges={profileDetails.data.activeChallenges}
+              activeChallengeData={activeChallengeData}
+            />
+          )}
+          {focusedSection === "settings" && (
+            <Typography>Show the settings here</Typography>
+          )}
+        </Grid>
+      </Grid>
 
       <Snackbar
         anchorOrigin={{

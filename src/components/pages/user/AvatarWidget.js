@@ -30,6 +30,7 @@ import {
 } from "./AvatarOptions";
 import { isEqual } from "lodash";
 import { updateAvatar } from "../../../api/userApi";
+import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -60,6 +61,7 @@ export default function AvatarWidget(props) {
   const [avatarCreatorVisible, setAvatarCreatorVisible] = useState(false);
   const [avatarOptions, setAvatarOptions] = useState();
   const [hasChange, setHasChange] = useState(false);
+  const [showAvatarEditIcon, setShowAvatarEditIcon] = useState(false);
 
   useEffect(() => {
     if (currentAvatar) {
@@ -121,22 +123,47 @@ export default function AvatarWidget(props) {
 
   return (
     <div>
-      <ButtonBase onClick={openAvatarCreator}>
+      <ButtonBase
+        onClick={openAvatarCreator}
+        onMouseEnter={() => setShowAvatarEditIcon(true)}
+        onMouseLeave={() => setShowAvatarEditIcon(false)}
+      >
         {avatarOptions && (
-          <Avatar
-            style={{ width: "175px", height: "175px" }}
-            avatarStyle={avatarOptions.avatarStyle}
-            topType={avatarOptions.topType}
-            accessoriesType={avatarOptions.accessoriesType}
-            hairColor={avatarOptions.hairColor}
-            facialHairType={avatarOptions.facialHairType}
-            clotheType={avatarOptions.clotheType}
-            clotheColor={avatarOptions.clotheColor}
-            eyeType={avatarOptions.eyeType}
-            eyebrowType={avatarOptions.eyebrowType}
-            mouthType={avatarOptions.mouthType}
-            skinColor={avatarOptions.skinColor}
-          />
+          <div>
+            <Avatar
+              style={{ width: "175px", height: "175px" }}
+              avatarStyle={avatarOptions.avatarStyle}
+              topType={avatarOptions.topType}
+              accessoriesType={avatarOptions.accessoriesType}
+              hairColor={avatarOptions.hairColor}
+              facialHairType={avatarOptions.facialHairType}
+              clotheType={avatarOptions.clotheType}
+              clotheColor={avatarOptions.clotheColor}
+              eyeType={avatarOptions.eyeType}
+              eyebrowType={avatarOptions.eyebrowType}
+              mouthType={avatarOptions.mouthType}
+              skinColor={avatarOptions.skinColor}
+            />
+            {showAvatarEditIcon && (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "2px",
+                  left: "12px",
+                  height: "75px",
+                  width: "150px",
+                  backgroundColor: "#ffffffd0",
+                  borderBottomLeftRadius: "400px",
+                  borderBottomRightRadius: "400px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <EditIcon />
+              </div>
+            )}
+          </div>
         )}
       </ButtonBase>
 

@@ -4,7 +4,6 @@ import medal from "../../../assets/medal.png";
 
 export default function Badge(props) {
   const { data } = props;
-  console.log(data);
 
   const applyMedalColor = {
     gold: "#FFD700",

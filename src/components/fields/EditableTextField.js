@@ -9,8 +9,11 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     "&:hover": {
       cursor: "pointer",
+      visibility: "visble",
     },
     marginLeft: "10px",
+    marginTop: "40px",
+    visibility: "gone",
   },
 }));
 
@@ -18,6 +21,7 @@ export default function EditableTextField(props) {
   const { label, updateField } = props;
   const [value, setValue] = useState();
   const [editMode, setEditMode] = useState(false);
+  const [showEditIcon, setShowEditIcon] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {
@@ -50,14 +54,22 @@ export default function EditableTextField(props) {
           />
         </div>
       ) : (
-        <div style={{ display: "flex" }}>
-          <Typography variant={props.variant}>{value}</Typography>
-          <EditIcon
-            className={classes.icon}
-            onClick={() => {
-              setEditMode(true);
-            }}
-          />
+        <div
+          style={{ display: "flex", cursor: "pointer" }}
+          onMouseEnter={() => setShowEditIcon(true)}
+          onMouseLeave={() => setShowEditIcon(false)}
+        >
+          <Typography class="form-title" style={{ padding: "0px" }}>
+            {value}
+          </Typography>
+          {showEditIcon && (
+            <EditIcon
+              onClick={() => {
+                setEditMode(true);
+              }}
+              className={classes.icon}
+            />
+          )}
         </div>
       )}
     </div>
