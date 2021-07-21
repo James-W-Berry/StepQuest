@@ -176,11 +176,9 @@ export default function ChallengesSection(props) {
                   style: { padding: "6px 12px" },
                 }}
                 onClick={() =>
-                  // copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
-                  copyToClipboard(`http://localhost:3000/join/${item.id}`)
+                  copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
                 }
-                // defaultValue={`http://stepquest.web.app/join/${item.id}`}
-                defaultValue={`http://localhost:3000/join/${item.id}`}
+                defaultValue={`http://stepquest.web.app/join/${item.id}`}
               />
             </Tooltip>
 
@@ -226,7 +224,9 @@ export default function ChallengesSection(props) {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <Typography className="section-header">MY CHALLENGES</Typography>
+          <Typography className="section-header-small">
+            MY CHALLENGES
+          </Typography>
           <div style={{ display: "flex" }}>
             <Chip
               key="active"

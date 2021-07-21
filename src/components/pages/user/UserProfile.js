@@ -278,11 +278,11 @@ const Profile = (props) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                alignItems: "flex-start",
                 margin: "20px",
               }}
             >
-              <Typography variant="h5">Awards</Typography>
+              <Typography className="section-header-big">Awards</Typography>
 
               <div
                 style={{

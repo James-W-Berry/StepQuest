@@ -143,7 +143,7 @@ export default function Landing() {
         />
       </div>
       <div className="landing-section">
-        <Typography className="section-header">FEATURES</Typography>
+        <Typography className="section-header-big">FEATURES</Typography>
         <Grid
           container
           spacing={8}
@@ -171,7 +171,7 @@ export default function Landing() {
           marginBottom: "0px",
         }}
       >
-        <Typography className="section-header">JOIN A CHALLENGE</Typography>
+        <Typography className="section-header-big">JOIN A CHALLENGE</Typography>
         <Typography className="section-body" style={{ paddingTop: "20px" }}>
           Ready to start? Let's find the right challenge for you!
         </Typography>
