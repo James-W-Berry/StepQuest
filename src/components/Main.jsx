@@ -303,8 +303,7 @@ function Main() {
               </NavLink>
               {loggedIn ? (
                 <div className={classes.navLink}>
-                  <NavLink
-                    to={`/profile`}
+                  <Typography
                     className={classes.navLink}
                     style={{ padding: "0px" }}
                   >
@@ -317,7 +316,7 @@ function Main() {
                       </Typography>
                       <ExpandMoreOutlined style={{ width: "0.8em" }} />
                     </div>
-                  </NavLink>
+                  </Typography>
                   <Popover
                     id="user"
                     {...bindPopover(userPopUpState)}

@@ -1,7 +1,5 @@
 import "firebase/auth";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import photo_0 from "../../../assets/landing_0.png";
 import photo_1 from "../../../assets/landing_1.png";
@@ -10,7 +8,7 @@ import photo_3 from "../../../assets/landing_3.png";
 import FeatureTile from "./FeatureTile";
 import ChallengeTile from "./ChallengeTile";
 import colors from "../../../assets/colors";
-import { useState } from "react";
+import Footer from "../../Footer";
 
 const useStyles = makeStyles((theme) => ({
   navLink: {
@@ -104,19 +102,21 @@ const getLandingPhoto = () => {
 
 export default function Landing() {
   const classes = useStyles();
-  const theme = useTheme();
-  const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
-  const [photo, setPhoto] = useState(getLandingPhoto());
+  const photo = getLandingPhoto();
 
   return (
     <Grid container style={{ minHeight: "100%" }}>
       <div className="landing-background">
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6} className="landing">
-          <Typography className="landing-title">
-            StepQuest fitness challenges.
-          </Typography>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12} className="landing">
+          <Typography className="landing-title">StepQuest</Typography>
           <Typography className="landing-subtitle">
-            A better way to work out.
+            Fitness challenges
+          </Typography>
+          <Typography
+            className="landing-subtitle"
+            style={{ paddingTop: "50px" }}
+          >
+            A better way to work out
           </Typography>
           <NavLink to={`/signup`} className={classes.navLink}>
             <button className="landing-button ">
@@ -124,22 +124,23 @@ export default function Landing() {
             </button>
           </NavLink>
         </Grid>
-        {isAboveMediumScreen && (
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            xl={6}
-            style={{
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right bottom",
-              backgroundSize: "contain",
-              backgroundImage: `url(${photo})`,
-            }}
-          />
-        )}
+        <Grid
+          className="landing"
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          style={{
+            padding: "0px",
+            flex: 1,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right bottom",
+            backgroundSize: "contain",
+            backgroundImage: `url(${photo})`,
+          }}
+        />
       </div>
       <div className="landing-section">
         <Typography className="section-header">FEATURES</Typography>
@@ -164,7 +165,11 @@ export default function Landing() {
       </div>
       <div
         className="landing-section"
-        style={{ backgroundColor: colors.stepQuestLightGray }}
+        style={{
+          backgroundColor: colors.stepQuestLightGray,
+          paddingBottom: "60px",
+          marginBottom: "0px",
+        }}
       >
         <Typography className="section-header">JOIN A CHALLENGE</Typography>
         <Typography className="section-body" style={{ paddingTop: "20px" }}>
@@ -198,6 +203,7 @@ export default function Landing() {
           </button>
         </NavLink>
       </div>
+      <Footer />
     </Grid>
   );
 }

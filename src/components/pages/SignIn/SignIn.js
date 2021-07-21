@@ -19,6 +19,11 @@ export default function SignIn() {
       setIsSignInSuccessful(response.success);
       setMessage(response.message);
       setIsLoading(false);
+      if (response.success) {
+        setTimeout(() => {
+          history.push("/profile");
+        }, 1000);
+      }
     });
   };
 

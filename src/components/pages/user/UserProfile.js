@@ -16,23 +16,13 @@ import ChallengesSection from "./ChallengesSection";
 import AvatarWidget from "./AvatarWidget";
 import { Close } from "@material-ui/icons";
 import MissingUser from "./MissingUser";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  navLink: {
-    fontSize: ".8125rem",
-    color: theme.palette.primary.main,
-    textDecoration: "none",
-    "&:hover": {
-      textDecoration: "none",
-      cursor: "pointer",
-    },
-    padding: "10px",
-  },
-}));
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const Profile = (props) => {
-  const classes = useStyles();
+  const theme = useTheme();
+  const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   const {
     authenticatedUser: { userId },
   } = useAuthenticatedUserContext();
@@ -187,7 +177,14 @@ const Profile = (props) => {
         height: "100%",
       }}
     >
-      <Grid container style={{ display: "flex", height: "100%" }}>
+      <Grid
+        container
+        style={{
+          display: "flex",
+          height: "100%",
+          flexWrap: isAboveMediumScreen ? "nowrap" : "wrap",
+        }}
+      >
         <Grid
           key="summary"
           item
@@ -202,7 +199,7 @@ const Profile = (props) => {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: colors.stepQuestPaleOrangeFaded,
-            height: "100%",
+            height: isAboveMediumScreen ? "100%" : "50%",
           }}
         >
           <div
@@ -227,53 +224,40 @@ const Profile = (props) => {
             updateField={(name) => onEditDisplayName(name)}
           />
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <NavLink
-              to={`/profile`}
-              className={classes.navLink}
+          {isAboveMediumScreen && (
+            <div
               style={{
-                padding: "0px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
               }}
             >
-              <Typography
-                className={focusedSection === "profile" ? "bold-text" : ""}
+              <NavLink
+                to={`/profile`}
+                className={
+                  focusedSection === "profile" ? "bold-nav-text" : "nav-text"
+                }
               >
-                Overview
-              </Typography>
-            </NavLink>
-            <NavLink
-              to={`/profile/awards`}
-              className={classes.navLink}
-              style={{
-                padding: "0px",
-              }}
-            >
-              <Typography
-                className={focusedSection === "awards" ? "bold-text" : ""}
+                <Typography>Overview</Typography>
+              </NavLink>
+              <NavLink
+                to={`/profile/awards`}
+                className={
+                  focusedSection === "awards" ? "bold-nav-text" : "nav-text"
+                }
               >
-                Awards
-              </Typography>
-            </NavLink>
-            <NavLink
-              to={`/profile/challenges`}
-              className={classes.navLink}
-              style={{
-                padding: "0px",
-              }}
-            >
-              <Typography
-                className={focusedSection === "challenges" ? "bold-text" : ""}
+                <Typography>Awards</Typography>
+              </NavLink>
+              <NavLink
+                to={`/profile/challenges`}
+                className={
+                  focusedSection === "challenges" ? "bold-nav-text" : "nav-text"
+                }
               >
-                Challenges
-              </Typography>
-            </NavLink>
-          </div>
+                <Typography>Challenges</Typography>
+              </NavLink>
+            </div>
+          )}
         </Grid>
 
         <Grid
@@ -285,8 +269,8 @@ const Profile = (props) => {
           xl={9}
           style={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
+            overflowY: "scroll",
           }}
         >
           {focusedSection === "profile" && (
@@ -295,7 +279,6 @@ const Profile = (props) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
                 margin: "20px",
               }}
             >
@@ -318,6 +301,14 @@ const Profile = (props) => {
                 id={id}
                 activeChallenges={profileDetails.data.activeChallenges}
                 activeChallengeData={activeChallengeData}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  minHeight: "50px",
+                }}
               />
             </div>
           )}
@@ -344,19 +335,62 @@ const Profile = (props) => {
                   return <Badge data={badge} key={index} />;
                 })}
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  minHeight: "50px",
+                }}
+              />
             </div>
           )}
           {focusedSection === "challenges" && (
-            <ChallengesSection
-              userId={userId}
-              user={profileDetails.data}
-              id={id}
-              activeChallenges={profileDetails.data.activeChallenges}
-              activeChallengeData={activeChallengeData}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "20px",
+              }}
+            >
+              <ChallengesSection
+                userId={userId}
+                user={profileDetails.data}
+                id={id}
+                activeChallenges={profileDetails.data.activeChallenges}
+                activeChallengeData={activeChallengeData}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  minHeight: "50px",
+                }}
+              />
+            </div>
           )}
           {focusedSection === "settings" && (
-            <Typography>Show the settings here</Typography>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography>Show the settings here</Typography>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  minHeight: "50px",
+                }}
+              />
+            </div>
           )}
         </Grid>
       </Grid>

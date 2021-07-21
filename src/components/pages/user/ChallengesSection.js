@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     },
     margin: "0px",
   },
+  inputField: {
+    padding: "6px 12px",
+  },
 }));
 
 export default function ChallengesSection(props) {
@@ -82,7 +85,7 @@ export default function ChallengesSection(props) {
         key={item}
         className={id % 2 === 0 ? classes.evenStyle : classes.oddStyle}
       >
-        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <a
             className="section-body"
             href={`/challenge/${item.id}`}
@@ -112,7 +115,10 @@ export default function ChallengesSection(props) {
               <Typography className="section-body-regular-weight">
                 {item.title}
               </Typography>
-              <Typography className="section-body-regular-size">
+              <Typography
+                className="section-body-regular-size"
+                style={{ textAlign: "start" }}
+              >
                 {item.description}
               </Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -129,7 +135,7 @@ export default function ChallengesSection(props) {
             </div>
           </a>
         </Grid>
-        <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <div
             style={{
               display: "flex",
@@ -139,7 +145,9 @@ export default function ChallengesSection(props) {
               padding: "10px 10px",
             }}
           >
-            <Typography>INVITE LINK</Typography>
+            <Typography className="section-body-small-size">
+              INVITE LINK
+            </Typography>
             <Tooltip
               classes={{ tooltip: classes.tooltip }}
               title={
@@ -163,6 +171,10 @@ export default function ChallengesSection(props) {
                 InputProps={{
                   readOnly: true,
                 }}
+                inputProps={{
+                  className: "section-body-regular-size",
+                  style: { padding: "6px 12px" },
+                }}
                 onClick={() =>
                   // copyToClipboard(`http://stepquest.web.app/join/${item.id}`)
                   copyToClipboard(`http://localhost:3000/join/${item.id}`)
@@ -173,7 +185,7 @@ export default function ChallengesSection(props) {
             </Tooltip>
 
             <Typography
-              className="section-body-regular-size"
+              className="section-body-small-size"
               style={{ color: "#666" }}
             >
               Share this link to invite participants to your challenge
@@ -197,8 +209,6 @@ export default function ChallengesSection(props) {
       container
       spacing={3}
       style={{
-        paddingLeft: "10%",
-        paddingRight: "10%",
         paddingTop: "20px",
       }}
     >

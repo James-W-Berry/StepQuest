@@ -5,7 +5,7 @@ $stepQuestLightGray: #f5f5f5;
 $stepQuestGray: #2b3240;
 $stepQuestYellow: #f2d06b;
 $stepQuestLightOrange: #f2c166;
-$stepQuestPaleOrangeFaded: #f2d6a220;
+$stepQuestPaleOrangeFaded: #f2d6a250;
 $stepQuestPaleOrange: #f2d6a2;
 $stepQuestOrange: #d98236;
 
@@ -24,9 +24,10 @@ body {
 
 .landing-background {
   display: flex;
+  flex-direction: column;
   width: 100%;
   min-height: calc(100vh - 64px);
-  background-color: $stepQuestPaleOrange;
+  background-color: $stepQuestPaleOrangeFaded;
 }
 
 .landing {
@@ -36,8 +37,7 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   text-align: start;
-  padding-left: 60px;
-  padding-top: 120px;
+  padding: 60px 30px 0px 30px;
 }
 
 .landing-title {
@@ -97,6 +97,10 @@ body {
 .section-body-regular-size {
   font-weight: 300 !important;
   font-size: 1rem !important;
+}
+
+.section-body-small-size {
+  font-size: 0.8125rem !important;
 }
 
 .section-subheading {
@@ -291,8 +295,47 @@ body {
   cursor: pointer;
 }
 
-.bold-text {
+.bold-nav-text {
+  display: flex;
+  width: 100%;
+  padding: 10px 0px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.bold-nav-text:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bold-nav-text p {
+  padding-left: 13px;
   font-weight: 600 !important;
+  color: $almostBlack;
+  text-decoration: none;
+  border-left: 2px solid black;
+}
+
+.nav-text {
+  display: flex;
+  font-weight: 300 !important;
+  width: 100%;
+  padding: 10px 0px;
+  text-align: center;
+  color: $almostBlack;
+  text-decoration: none;
+}
+
+.nav-text p {
+  padding-left: 13px;
+  font-weight: 300 !important;
+  color: $almostBlack;
+  text-decoration: none;
+}
+
+.nav-text:hover {
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .menu p {

@@ -8,7 +8,7 @@ import {
 } from "../../../api/challengeApi";
 import {
   Button,
-  Divider,
+  Grid,
   IconButton,
   Snackbar,
   Typography,
@@ -25,6 +25,7 @@ import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
 import { getIdToNameMappings } from "../../../api/mappingApi";
 import MissingChallenge from "./MissingChallenge";
+import photo_0 from "../../../assets/weightlifting_0.png";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -179,33 +180,75 @@ export default function ChallengeDetails(props) {
   }
 
   return (
-    <div>
-      <div style={{ margin: "20px" }}>
-        <Typography variant="h4">{challengeDetails.data.title}</Typography>
-        <Typography>{challengeDetails.data.description}</Typography>
-        <Typography>Activity: {challengeDetails.data.activity}</Typography>
-      </div>
-
-      <div style={{ margin: "20px" }}>
-        <Typography>
+    <Grid container style={{ display: "flex" }}>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={6}
+        xl={6}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          backgroundColor: colors.stepQuestPaleOrangeFaded,
+          padding: "20px 40px",
+        }}
+      >
+        <Typography className="form-title">
+          {challengeDetails.data.title}
+        </Typography>
+        <Typography className="section-body">
+          Challenge Activity: {challengeDetails.data.activity}
+        </Typography>
+        <Typography className="section-body">
+          {challengeDetails.data.description}
+        </Typography>
+        <Typography className="section-body" style={{ marginTop: "20px" }}>
           Start: {convertSecondsToDate(challengeDetails.data.startDate.seconds)}
         </Typography>
-        <Typography>
+        <Typography className="section-body">
           End: {convertSecondsToDate(challengeDetails.data.endDate.seconds)}
         </Typography>
-      </div>
-
-      {creator && (
-        <div style={{ margin: "20px" }}>
-          <Typography>
+        {creator && (
+          <Typography className="section-body" style={{ marginTop: "20px" }}>
             Created by{" "}
             <a href={`/users/${challengeDetails.data.creator}`}>{creator}</a>
           </Typography>
-        </div>
-      )}
+        )}
+      </Grid>
 
-      <Divider variant="fullWidth" />
-      <div style={{ margin: "20px" }}>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={6}
+        xl={6}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.stepQuestPaleOrangeFaded,
+        }}
+      >
+        <img
+          alt="challenge-pic"
+          src={photo_0}
+          style={{ maxWidth: "100%", maxHeight: "80%" }}
+        />
+      </Grid>
+
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
+        style={{ margin: "20px" }}
+      >
         <Typography variant="h5">Challenge Stats</Typography>
         <div style={{ height: "500px" }}>
           <ChallengeTotalChart
@@ -213,17 +256,33 @@ export default function ChallengeDetails(props) {
             logs={challengeLogs}
           />
         </div>
-      </div>
+      </Grid>
 
-      <div style={{ margin: "20px" }}>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
+        style={{ margin: "20px" }}
+      >
         <Typography variant="h5">Standings</Typography>
         <Participants
           logs={challengeLogs}
           participantMappings={idToNameMappings}
         />
-      </div>
+      </Grid>
 
-      <div style={{ margin: "20px" }}>
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        xl={12}
+        style={{ margin: "20px" }}
+      >
         <Typography variant="h5">Your Challenge Activities</Typography>
         <UserActivityCalendar
           user={userId}
@@ -231,122 +290,122 @@ export default function ChallengeDetails(props) {
           startDate={challengeDetails.data.startDate.seconds}
           endDate={challengeDetails.data.endDate.seconds}
         />
-      </div>
+      </Grid>
 
-      <Divider variant="fullWidth" />
-
-      {challengeDetails.data.participants.includes(userId) ? (
-        <div style={{ margin: "20px" }}>
-          <Typography variant="h5">Admin Zone</Typography>
-          <Button
-            style={{
-              backgroundColor: "red",
-              color: colors.white,
-            }}
-            onClick={() => setDisplayConfirmLeave(true)}
-          >
-            Leave Challenge
-          </Button>
-        </div>
-      ) : (
-        <div style={{ margin: "20px" }}>
-          <Typography variant="h5">Join this Challenge</Typography>
-          <Button
-            style={{
-              backgroundColor: "red",
-              color: colors.white,
-            }}
-            onClick={() =>
-              joinChallengeBatch().then((response) => {
-                if (response.success) {
-                  setToastMessage(
-                    `Successfully joined ${challengeDetails.data.title}`
-                  );
-                  setDisplayToast(true);
-                } else {
-                  setToastMessage(response.message);
-                  setDisplayToast(true);
-                }
-              })
-            }
-          >
-            Join
-          </Button>
-        </div>
-      )}
-
-      {challengeDetails.data.admin.includes(userId) && (
-        <div style={{ marginBottom: "40px" }}>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        {challengeDetails.data.participants.includes(userId) ? (
           <div style={{ margin: "20px" }}>
+            <Typography variant="h5">Admin Zone</Typography>
             <Button
               style={{
                 backgroundColor: "red",
                 color: colors.white,
               }}
-              onClick={() => setDisplayAddAdmin(true)}
+              onClick={() => setDisplayConfirmLeave(true)}
             >
-              Add Challenge Admin
+              Leave Challenge
             </Button>
           </div>
+        ) : (
           <div style={{ margin: "20px" }}>
+            <Typography variant="h5">Join this Challenge</Typography>
             <Button
               style={{
                 backgroundColor: "red",
                 color: colors.white,
               }}
-              onClick={() => setDisplayConfirmDelete(true)}
+              onClick={() =>
+                joinChallengeBatch().then((response) => {
+                  if (response.success) {
+                    setToastMessage(
+                      `Successfully joined ${challengeDetails.data.title}`
+                    );
+                    setDisplayToast(true);
+                  } else {
+                    setToastMessage(response.message);
+                    setDisplayToast(true);
+                  }
+                })
+              }
             >
-              Delete Challenge
+              Join
             </Button>
           </div>
-        </div>
-      )}
+        )}
 
-      <DeleteChallengeDialog
-        isOpen={displayConfirmDelete}
-        title={challengeDetails.data.title}
-        handleClose={handleDeleteDialogClose}
-        handleConfirm={handleDeleteConfirmed}
-      />
+        {challengeDetails.data.admin.includes(userId) && (
+          <div style={{ marginBottom: "40px" }}>
+            <div style={{ margin: "20px" }}>
+              <Button
+                style={{
+                  backgroundColor: "red",
+                  color: colors.white,
+                }}
+                onClick={() => setDisplayAddAdmin(true)}
+              >
+                Add Challenge Admin
+              </Button>
+            </div>
+            <div style={{ margin: "20px" }}>
+              <Button
+                style={{
+                  backgroundColor: "red",
+                  color: colors.white,
+                }}
+                onClick={() => setDisplayConfirmDelete(true)}
+              >
+                Delete Challenge
+              </Button>
+            </div>
+          </div>
+        )}
 
-      <LeaveChallengeDialog
-        isOpen={displayConfirmLeave}
-        title={challengeDetails.data.title}
-        handleClose={handleLeaveDialogClose}
-        handleConfirm={handleLeaveConfirmed}
-      />
+        <DeleteChallengeDialog
+          isOpen={displayConfirmDelete}
+          title={challengeDetails.data.title}
+          handleClose={handleDeleteDialogClose}
+          handleConfirm={handleDeleteConfirmed}
+        />
 
-      <AddAdminDialog
-        isOpen={displayAddAdmin}
-        title={challengeDetails.data.title}
-        handleClose={handleAddAdminClose}
-        handleConfirm={handleAddAdminConfirmed}
-        attemptedSoloAdminDeparture={attemptedSoloAdminDeparture}
-        participants={challengeDetails.data.participants}
-      />
+        <LeaveChallengeDialog
+          isOpen={displayConfirmLeave}
+          title={challengeDetails.data.title}
+          handleClose={handleLeaveDialogClose}
+          handleConfirm={handleLeaveConfirmed}
+        />
 
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        open={displayToast}
-        autoHideDuration={5000}
-        onClose={() => setDisplayToast(false)}
-        message={toastMessage}
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => setDisplayToast(false)}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
-    </div>
+        <AddAdminDialog
+          isOpen={displayAddAdmin}
+          title={challengeDetails.data.title}
+          handleClose={handleAddAdminClose}
+          handleConfirm={handleAddAdminConfirmed}
+          attemptedSoloAdminDeparture={attemptedSoloAdminDeparture}
+          participants={challengeDetails.data.participants}
+        />
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={displayToast}
+          autoHideDuration={5000}
+          onClose={() => setDisplayToast(false)}
+          message={toastMessage}
+          action={
+            <React.Fragment>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={() => setDisplayToast(false)}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
+      </Grid>
+    </Grid>
   );
 }
