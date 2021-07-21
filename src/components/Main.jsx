@@ -55,7 +55,6 @@ import ChallengeInvite from "./pages/ChallengeInvite/ChallengeInvite";
 import FitnessTips from "./pages/FitnessTips/FitnessTips";
 import Inspiration from "./pages/Inspiration/Inspiration";
 import ChallengeTips from "./pages/ChallengeTips/ChallengeTips";
-const drawerWidth = "100%";
 
 const useStyles = makeStyles((theme) => ({
   logoHeading: {
@@ -71,8 +70,8 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     position: "absolute",
-    margin: "12px",
-    zIndex: 2000,
+    margin: "12px 0px",
+    zIndex: 3000,
     right: "0px",
   },
   list: {
@@ -102,12 +101,14 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px",
   },
   drawerPaper: {
-    background: colors.almostBlack,
-    width: drawerWidth,
+    background: colors.almostWhite,
+    width: "100vw",
+    marginTop: "64px",
   },
   drawer: {
-    width: drawerWidth,
+    width: "100vw",
     flexShrink: 0,
+    marginTop: "64px",
   },
   signInButton: {
     padding: "0px",
@@ -230,7 +231,7 @@ function Main() {
           minHeight: "64px",
         }}
       >
-        <Toolbar>
+        <Toolbar style={{ zIndex: 3000 }}>
           <NavLink to={`/`} className={classes.navLink}>
             <Typography className="header-title">STEPQUEST</Typography>
           </NavLink>
@@ -568,9 +569,10 @@ function Main() {
         className={classes.drawer}
         anchor="right"
         classes={{
-          paper: theme.palette.background.default,
+          paper: classes.drawerPaper,
         }}
-        open={open}
+        BackdropProps={{ open: false }}
+        open={open && !shouldCollapseIntoDrawer}
         onClose={toggleDrawer()}
       >
         <div
@@ -580,21 +582,34 @@ function Main() {
           onKeyDown={toggleDrawer()}
         >
           <List component="nav">
-            <NavLink className={classes.navLink} to={`/user/${userId}`}>
+            <NavLink className={classes.navLink} to={`/profile`}>
               <ListItem button>
-                <Typography style={{ fontSize: "2rem" }}>Profile</Typography>
+                <Typography
+                  className="form-title"
+                  style={{ padding: "0px", fontSize: "2rem" }}
+                >
+                  Profile
+                </Typography>
               </ListItem>
             </NavLink>
             <NavLink className={classes.navLink} to="/create-challenge">
               <ListItem button>
-                <Typography style={{ fontSize: "2rem" }}>
+                <Typography
+                  className="form-title"
+                  style={{ padding: "0px", fontSize: "2rem" }}
+                >
                   Create a new challenge
                 </Typography>
               </ListItem>
             </NavLink>
             <NavLink className={classes.navLink} to="/about">
               <ListItem button>
-                <Typography style={{ fontSize: "2rem" }}>About</Typography>
+                <Typography
+                  className="form-title"
+                  style={{ padding: "0px", fontSize: "2rem" }}
+                >
+                  About
+                </Typography>
               </ListItem>
             </NavLink>
           </List>
