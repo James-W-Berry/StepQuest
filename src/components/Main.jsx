@@ -201,6 +201,7 @@ function Main() {
   }
 
   const requestLogout = useCallback(() => {
+    console.log("logging out");
     logout();
   }, []);
 
@@ -613,24 +614,21 @@ function Main() {
               </ListItem>
             </NavLink>
           </List>
-          <div
+          <ListItem
+            style={{ margin: "30px 0px 0px 0px" }}
+            button
             onClick={requestLogout}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              position: "absolute",
-              bottom: "40px",
-              cursor: "pointer",
-              width: "100%",
-            }}
           >
             <Typography
-              style={{ marginRight: "10px", color: colors.stepQuestGray }}
+              className="form-title"
+              style={{ padding: "0px", fontSize: "2rem" }}
             >
               Logout
             </Typography>
-            <LogoutIcon style={{ color: colors.stepQuestGray }} />
-          </div>
+            <LogoutIcon
+              style={{ marginLeft: "10px", color: colors.stepQuestGray }}
+            />
+          </ListItem>
         </div>
       </Drawer>
     </div>

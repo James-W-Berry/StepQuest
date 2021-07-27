@@ -20,12 +20,16 @@ import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
 import Participants from "./Participants";
 import LeaveChallengeDialog from "./LeaveChallengeDialog";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
 import { getIdToNameMappings } from "../../../api/mappingApi";
 import MissingChallenge from "./MissingChallenge";
 import photo_0 from "../../../assets/weightlifting_0.png";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -240,6 +244,79 @@ export default function ChallengeDetails(props) {
         />
       </Grid>
 
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} id="actions">
+          <Typography className={"section-body"}>Actions</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {challengeDetails.data.admin.includes(userId) && (
+            <div style={{ display: "flex", alignItems: "flex-start" }}>
+              {challengeDetails.data.participants.includes(userId) ? (
+                <Button
+                  style={{
+                    backgroundColor: "red",
+                    margin: "0px 20px 0px 0px",
+                    color: colors.white,
+                  }}
+                  onClick={() => setDisplayConfirmLeave(true)}
+                >
+                  Leave Challenge
+                </Button>
+              ) : (
+                <div style={{ margin: "0px 20px" }}>
+                  <Typography className="form-section">
+                    Join this Challenge
+                  </Typography>
+                  <Button
+                    style={{
+                      backgroundColor: "red",
+                      color: colors.white,
+                    }}
+                    onClick={() =>
+                      joinChallengeBatch().then((response) => {
+                        if (response.success) {
+                          setToastMessage(
+                            `Successfully joined ${challengeDetails.data.title}`
+                          );
+                          setDisplayToast(true);
+                        } else {
+                          setToastMessage(response.message);
+                          setDisplayToast(true);
+                        }
+                      })
+                    }
+                  >
+                    Join
+                  </Button>
+                </div>
+              )}
+              <div style={{ margin: "0px 20px" }}>
+                <Button
+                  style={{
+                    backgroundColor: "red",
+                    color: colors.white,
+                  }}
+                  onClick={() => setDisplayAddAdmin(true)}
+                >
+                  Add Challenge Admin
+                </Button>
+              </div>
+              <div style={{ margin: "0px 20px" }}>
+                <Button
+                  style={{
+                    backgroundColor: "red",
+                    color: colors.white,
+                  }}
+                  onClick={() => setDisplayConfirmDelete(true)}
+                >
+                  Delete Challenge
+                </Button>
+              </div>
+            </div>
+          )}
+        </AccordionDetails>
+      </Accordion>
+
       <Grid
         item
         xs={12}
@@ -249,13 +326,11 @@ export default function ChallengeDetails(props) {
         xl={12}
         style={{ margin: "20px" }}
       >
-        <Typography variant="h5">Challenge Stats</Typography>
-        <div style={{ height: "500px" }}>
-          <ChallengeTotalChart
-            idToNameMappings={idToNameMappings}
-            logs={challengeLogs}
-          />
-        </div>
+        <Typography className="form-section">Challenge Stats</Typography>
+        <ChallengeTotalChart
+          idToNameMappings={idToNameMappings}
+          logs={challengeLogs}
+        />
       </Grid>
 
       <Grid
@@ -267,7 +342,7 @@ export default function ChallengeDetails(props) {
         xl={12}
         style={{ margin: "20px" }}
       >
-        <Typography variant="h5">Standings</Typography>
+        <Typography className="form-section">Standings</Typography>
         <Participants
           logs={challengeLogs}
           participantMappings={idToNameMappings}
@@ -283,7 +358,9 @@ export default function ChallengeDetails(props) {
         xl={12}
         style={{ margin: "20px" }}
       >
-        <Typography variant="h5">Your Challenge Activities</Typography>
+        <Typography className="form-section">
+          Your Challenge Activities
+        </Typography>
         <UserActivityCalendar
           user={userId}
           challenge={id}
@@ -293,73 +370,6 @@ export default function ChallengeDetails(props) {
       </Grid>
 
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        {challengeDetails.data.participants.includes(userId) ? (
-          <div style={{ margin: "20px" }}>
-            <Typography variant="h5">Admin Zone</Typography>
-            <Button
-              style={{
-                backgroundColor: "red",
-                color: colors.white,
-              }}
-              onClick={() => setDisplayConfirmLeave(true)}
-            >
-              Leave Challenge
-            </Button>
-          </div>
-        ) : (
-          <div style={{ margin: "20px" }}>
-            <Typography variant="h5">Join this Challenge</Typography>
-            <Button
-              style={{
-                backgroundColor: "red",
-                color: colors.white,
-              }}
-              onClick={() =>
-                joinChallengeBatch().then((response) => {
-                  if (response.success) {
-                    setToastMessage(
-                      `Successfully joined ${challengeDetails.data.title}`
-                    );
-                    setDisplayToast(true);
-                  } else {
-                    setToastMessage(response.message);
-                    setDisplayToast(true);
-                  }
-                })
-              }
-            >
-              Join
-            </Button>
-          </div>
-        )}
-
-        {challengeDetails.data.admin.includes(userId) && (
-          <div style={{ marginBottom: "40px" }}>
-            <div style={{ margin: "20px" }}>
-              <Button
-                style={{
-                  backgroundColor: "red",
-                  color: colors.white,
-                }}
-                onClick={() => setDisplayAddAdmin(true)}
-              >
-                Add Challenge Admin
-              </Button>
-            </div>
-            <div style={{ margin: "20px" }}>
-              <Button
-                style={{
-                  backgroundColor: "red",
-                  color: colors.white,
-                }}
-                onClick={() => setDisplayConfirmDelete(true)}
-              >
-                Delete Challenge
-              </Button>
-            </div>
-          </div>
-        )}
-
         <DeleteChallengeDialog
           isOpen={displayConfirmDelete}
           title={challengeDetails.data.title}

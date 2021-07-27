@@ -9,7 +9,7 @@ import {
   removeEndedChallenges,
   updateUsernameBatch,
 } from "../../../api/userApi";
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 import Badge from "./Badge";
 import { useUserContext } from "./UserContext";
 import ChallengesSection from "./ChallengesSection";
@@ -177,223 +177,229 @@ const Profile = (props) => {
         height: "100%",
       }}
     >
-      <Grid
-        container
-        style={{
-          display: "flex",
-          height: "100%",
-          flexWrap: isAboveMediumScreen ? "nowrap" : "wrap",
-        }}
-      >
+      {userId ? (
         <Grid
-          key="summary"
-          item
-          xs={12}
-          sm={12}
-          md={3}
-          lg={3}
-          xl={3}
+          container
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: colors.stepQuestPaleOrangeFaded,
-            height: isAboveMediumScreen ? "100%" : "50%",
+            height: "100%",
+            flexWrap: isAboveMediumScreen ? "nowrap" : "wrap",
           }}
         >
-          <div
-            key="picture"
+          <Grid
+            key="summary"
+            item
+            xs={12}
+            sm={12}
+            md={3}
+            lg={3}
+            xl={3}
             style={{
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
               justifyContent: "center",
+              backgroundColor: colors.stepQuestPaleOrangeFaded,
+              height: isAboveMediumScreen ? "100%" : "50%",
             }}
           >
-            <AvatarWidget
-              userId={userId}
-              currentAvatar={profileDetails.data.avatar}
-              updateLocalAvatar={updateLocalAvatar}
+            <div
+              key="picture"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <AvatarWidget
+                userId={userId}
+                currentAvatar={profileDetails.data.avatar}
+                updateLocalAvatar={updateLocalAvatar}
+              />
+            </div>
+
+            <EditableTextField
+              key="name"
+              label="Display Name"
+              current={profileDetails.data.displayName}
+              updateField={(name) => onEditDisplayName(name)}
             />
-          </div>
 
-          <EditableTextField
-            key="name"
-            label="Display Name"
-            current={profileDetails.data.displayName}
-            updateField={(name) => onEditDisplayName(name)}
-          />
-
-          {isAboveMediumScreen && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <NavLink
-                to={`/profile`}
-                className={
-                  focusedSection === "profile" ? "bold-nav-text" : "nav-text"
-                }
-              >
-                <Typography>Overview</Typography>
-              </NavLink>
-              <NavLink
-                to={`/profile/awards`}
-                className={
-                  focusedSection === "awards" ? "bold-nav-text" : "nav-text"
-                }
-              >
-                <Typography>Awards</Typography>
-              </NavLink>
-              <NavLink
-                to={`/profile/challenges`}
-                className={
-                  focusedSection === "challenges" ? "bold-nav-text" : "nav-text"
-                }
-              >
-                <Typography>Challenges</Typography>
-              </NavLink>
-            </div>
-          )}
-        </Grid>
-
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={9}
-          lg={9}
-          xl={9}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            overflowY: "scroll",
-          }}
-        >
-          {focusedSection === "profile" && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                margin: "20px",
-              }}
-            >
-              <Typography className="section-header-big">Awards</Typography>
-
+            {isAboveMediumScreen && (
               <div
                 style={{
                   display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <NavLink
+                  to={`/profile`}
+                  className={
+                    focusedSection === "profile" ? "bold-nav-text" : "nav-text"
+                  }
+                >
+                  <Typography>Overview</Typography>
+                </NavLink>
+                <NavLink
+                  to={`/profile/awards`}
+                  className={
+                    focusedSection === "awards" ? "bold-nav-text" : "nav-text"
+                  }
+                >
+                  <Typography>Awards</Typography>
+                </NavLink>
+                <NavLink
+                  to={`/profile/challenges`}
+                  className={
+                    focusedSection === "challenges"
+                      ? "bold-nav-text"
+                      : "nav-text"
+                  }
+                >
+                  <Typography>Challenges</Typography>
+                </NavLink>
+              </div>
+            )}
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={9}
+            lg={9}
+            xl={9}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              overflowY: "scroll",
+            }}
+          >
+            {focusedSection === "profile" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  margin: "20px",
+                }}
+              >
+                <Typography className="section-header-big">Awards</Typography>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {profileDetails.data.badges.map((badge, index) => {
+                    return <Badge data={badge} key={index} />;
+                  })}
+                </div>
+                <ChallengesSection
+                  userId={userId}
+                  user={profileDetails.data}
+                  id={id}
+                  activeChallenges={profileDetails.data.activeChallenges}
+                  activeChallengeData={activeChallengeData}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    minHeight: "50px",
+                  }}
+                />
+              </div>
+            )}
+            {focusedSection === "awards" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <Typography variant="h5">Awards</Typography>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {profileDetails.data.badges.map((badge, index) => {
+                    return <Badge data={badge} key={index} />;
+                  })}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    minHeight: "50px",
+                  }}
+                />
+              </div>
+            )}
+            {focusedSection === "challenges" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <ChallengesSection
+                  userId={userId}
+                  user={profileDetails.data}
+                  id={id}
+                  activeChallenges={profileDetails.data.activeChallenges}
+                  activeChallengeData={activeChallengeData}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    minHeight: "50px",
+                  }}
+                />
+              </div>
+            )}
+            {focusedSection === "settings" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                {profileDetails.data.badges.map((badge, index) => {
-                  return <Badge data={badge} key={index} />;
-                })}
+                <Typography>Show the settings here</Typography>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    minHeight: "50px",
+                  }}
+                />
               </div>
-              <ChallengesSection
-                userId={userId}
-                user={profileDetails.data}
-                id={id}
-                activeChallenges={profileDetails.data.activeChallenges}
-                activeChallengeData={activeChallengeData}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  minHeight: "50px",
-                }}
-              />
-            </div>
-          )}
-          {focusedSection === "awards" && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "20px",
-              }}
-            >
-              <Typography variant="h5">Awards</Typography>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {profileDetails.data.badges.map((badge, index) => {
-                  return <Badge data={badge} key={index} />;
-                })}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  minHeight: "50px",
-                }}
-              />
-            </div>
-          )}
-          {focusedSection === "challenges" && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "20px",
-              }}
-            >
-              <ChallengesSection
-                userId={userId}
-                user={profileDetails.data}
-                id={id}
-                activeChallenges={profileDetails.data.activeChallenges}
-                activeChallengeData={activeChallengeData}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  minHeight: "50px",
-                }}
-              />
-            </div>
-          )}
-          {focusedSection === "settings" && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography>Show the settings here</Typography>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  minHeight: "50px",
-                }}
-              />
-            </div>
-          )}
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
+        <Redirect to="/signin" />
+      )}
 
       <Snackbar
         anchorOrigin={{

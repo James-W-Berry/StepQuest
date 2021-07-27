@@ -24,7 +24,7 @@ import {
 } from "@material-ui/pickers";
 import { v4 as uuidv4 } from "uuid";
 import { createNewChallengeBatch } from "../../../api/challengeApi";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import { Help, Lock, VisibilityOff } from "@material-ui/icons";
 import { BeatLoader } from "react-spinners";
@@ -156,11 +156,11 @@ export default function NewChallenge() {
     <Grid container className={classes.root}>
       <Grid
         item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
-        xl={12}
+        xs={11}
+        sm={11}
+        md={11}
+        lg={11}
+        xl={11}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -168,14 +168,15 @@ export default function NewChallenge() {
           alignItems: "center",
         }}
       >
-        {isLoading ? (
+        {isLoading && (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Typography className="form-title">Success!</Typography>
             <Typography className="form-title">
               Heading over to your challenge now...
             </Typography>
           </div>
-        ) : (
+        )}
+        {userId ? (
           <div>
             <Typography className="form-title">Create New Challenge</Typography>
             <div
@@ -208,9 +209,8 @@ export default function NewChallenge() {
                 label="Description (optional)"
                 placeholder="Provide any additional information to the challenge participants (goals, prizes, inspiration, etc)"
                 rowsMin={3}
-              >
-                {description}
-              </TextareaAutosize>
+                value={description}
+              />
               <InputLabel id="select-activity" className={classes.field}>
                 What kind of activity challenge do you want?
               </InputLabel>
@@ -232,37 +232,39 @@ export default function NewChallenge() {
                 )}
               </Select>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Grid container justify="space-around">
-                  <KeyboardDatePicker
-                    style={{ paddingRight: "10px" }}
-                    disabled={isLoading}
-                    disableToolbar
-                    variant="inline"
-                    format="MM/dd/yyyy"
-                    margin="normal"
-                    id="start-date-picker"
-                    label="Start date"
-                    value={startDate}
-                    onChange={handleStartDateChange}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                  />
-                  <KeyboardDatePicker
-                    style={{ paddingLeft: "10px" }}
-                    disabled={isLoading}
-                    disableToolbar
-                    variant="inline"
-                    format="MM/dd/yyyy"
-                    margin="normal"
-                    id="end-date-picker"
-                    label="End date"
-                    value={endDate}
-                    onChange={handleEndDateChange}
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                  />
+                <Grid container spacing={4}>
+                  <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                    <KeyboardDatePicker
+                      disabled={isLoading}
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="start-date-picker"
+                      label="Start date"
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                    <KeyboardDatePicker
+                      disabled={isLoading}
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="end-date-picker"
+                      label="End date"
+                      value={endDate}
+                      onChange={handleEndDateChange}
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                    />
+                  </Grid>
                 </Grid>
               </MuiPickersUtilsProvider>
             </div>
@@ -340,6 +342,8 @@ export default function NewChallenge() {
               )}
             </button>
           </div>
+        ) : (
+          <Redirect to="/signin" />
         )}
 
         <Snackbar

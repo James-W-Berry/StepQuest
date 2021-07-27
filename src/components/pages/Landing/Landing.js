@@ -142,7 +142,7 @@ export default function Landing() {
           }}
         />
       </div>
-      <div className="landing-section">
+      <div className="form-section">
         <Typography className="section-header-big">FEATURES</Typography>
         <Grid
           container
@@ -156,7 +156,15 @@ export default function Landing() {
         >
           {features.map((feature) => {
             return (
-              <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+              <Grid
+                key={feature.title}
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={4}
+                xl={4}
+              >
                 <FeatureTile feature={feature} />{" "}
               </Grid>
             );
@@ -164,7 +172,7 @@ export default function Landing() {
         </Grid>
       </div>
       <div
-        className="landing-section"
+        className="form-section"
         style={{
           backgroundColor: colors.stepQuestLightGray,
           paddingBottom: "60px",
@@ -191,7 +199,15 @@ export default function Landing() {
         >
           {challenges.map((challenge) => {
             return (
-              <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+              <Grid
+                key={challenge.title}
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={4}
+                xl={4}
+              >
                 <ChallengeTile challenge={challenge} />
               </Grid>
             );
