@@ -32,7 +32,6 @@ body {
 
 .landing {
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -111,33 +110,6 @@ body {
 .section-subheading {
   font-weight: 300 !important;
   font-size: 1.125rem !important;
-}
-
-.signup-background {
-  background-image: url("./assets/fitness_stock.png");
-  background-size: cover;
-  width: 100%;
-  padding: 0px;
-  margin: 0px;
-  height: 100%;
-}
-
-.signin-background {
-  background-image: url("./assets/fitness_stock_1.png");
-  background-size: cover;
-  width: 100%;
-  padding: 0px;
-  margin: 0px;
-  height: 100%;
-}
-
-.password-reset-background {
-  background-image: url("./assets/fitness_stock_2.png");
-  background-size: cover;
-  width: 100%;
-  padding: 0px;
-  margin: 0px;
-  height: 100%;
 }
 
 .content {

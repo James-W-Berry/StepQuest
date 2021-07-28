@@ -6,30 +6,21 @@ import {
   getChallenge,
   getChallengeLogs,
 } from "../../../api/challengeApi";
-import {
-  Button,
-  Grid,
-  IconButton,
-  Snackbar,
-  Typography,
-} from "@material-ui/core";
-import { joinChallengeBatch, leaveChallengeBatch } from "../../../api/userApi";
+import { Grid, IconButton, Snackbar, Typography } from "@material-ui/core";
+import { leaveChallengeBatch } from "../../../api/userApi";
 import { useAuthenticatedUserContext } from "../../../auth/AuthenticatedUserContext";
 import DeleteChallengeDialog from "./DeleteChallengeDialog";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
 import Participants from "./Participants";
 import LeaveChallengeDialog from "./LeaveChallengeDialog";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AddAdminDialog from "./AddAdminDialog";
 import UserActivityCalendar from "./UserActivityCalendar";
 import ChallengeTotalChart from "./ChallengeTotalChart";
 import { getIdToNameMappings } from "../../../api/mappingApi";
 import MissingChallenge from "./MissingChallenge";
 import photo_0 from "../../../assets/weightlifting_0.png";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import SettingsAccordion from "./SettingsAccordion";
 
 function convertSecondsToDate(seconds) {
   const date = new Date(seconds * 1000);
@@ -244,78 +235,15 @@ export default function ChallengeDetails(props) {
         />
       </Grid>
 
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} id="actions">
-          <Typography className={"section-body"}>Actions</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {challengeDetails.data.admin.includes(userId) && (
-            <div style={{ display: "flex", alignItems: "flex-start" }}>
-              {challengeDetails.data.participants.includes(userId) ? (
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    margin: "0px 20px 0px 0px",
-                    color: colors.white,
-                  }}
-                  onClick={() => setDisplayConfirmLeave(true)}
-                >
-                  Leave Challenge
-                </Button>
-              ) : (
-                <div style={{ margin: "0px 20px" }}>
-                  <Typography className="form-section">
-                    Join this Challenge
-                  </Typography>
-                  <Button
-                    style={{
-                      backgroundColor: "red",
-                      color: colors.white,
-                    }}
-                    onClick={() =>
-                      joinChallengeBatch().then((response) => {
-                        if (response.success) {
-                          setToastMessage(
-                            `Successfully joined ${challengeDetails.data.title}`
-                          );
-                          setDisplayToast(true);
-                        } else {
-                          setToastMessage(response.message);
-                          setDisplayToast(true);
-                        }
-                      })
-                    }
-                  >
-                    Join
-                  </Button>
-                </div>
-              )}
-              <div style={{ margin: "0px 20px" }}>
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    color: colors.white,
-                  }}
-                  onClick={() => setDisplayAddAdmin(true)}
-                >
-                  Add Challenge Admin
-                </Button>
-              </div>
-              <div style={{ margin: "0px 20px" }}>
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    color: colors.white,
-                  }}
-                  onClick={() => setDisplayConfirmDelete(true)}
-                >
-                  Delete Challenge
-                </Button>
-              </div>
-            </div>
-          )}
-        </AccordionDetails>
-      </Accordion>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <SettingsAccordion
+          userId={userId}
+          challengeDetails={challengeDetails}
+          setDisplayConfirmDelete={setDisplayConfirmDelete}
+          setDisplayConfirmLeave={setDisplayConfirmLeave}
+          setDisplayAddAdmin={setDisplayAddAdmin}
+        />
+      </Grid>
 
       <Grid
         item

@@ -162,7 +162,6 @@ function Main() {
         });
       } else {
         callback({ loggedIn: false, isLoading: false });
-        history.push("/");
       }
     });
   }
@@ -201,7 +200,6 @@ function Main() {
   }
 
   const requestLogout = useCallback(() => {
-    console.log("logging out");
     logout();
   }, []);
 

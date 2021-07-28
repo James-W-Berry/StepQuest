@@ -6,6 +6,7 @@ import { signUpUser } from "../../../api/authApi";
 import { signInUserWithProvider } from "../../../api/authApi";
 import firebase from "../../../firebase";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import photo from "../../../assets/fitness_stock.jpeg";
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -105,7 +106,7 @@ export default function SignUp() {
                 />
                 <input
                   className="form-text-input"
-                  type="text"
+                  type="password"
                   id="password"
                   placeholder="PASSWORD"
                   autoComplete="password"
@@ -144,7 +145,17 @@ export default function SignUp() {
         </div>
       </Grid>
       <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="signup-background" />
+        <img
+          alt="sign-up-background"
+          src={photo}
+          style={{
+            width: "100%",
+            padding: "0px",
+            margin: "0px",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
       </Grid>
     </Grid>
   ) : (
@@ -214,7 +225,7 @@ export default function SignUp() {
                 />
                 <input
                   className="form-text-input"
-                  type="text"
+                  type="password"
                   id="password"
                   placeholder="PASSWORD"
                   autoComplete="password"
@@ -251,9 +262,6 @@ export default function SignUp() {
             </NavLink>
           </div>
         </div>
-      </Grid>
-      <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="signup-background" />
       </Grid>
     </Grid>
   );

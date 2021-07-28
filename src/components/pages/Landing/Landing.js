@@ -89,11 +89,9 @@ const getLandingPhoto = () => {
       break;
     case 2:
       photo = photo_2;
-
       break;
     case 3:
       photo = photo_3;
-
       break;
     default:
   }
@@ -134,7 +132,6 @@ export default function Landing() {
           xl={12}
           style={{
             padding: "0px",
-            flex: 1,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right bottom",
             backgroundSize: "contain",

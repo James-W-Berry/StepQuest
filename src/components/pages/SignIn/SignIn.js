@@ -4,6 +4,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import { signInUser } from "../../../api/authApi";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import photo from "../../../assets/fitness_stock_1.jpeg";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +38,7 @@ export default function SignIn() {
       <Grid item xs={12} sm={6} md={5} lg={5} xl={5}>
         <div
           style={{
-            display: "flex",
+            display: `flex`,
             justifyContent: "center",
             alignItems: "center",
             flexDirection: "column",
@@ -90,7 +91,7 @@ export default function SignIn() {
                 />
                 <input
                   className="form-text-input"
-                  type="text"
+                  type="password"
                   id="password"
                   placeholder="PASSWORD"
                   autoComplete="password"
@@ -141,7 +142,17 @@ export default function SignIn() {
         </div>
       </Grid>
       <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="signin-background" />
+        <img
+          alt="sign-in-background"
+          src={photo}
+          style={{
+            padding: "0px",
+            margin: "0px",
+            height: "100%",
+            width: "100%",
+            objectFit: "cover",
+          }}
+        />
       </Grid>
     </Grid>
   ) : (
@@ -211,7 +222,7 @@ export default function SignIn() {
                 />
                 <input
                   className="form-text-input"
-                  type="text"
+                  type="password"
                   id="password"
                   placeholder="PASSWORD"
                   autoComplete="password"

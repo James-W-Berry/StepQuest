@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import { sendResetPasswordEmail } from "../../../api/authApi";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import photo from "../../../assets/fitness_stock_2.jpeg";
 
 export default function PasswordReset() {
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +118,17 @@ export default function PasswordReset() {
         </div>
       </Grid>
       <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="password-reset-background" />
+        <img
+          alt="password-reset-background"
+          src={photo}
+          style={{
+            width: "100%",
+            padding: "0px",
+            margin: "0px",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
       </Grid>
     </Grid>
   ) : (
@@ -219,9 +230,6 @@ export default function PasswordReset() {
             </NavLink>
           </div>
         </div>
-      </Grid>
-      <Grid item xs={12} sm={6} md={7} lg={7} xl={7}>
-        <div className="password-reset-background" />
       </Grid>
     </Grid>
   );
