@@ -175,7 +175,15 @@ export default function ChallengeDetails(props) {
   }
 
   return (
-    <Grid container style={{ display: "flex" }}>
+    <Grid
+      container
+      xs={12}
+      sm={12}
+      md={12}
+      lg={12}
+      xl={12}
+      style={{ display: "flex" }}
+    >
       <Grid
         item
         xs={12}
@@ -292,6 +300,7 @@ export default function ChallengeDetails(props) {
         <UserActivityCalendar
           user={userId}
           challenge={id}
+          activity={challengeDetails.data.activity}
           startDate={challengeDetails.data.startDate.seconds}
           endDate={challengeDetails.data.endDate.seconds}
         />

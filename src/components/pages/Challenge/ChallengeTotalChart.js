@@ -40,7 +40,7 @@ export default function ChallengeTotalChart(props) {
 
   return data.keys.length > 0 && data.values.length > 0 ? (
     <Chart
-      width={"600px"}
+      width={"100%"}
       height={"400px"}
       chartType="Line"
       loader={<div>Loading Chart</div>}

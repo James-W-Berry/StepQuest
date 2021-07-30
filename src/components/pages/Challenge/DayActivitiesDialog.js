@@ -4,12 +4,10 @@ import colors from "../../../assets/colors";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   Button,
+  Chip,
   Dialog,
-  Divider,
-  FormControl,
   IconButton,
   Input,
-  InputLabel,
   Select,
   Typography,
 } from "@material-ui/core";
@@ -40,13 +38,20 @@ const useStyles = makeStyles((theme) => ({
 export default function DayActivitiesDialog(props) {
   const theme = useTheme();
   const classes = useStyles();
-
-  const { isOpen, day, activities, setDialogVisible, updateActivities } = props;
+  const {
+    isOpen,
+    day,
+    activities,
+    setDialogVisible,
+    updateActivities,
+    defaultActivity,
+  } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const [editedActivities, setEditedActivities] = useState([]);
   const [hasChange, setHasChange] = useState(false);
-  const [newActivity, setNewActivity] = useState();
-  const [newActivityDuration, setNewActivityDuration] = useState();
+  const [newActivity, setNewActivity] = useState(defaultActivity);
+  const [newActivityDuration, setNewActivityDuration] = useState(60);
+  const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
     setEditedActivities(activities);
@@ -94,6 +99,7 @@ export default function DayActivitiesDialog(props) {
   };
 
   const saveActivities = () => {
+    setIsLoading(true);
     updateActivities(day.toString(), editedActivities);
     setDialogVisible(false);
     setHasChange(false);
@@ -130,7 +136,17 @@ export default function DayActivitiesDialog(props) {
           id="customized-dialog-title"
           onClose={() => setDialogVisible(false)}
         >
-          {`Logged Activities for ${day.toDateString()}`}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography className="section-header-big">Add Activity</Typography>
+            <Typography className="section-body">{`${day.toDateString()}`}</Typography>
+          </div>
         </DialogTitle>
       </div>
       <div
@@ -141,38 +157,58 @@ export default function DayActivitiesDialog(props) {
           padding: "20px",
         }}
       >
-        {editedActivities &&
-          editedActivities.map((activity, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>
-                  {activity.activity} - {activity.duration}min
-                </Typography>
-                <IconButton onClick={() => removeActivity(index)}>
-                  <Delete />
-                </IconButton>
-              </div>
-            );
-          })}
-        <Divider variant="fullWidth" />
-        <Typography variant="h5">Log a new activity</Typography>
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
-            flexDirection: "column",
+            justifyContent: "flex-start",
+            padding: "20px",
           }}
         >
-          <FormControl className={classes.formControl}>
-            <InputLabel id="select-activity">What activity?</InputLabel>
+          {editedActivities &&
+            editedActivities.map((activity, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Chip
+                    key="active"
+                    style={{
+                      marginRight: "10px",
+                      backgroundColor: colors.stepQuestOrange,
+                      color: colors.almostWhite,
+                    }}
+                    label={`${activity.activity} -  ${activity.duration}`}
+                    deleteIcon
+                    onDelete={() => removeActivity(index)}
+                  />
+                </div>
+              );
+            })}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
+            width: "100%",
+          }}
+        >
+          <div style={{ display: "flex" }}>
+            <Typography
+              className="section-body"
+              style={{ marginRight: "10px" }}
+            >
+              Activity
+            </Typography>
             <Select
               label="Challenge activity"
               native
@@ -189,20 +225,25 @@ export default function DayActivitiesDialog(props) {
                 createActivityOption(activityOption)
               )}
             </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="activity-duration">
-              For how many minutes?
-            </InputLabel>
+          </div>
+
+          <div style={{ display: "flex" }}>
+            <Typography
+              className="section-body"
+              style={{ marginRight: "10px" }}
+            >
+              Duration (minutes)
+            </Typography>
             <Input
               type="number"
+              value={newActivityDuration}
               onChange={(event) => {
                 setNewActivityDuration(event.target.value);
                 setHasChange(true);
               }}
               labelid="activity-duration"
             />
-          </FormControl>
+          </div>
 
           <div
             style={{
@@ -213,7 +254,7 @@ export default function DayActivitiesDialog(props) {
             }}
           >
             <Button
-              disabled={!hasChange}
+              disabled={!(newActivityDuration && newActivity)}
               className={classes.saveButton}
               style={{
                 margin: "10px",
@@ -223,7 +264,6 @@ export default function DayActivitiesDialog(props) {
             >
               Add
             </Button>
-
             <Button
               disabled={!hasChange}
               className={classes.saveButton}

@@ -7,9 +7,12 @@ import "react-calendar/dist/Calendar.css";
 import { addActivityEntries, getUserEntries } from "../../../api/challengeApi";
 import colors from "../../../assets/colors";
 import DayActivitiesDialog from "./DayActivitiesDialog";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 export default function UserActivityCalendar(props) {
-  const { user, challenge, startDate, endDate } = props;
+  const theme = useTheme();
+  const { user, challenge, activity, startDate, endDate } = props;
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -19,6 +22,7 @@ export default function UserActivityCalendar(props) {
     useState(false);
   const [displayToast, setDisplayToast] = useState(false);
   const [toastMessage, setToastMessage] = useState();
+  const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
     const start = new Date(1970, 0, 1);
@@ -63,26 +67,57 @@ export default function UserActivityCalendar(props) {
             (entry) => entry.date === date.toString()
           );
           if (daysWithActivities.length > 0) {
-            return daysWithActivities.map((day, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{
-                    width: "100%",
-                    margin: "4px",
-                    padding: "4px",
-                    backgroundColor: colors.stepitup_blue,
-                    borderRadius: "4px",
-                    color: colors.white,
-                  }}
-                >
-                  <Typography>
-                    {day.activity} - {day.duration}min
-                  </Typography>
-                </div>
-              );
-            });
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {daysWithActivities.map((day, index) => {
+                  return isAboveMediumScreen ? (
+                    <div
+                      key={index}
+                      style={{
+                        width: "100%",
+                        margin: "4px",
+                        padding: "4px",
+                        backgroundColor: colors.stepQuestOrange,
+                        borderRadius: "4px",
+                        color: colors.almostBlack,
+                      }}
+                    >
+                      <Typography>
+                        {day.activity} - {day.duration}min
+                      </Typography>
+                    </div>
+                  ) : (
+                    <div
+                      key={index}
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "10px",
+                        backgroundColor: colors.stepQuestOrange,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            );
           }
+          return (
+            <div
+              key={date}
+              style={{
+                width: "100%",
+                margin: "4px",
+                padding: "4px",
+                borderRadius: "4px",
+              }}
+            />
+          );
         }}
         onClickDay={(value) => {
           setSelectedDate(value);
@@ -93,9 +128,9 @@ export default function UserActivityCalendar(props) {
       <Button
         style={{
           backgroundColor: isEqual(logEntries, origLogEntries)
-            ? colors.stepitup_fadedBlue
-            : colors.stepitup_blue,
-          color: colors.white,
+            ? colors.stepQuestOrange
+            : colors.stepQuestLightGray,
+          color: colors.almostBlack,
           margin: "10px",
         }}
         disabled={isEqual(logEntries, origLogEntries)}
@@ -124,6 +159,7 @@ export default function UserActivityCalendar(props) {
         })}
         updateActivities={updateLogEntries}
         setDialogVisible={setIsDayActivitiesDialogVisible}
+        defaultActivity={activity}
       />
 
       <Snackbar
