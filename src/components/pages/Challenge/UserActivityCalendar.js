@@ -83,7 +83,7 @@ export default function UserActivityCalendar(props) {
                         width: "100%",
                         margin: "4px",
                         padding: "4px",
-                        backgroundColor: colors.stepQuestOrange,
+                        backgroundColor: colors.stepQuestPaleOrangeFaded,
                         borderRadius: "4px",
                         color: colors.almostBlack,
                       }}
