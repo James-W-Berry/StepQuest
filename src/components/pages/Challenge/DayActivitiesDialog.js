@@ -12,8 +12,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import { Cancel, Close, Save } from "@material-ui/icons";
-import { Add, Delete } from "@material-ui/icons";
+import { CancelOutlined, Close, Save } from "@material-ui/icons";
+import { Add } from "@material-ui/icons";
 import activityList from "../../../assets/activityList.json";
 
 const useStyles = makeStyles((theme) => ({
@@ -144,7 +144,7 @@ export default function DayActivitiesDialog(props) {
               alignItems: "center",
             }}
           >
-            <Typography className="section-header-big">Add Activity</Typography>
+            <Typography className="section-header-big">Activity Log</Typography>
             <Typography className="section-body">{`${day.toDateString()}`}</Typography>
           </div>
         </DialogTitle>
@@ -244,6 +244,17 @@ export default function DayActivitiesDialog(props) {
               labelid="activity-duration"
             />
           </div>
+          <Button
+            disabled={!(newActivityDuration && newActivity)}
+            className={classes.saveButton}
+            style={{
+              margin: "10px",
+            }}
+            onClick={addActivity}
+            startIcon={<Add />}
+          >
+            Add
+          </Button>
 
           <div
             style={{
@@ -254,15 +265,15 @@ export default function DayActivitiesDialog(props) {
             }}
           >
             <Button
-              disabled={!(newActivityDuration && newActivity)}
               className={classes.saveButton}
-              style={{
-                margin: "10px",
+              onClick={() => {
+                setDialogVisible(false);
+                setNewActivity();
+                setNewActivityDuration();
               }}
-              onClick={addActivity}
-              startIcon={<Add />}
+              startIcon={<CancelOutlined />}
             >
-              Add
+              Cancel
             </Button>
             <Button
               disabled={!hasChange}

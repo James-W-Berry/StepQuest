@@ -1,33 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import colors from "../../../assets/colors";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import {
   Button,
-  Checkbox,
   Chip,
   Dialog,
   FormControl,
   IconButton,
   Input,
   InputLabel,
-  ListItemText,
   MenuItem,
   Select,
   Typography,
 } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import CloseIcon from "@material-ui/icons/Close";
-
-const styles = (theme) => ({
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: colors.white,
-  },
-});
+import { Close } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -42,30 +31,13 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
-  noLabel: {
-    marginTop: theme.spacing(3),
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: colors.almostWhite,
   },
 }));
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography {...other}>
-      <Typography style={{ color: colors.white }} variant="h6">
-        {children}
-      </Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -89,6 +61,26 @@ export default function AddAdminDialog(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const [displayAddButton, setDisplayAddButton] = useState(false);
   const [adminList, setAdminList] = useState([]);
+
+  const DialogTitle = (props) => {
+    const { children, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography style={{ color: "#f7f7f5" }} variant="h6">
+          {children}
+        </Typography>
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={handleClose}
+          >
+            <Close />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  };
 
   const handleChange = (event) => {
     console.log(event.target.value);
@@ -123,11 +115,20 @@ export default function AddAdminDialog(props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: colors.stepitup_blue,
+          backgroundColor: colors.stepQuestOrange,
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {`Add an Admin to ${title}`}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography className="section-header-big">{`Add admin to ${title}?`}</Typography>
+          </div>
         </DialogTitle>
       </div>
 

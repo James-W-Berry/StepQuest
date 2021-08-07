@@ -8,10 +8,24 @@ import { addActivityEntries, getUserEntries } from "../../../api/challengeApi";
 import colors from "../../../assets/colors";
 import DayActivitiesDialog from "./DayActivitiesDialog";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
+import { useTheme, makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  saveButton: {
+    color: colors.black,
+    backgroundColor: colors.stepQuestLightGray,
+    margin: "10px",
+    border: "1px solid #191919",
+    "&:hover": {
+      backgroundColor: colors.almostBlack,
+      color: colors.almostWhite,
+    },
+  },
+}));
 
 export default function UserActivityCalendar(props) {
   const theme = useTheme();
+  const classes = useStyles();
   const { user, challenge, activity, startDate, endDate } = props;
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
@@ -25,13 +39,13 @@ export default function UserActivityCalendar(props) {
   const isAboveMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
-    const start = new Date(1970, 0, 1);
+    const start = new Date(1970, 0, 0);
     start.setSeconds(startDate);
     setMinDate(start);
   }, [startDate]);
 
   useEffect(() => {
-    const end = new Date(1970, 0, 1);
+    const end = new Date(1970, 0, 0);
     end.setSeconds(endDate);
     setMaxDate(end);
   }, [endDate]);
@@ -126,14 +140,8 @@ export default function UserActivityCalendar(props) {
       />
 
       <Button
-        style={{
-          backgroundColor: isEqual(logEntries, origLogEntries)
-            ? colors.stepQuestOrange
-            : colors.stepQuestLightGray,
-          color: colors.almostBlack,
-          margin: "10px",
-        }}
         disabled={isEqual(logEntries, origLogEntries)}
+        className={classes.saveButton}
         onClick={() =>
           addActivityEntries(challenge, user, logEntries).then((response) => {
             if (response.success) {

@@ -1,40 +1,19 @@
-import React from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import colors from "../../../assets/colors";
-import { useTheme, withStyles } from "@material-ui/core/styles";
+import { useTheme, withStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Dialog, IconButton, Typography } from "@material-ui/core";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import CloseIcon from "@material-ui/icons/Close";
+import { Close } from "@material-ui/icons";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   closeButton: {
     position: "absolute",
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: colors.white,
+    color: colors.almostWhite,
   },
-});
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography {...other}>
-      <Typography style={{ color: colors.white }} variant="h6">
-        {children}
-      </Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
+}));
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -45,8 +24,29 @@ const DialogContent = withStyles((theme) => ({
 
 export default function DeleteChallengeDialog(props) {
   const theme = useTheme();
+  const classes = useStyles();
   const { isOpen, title, handleClose, handleConfirm } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down("xs"));
+
+  const DialogTitle = (props) => {
+    const { children, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography style={{ color: "#f7f7f5" }} variant="h6">
+          {children}
+        </Typography>
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={handleClose}
+          >
+            <Close />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  };
 
   return (
     <Dialog
@@ -62,11 +62,20 @@ export default function DeleteChallengeDialog(props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: colors.stepitup_blue,
+          backgroundColor: colors.stepQuestOrange,
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {`Delete ${title}?`}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography className="section-header-big">{`Delete ${title}?`}</Typography>
+          </div>
         </DialogTitle>
       </div>
 
